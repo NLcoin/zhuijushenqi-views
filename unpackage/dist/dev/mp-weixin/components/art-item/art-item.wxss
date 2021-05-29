@@ -1,0 +1,22 @@
+
+.art-img {
+	will-change: transform;
+	height: 170rpx;
+	border-radius: 10rpx;
+	width: 270rpx;
+}
+.art-title {
+	font-size: 30rpx;
+	text-overflow: ellipsis;
+	word-break: break-word;
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+}
+.art-bottom-text {
+	font-size: 24rpx;
+	color: #C0C0C0;
+}
+
+
