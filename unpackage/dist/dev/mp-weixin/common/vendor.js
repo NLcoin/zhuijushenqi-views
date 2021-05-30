@@ -8,7 +8,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.createApp = createApp;exports.createComponent = createComponent;exports.createPage = createPage;exports.createPlugin = createPlugin;exports.createSubpackageApp = createSubpackageApp;exports.default = void 0;var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 2));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _slicedToArray(arr, i) {return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();}function _nonIterableRest() {throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");}function _iterableToArrayLimit(arr, i) {if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;var _arr = [];var _n = true;var _d = false;var _e = undefined;try {for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {_arr.push(_s.value);if (i && _arr.length === i) break;}} catch (err) {_d = true;_e = err;} finally {try {if (!_n && _i["return"] != null) _i["return"]();} finally {if (_d) throw _e;}}return _arr;}function _arrayWithHoles(arr) {if (Array.isArray(arr)) return arr;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}function _toConsumableArray(arr) {return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();}function _nonIterableSpread() {throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");}function _unsupportedIterableToArray(o, minLen) {if (!o) return;if (typeof o === "string") return _arrayLikeToArray(o, minLen);var n = Object.prototype.toString.call(o).slice(8, -1);if (n === "Object" && o.constructor) n = o.constructor.name;if (n === "Map" || n === "Set") return Array.from(o);if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);}function _iterableToArray(iter) {if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);}function _arrayWithoutHoles(arr) {if (Array.isArray(arr)) return _arrayLikeToArray(arr);}function _arrayLikeToArray(arr, len) {if (len == null || len > arr.length) len = arr.length;for (var i = 0, arr2 = new Array(len); i < len; i++) {arr2[i] = arr[i];}return arr2;}
+Object.defineProperty(exports, "__esModule", { value: true });exports.createApp = createApp;exports.createComponent = createComponent;exports.createPage = createPage;exports.createSubpackageApp = createSubpackageApp;exports.default = void 0;var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 2));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _slicedToArray(arr, i) {return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();}function _nonIterableRest() {throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");}function _iterableToArrayLimit(arr, i) {if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;var _arr = [];var _n = true;var _d = false;var _e = undefined;try {for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {_arr.push(_s.value);if (i && _arr.length === i) break;}} catch (err) {_d = true;_e = err;} finally {try {if (!_n && _i["return"] != null) _i["return"]();} finally {if (_d) throw _e;}}return _arr;}function _arrayWithHoles(arr) {if (Array.isArray(arr)) return arr;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}function _toConsumableArray(arr) {return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();}function _nonIterableSpread() {throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");}function _unsupportedIterableToArray(o, minLen) {if (!o) return;if (typeof o === "string") return _arrayLikeToArray(o, minLen);var n = Object.prototype.toString.call(o).slice(8, -1);if (n === "Object" && o.constructor) n = o.constructor.name;if (n === "Map" || n === "Set") return Array.from(o);if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);}function _iterableToArray(iter) {if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);}function _arrayWithoutHoles(arr) {if (Array.isArray(arr)) return _arrayLikeToArray(arr);}function _arrayLikeToArray(arr, len) {if (len == null || len > arr.length) len = arr.length;for (var i = 0, arr2 = new Array(len); i < len; i++) {arr2[i] = arr[i];}return arr2;}
 
 var _toString = Object.prototype.toString;
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -503,7 +503,7 @@ function processArgs(methodName, fromArgs) {var argsOption = arguments.length > 
           keyOption = keyOption(fromArgs[key], fromArgs, toArgs);
         }
         if (!keyOption) {// 不支持的参数
-          console.warn("The '".concat(methodName, "' method of platform '\u5FAE\u4FE1\u5C0F\u7A0B\u5E8F' does not support option '").concat(key, "'"));
+          console.warn("\u5FAE\u4FE1\u5C0F\u7A0B\u5E8F ".concat(methodName, "\u6682\u4E0D\u652F\u6301").concat(key));
         } else if (isStr(keyOption)) {// 重写参数 key
           toArgs[keyOption] = fromArgs[key];
         } else if (isPlainObject(keyOption)) {// {name:newName,value:value}可重新指定参数 key:value
@@ -538,7 +538,7 @@ function wrapper(methodName, method) {
     var protocol = protocols[methodName];
     if (!protocol) {// 暂不支持的 api
       return function () {
-        console.error("Platform '\u5FAE\u4FE1\u5C0F\u7A0B\u5E8F' does not support '".concat(methodName, "'."));
+        console.error("\u5FAE\u4FE1\u5C0F\u7A0B\u5E8F \u6682\u4E0D\u652F\u6301".concat(methodName));
       };
     }
     return function (arg1, arg2) {// 目前 api 最多两个参数
@@ -585,7 +585,7 @@ function createTodoApi(name) {
 
   {var fail = _ref.fail,complete = _ref.complete;
     var res = {
-      errMsg: "".concat(name, ":fail method '").concat(name, "' not supported") };
+      errMsg: "".concat(name, ":fail:\u6682\u4E0D\u652F\u6301 ").concat(name, " \u65B9\u6CD5") };
 
     isFn(fail) && fail(res);
     isFn(complete) && complete(res);
@@ -619,7 +619,7 @@ function getProvider(_ref2)
     isFn(success) && success(res);
   } else {
     res = {
-      errMsg: 'getProvider:fail service not found' };
+      errMsg: 'getProvider:fail:服务[' + service + ']不存在' };
 
     isFn(fail) && fail(res);
   }
@@ -681,7 +681,7 @@ var customize = cached(function (str) {
 
 function initTriggerEvent(mpInstance) {
   {
-    if (!wx.canIUse || !wx.canIUse('nextTick')) {
+    if (!wx.canIUse('nextTick')) {
       return;
     }
   }
@@ -1295,63 +1295,11 @@ function initEventChannel() {
   };
 }
 
-function initScopedSlotsParams() {
-  var center = {};
-  var parents = {};
-
-  _vue.default.prototype.$hasScopedSlotsParams = function (vueId) {
-    var has = center[vueId];
-    if (!has) {
-      parents[vueId] = this;
-      this.$on('hook:destory', function () {
-        delete parents[vueId];
-      });
-    }
-    return has;
-  };
-
-  _vue.default.prototype.$getScopedSlotsParams = function (vueId, name, key) {
-    var data = center[vueId];
-    if (data) {
-      var object = data[name] || {};
-      return key ? object[key] : object;
-    } else {
-      parents[vueId] = this;
-      this.$on('hook:destory', function () {
-        delete parents[vueId];
-      });
-    }
-  };
-
-  _vue.default.prototype.$setScopedSlotsParams = function (name, value) {
-    var vueId = this.$options.propsData.vueId;
-    var object = center[vueId] = center[vueId] || {};
-    object[name] = value;
-    if (parents[vueId]) {
-      parents[vueId].$forceUpdate();
-    }
-  };
-
-  _vue.default.mixin({
-    destroyed: function destroyed() {
-      var propsData = this.$options.propsData;
-      var vueId = propsData && propsData.vueId;
-      if (vueId) {
-        delete center[vueId];
-        delete parents[vueId];
-      }
-    } });
-
-}
-
 function parseBaseApp(vm, _ref3)
 
 
 {var mocks = _ref3.mocks,initRefs = _ref3.initRefs;
   initEventChannel();
-  {
-    initScopedSlotsParams();
-  }
   if (vm.$options.store) {
     _vue.default.prototype.$store = vm.$options.store;
   }
@@ -1375,12 +1323,7 @@ function parseBaseApp(vm, _ref3)
 
       delete this.$options.mpType;
       delete this.$options.mpInstance;
-      if (this.mpType === 'page' && typeof getApp === 'function') {// hack vue-i18n
-        var app = getApp();
-        if (app.$vm && app.$vm.$i18n) {
-          this._i18n = app.$vm.$i18n;
-        }
-      }
+
       if (this.mpType !== 'app') {
         initRefs(this);
         initMocks(this, mocks);
@@ -1394,7 +1337,7 @@ function parseBaseApp(vm, _ref3)
         return;
       }
       {
-        if (wx.canIUse && !wx.canIUse('nextTick')) {// 事实 上2.2.3 即可，简单使用 2.3.0 的 nextTick 判断
+        if (!wx.canIUse('nextTick')) {// 事实 上2.2.3 即可，简单使用 2.3.0 的 nextTick 判断
           console.error('当前微信基础库版本过低，请将 微信开发者工具-详情-项目设置-调试基础库版本 更换为`2.3.0`以上');
         }
       }
@@ -1763,25 +1706,6 @@ function createSubpackageApp(vm) {
   return vm;
 }
 
-function createPlugin(vm) {
-  var appOptions = parseApp(vm);
-  if (isFn(appOptions.onShow) && wx.onAppShow) {
-    wx.onAppShow(function () {for (var _len7 = arguments.length, args = new Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {args[_key7] = arguments[_key7];}
-      appOptions.onShow.apply(vm, args);
-    });
-  }
-  if (isFn(appOptions.onHide) && wx.onAppHide) {
-    wx.onAppHide(function () {for (var _len8 = arguments.length, args = new Array(_len8), _key8 = 0; _key8 < _len8; _key8++) {args[_key8] = arguments[_key8];}
-      appOptions.onHide.apply(vm, args);
-    });
-  }
-  if (isFn(appOptions.onLaunch)) {
-    var args = wx.getLaunchOptionsSync && wx.getLaunchOptionsSync();
-    appOptions.onLaunch.call(vm, args);
-  }
-  return vm;
-}
-
 todos.forEach(function (todoApi) {
   protocols[todoApi] = false;
 });
@@ -1862,7 +1786,6 @@ wx.createApp = createApp;
 wx.createPage = createPage;
 wx.createComponent = createComponent;
 wx.createSubpackageApp = createSubpackageApp;
-wx.createPlugin = createPlugin;
 
 var uni$1 = uni;var _default =
 
@@ -7685,7 +7608,7 @@ function internalMixin(Vue) {
     Vue.util.warn(("Error in " + info + ": \"" + (err.toString()) + "\""), vm);
     console.error(err);
     /* eslint-disable no-undef */
-    var app = typeof getApp === 'function' && getApp();
+    var app = getApp();
     if (app && app.onError) {
       app.onError(err);
     }
@@ -7947,9 +7870,9 @@ module.exports = g;
 
 /***/ }),
 /* 4 */
-/*!**********************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/pages.json ***!
-  \**********************************************************************************************/
+/*!****************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/pages.json ***!
+  \****************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -8092,9 +8015,9 @@ function normalizeComponent (
 
 /***/ }),
 /* 13 */
-/*!**************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/api/service.js ***!
-  \**************************************************************************************************/
+/*!********************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/api/service.js ***!
+  \********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -8947,9 +8870,9 @@ if (hadRuntime) {
 
 /***/ }),
 /* 17 */
-/*!***************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/utils/luch-request/index.js ***!
-  \***************************************************************************************************************/
+/*!*********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/utils/luch-request/index.js ***!
+  \*********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -8959,9 +8882,9 @@ _Request.default;exports.default = _default;
 
 /***/ }),
 /* 18 */
-/*!**********************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/utils/luch-request/core/Request.js ***!
-  \**********************************************************************************************************************/
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/utils/luch-request/core/Request.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9168,9 +9091,9 @@ Request = /*#__PURE__*/function () {
 
 /***/ }),
 /* 19 */
-/*!******************************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/utils/luch-request/core/dispatchRequest.js ***!
-  \******************************************************************************************************************************/
+/*!************************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/utils/luch-request/core/dispatchRequest.js ***!
+  \************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9184,9 +9107,9 @@ function _default(config) {
 
 /***/ }),
 /* 20 */
-/*!************************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/utils/luch-request/adapters/index.js ***!
-  \************************************************************************************************************************/
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/utils/luch-request/adapters/index.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9283,9 +9206,9 @@ function _default(config) {
 
 /***/ }),
 /* 21 */
-/*!**************************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/utils/luch-request/helpers/buildURL.js ***!
-  \**************************************************************************************************************************/
+/*!********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/utils/luch-request/helpers/buildURL.js ***!
+  \********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9362,9 +9285,9 @@ function buildURL(url, params) {
 
 /***/ }),
 /* 22 */
-/*!***************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/utils/luch-request/utils.js ***!
-  \***************************************************************************************************************/
+/*!*********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/utils/luch-request/utils.js ***!
+  \*********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9503,9 +9426,9 @@ function deepMerge() /* obj1, obj2, obj3, ... */{
 
 /***/ }),
 /* 23 */
-/*!****************************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/utils/luch-request/core/buildFullPath.js ***!
-  \****************************************************************************************************************************/
+/*!**********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/utils/luch-request/core/buildFullPath.js ***!
+  \**********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9533,9 +9456,9 @@ function buildFullPath(baseURL, requestedURL) {
 
 /***/ }),
 /* 24 */
-/*!*******************************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/utils/luch-request/helpers/isAbsoluteURL.js ***!
-  \*******************************************************************************************************************************/
+/*!*************************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/utils/luch-request/helpers/isAbsoluteURL.js ***!
+  \*************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9557,9 +9480,9 @@ function isAbsoluteURL(url) {
 
 /***/ }),
 /* 25 */
-/*!*****************************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/utils/luch-request/helpers/combineURLs.js ***!
-  \*****************************************************************************************************************************/
+/*!***********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/utils/luch-request/helpers/combineURLs.js ***!
+  \***********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9581,9 +9504,9 @@ function combineURLs(baseURL, relativeURL) {
 
 /***/ }),
 /* 26 */
-/*!*********************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/utils/luch-request/core/settle.js ***!
-  \*********************************************************************************************************************/
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/utils/luch-request/core/settle.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9607,9 +9530,9 @@ function settle(resolve, reject, response) {
 
 /***/ }),
 /* 27 */
-/*!*********************************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/utils/luch-request/core/InterceptorManager.js ***!
-  \*********************************************************************************************************************************/
+/*!***************************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/utils/luch-request/core/InterceptorManager.js ***!
+  \***************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9668,9 +9591,9 @@ InterceptorManager;exports.default = _default;
 
 /***/ }),
 /* 28 */
-/*!**************************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/utils/luch-request/core/mergeConfig.js ***!
-  \**************************************************************************************************************************/
+/*!********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/utils/luch-request/core/mergeConfig.js ***!
+  \********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9767,9 +9690,9 @@ function _default(globalsConfig) {var config2 = arguments.length > 1 && argument
 
 /***/ }),
 /* 29 */
-/*!***********************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/utils/luch-request/core/defaults.js ***!
-  \***********************************************************************************************************************/
+/*!*****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/utils/luch-request/core/defaults.js ***!
+  \*****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9806,9 +9729,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 30 */
-/*!****************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/common/config.js ***!
-  \****************************************************************************************************/
+/*!**********************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/common/config.js ***!
+  \**********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9816,15 +9739,15 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; // 全局配置信息
 var _default = {
   // api请求地址
-  'api_url': 'http://192.168.3.28/api/v1',
+  'api_url': 'http://127.0.0.1/api/v1',
   // 客户端密钥
   'app_key': 'deepsea2021' };exports.default = _default;
 
 /***/ }),
 /* 31 */
-/*!**************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/common/util.js ***!
-  \**************************************************************************************************/
+/*!********************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/common/util.js ***!
+  \********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10036,9 +9959,9 @@ var _default = {
 
 /***/ }),
 /* 32 */
-/*!*****************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/function/md5.js ***!
-  \*****************************************************************************************************************/
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/function/md5.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -10429,9 +10352,9 @@ module.exports = {
 
 /***/ }),
 /* 33 */
-/*!************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/api/index.js ***!
-  \************************************************************************************************/
+/*!******************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/api/index.js ***!
+  \******************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10475,9 +10398,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 34 */
-/*!*****************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/index.js ***!
-  \*****************************************************************************************************/
+/*!***********************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/index.js ***!
+  \***********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10626,9 +10549,9 @@ var install = function install(Vue) {
 
 /***/ }),
 /* 35 */
-/*!****************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/mixin/mixin.js ***!
-  \****************************************************************************************************************/
+/*!**********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/mixin/mixin.js ***!
+  \**********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10699,9 +10622,9 @@ var install = function install(Vue) {
 
 /***/ }),
 /* 36 */
-/*!******************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/request/index.js ***!
-  \******************************************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/request/index.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10879,9 +10802,9 @@ new Request();exports.default = _default;
 
 /***/ }),
 /* 37 */
-/*!***********************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/function/deepMerge.js ***!
-  \***********************************************************************************************************************/
+/*!*****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/function/deepMerge.js ***!
+  \*****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10919,9 +10842,9 @@ deepMerge;exports.default = _default;
 
 /***/ }),
 /* 38 */
-/*!***********************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/function/deepClone.js ***!
-  \***********************************************************************************************************************/
+/*!*****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/function/deepClone.js ***!
+  \*****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10952,9 +10875,9 @@ deepClone;exports.default = _default;
 
 /***/ }),
 /* 39 */
-/*!******************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/function/test.js ***!
-  \******************************************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/function/test.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11193,9 +11116,9 @@ function code(value) {var len = arguments.length > 1 && arguments[1] !== undefin
 
 /***/ }),
 /* 40 */
-/*!*************************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/function/queryParams.js ***!
-  \*************************************************************************************************************************/
+/*!*******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/function/queryParams.js ***!
+  \*******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11261,17 +11184,17 @@ queryParams;exports.default = _default;
 
 /***/ }),
 /* 41 */
-/*!*******************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/function/route.js ***!
-  \*******************************************************************************************************************/
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/function/route.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 14));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;} /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  * 路由跳转方法，该方法相对于直接使用uni.xxx的好处是使用更加简单快捷
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  * 并且带有路由拦截功能
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  */var
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              * 路由跳转方法，该方法相对于直接使用uni.xxx的好处是使用更加简单快捷
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              * 并且带有路由拦截功能
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              */var
 
 Router = /*#__PURE__*/function () {
   function Router() {_classCallCheck(this, Router);
@@ -11394,9 +11317,9 @@ new Router().route;exports.default = _default;
 
 /***/ }),
 /* 42 */
-/*!************************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/function/timeFormat.js ***!
-  \************************************************************************************************************************/
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/function/timeFormat.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11455,9 +11378,9 @@ timeFormat;exports.default = _default;
 
 /***/ }),
 /* 43 */
-/*!**********************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/function/timeFrom.js ***!
-  \**********************************************************************************************************************/
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/function/timeFrom.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11512,9 +11435,9 @@ timeFrom;exports.default = _default;
 
 /***/ }),
 /* 44 */
-/*!***************************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/function/colorGradient.js ***!
-  \***************************************************************************************************************************/
+/*!*********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/function/colorGradient.js ***!
+  \*********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11655,9 +11578,9 @@ function colorToRgba(color) {var alpha = arguments.length > 1 && arguments[1] !=
 
 /***/ }),
 /* 45 */
-/*!******************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/function/guid.js ***!
-  \******************************************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/function/guid.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11706,9 +11629,9 @@ guid;exports.default = _default;
 
 /***/ }),
 /* 46 */
-/*!*******************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/function/color.js ***!
-  \*******************************************************************************************************************/
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/function/color.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11753,9 +11676,9 @@ color;exports.default = _default;
 
 /***/ }),
 /* 47 */
-/*!***********************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/function/type2icon.js ***!
-  \***********************************************************************************************************************/
+/*!*****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/function/type2icon.js ***!
+  \*****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11798,9 +11721,9 @@ type2icon;exports.default = _default;
 
 /***/ }),
 /* 48 */
-/*!*************************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/function/randomArray.js ***!
-  \*************************************************************************************************************************/
+/*!*******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/function/randomArray.js ***!
+  \*******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11815,9 +11738,9 @@ randomArray;exports.default = _default;
 
 /***/ }),
 /* 49 */
-/*!*********************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/function/addUnit.js ***!
-  \*********************************************************************************************************************/
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/function/addUnit.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11833,9 +11756,9 @@ function addUnit() {var value = arguments.length > 0 && arguments[0] !== undefin
 
 /***/ }),
 /* 50 */
-/*!********************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/function/random.js ***!
-  \********************************************************************************************************************/
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/function/random.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11853,9 +11776,9 @@ random;exports.default = _default;
 
 /***/ }),
 /* 51 */
-/*!******************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/function/trim.js ***!
-  \******************************************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/function/trim.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11878,9 +11801,9 @@ trim;exports.default = _default;
 
 /***/ }),
 /* 52 */
-/*!*******************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/function/toast.js ***!
-  \*******************************************************************************************************************/
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/function/toast.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11898,9 +11821,9 @@ toast;exports.default = _default;
 
 /***/ }),
 /* 53 */
-/*!***********************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/function/getParent.js ***!
-  \***********************************************************************************************************************/
+/*!*****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/function/getParent.js ***!
+  \*****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11955,9 +11878,9 @@ function getParent(name, keys) {
 
 /***/ }),
 /* 54 */
-/*!*********************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/function/$parent.js ***!
-  \*********************************************************************************************************************/
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/function/$parent.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11983,9 +11906,9 @@ function $parent() {var name = arguments.length > 0 && arguments[0] !== undefine
 
 /***/ }),
 /* 55 */
-/*!*****************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/function/sys.js ***!
-  \*****************************************************************************************************************/
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/function/sys.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12001,9 +11924,9 @@ function sys() {
 
 /***/ }),
 /* 56 */
-/*!**********************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/function/debounce.js ***!
-  \**********************************************************************************************************************/
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/function/debounce.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12040,9 +11963,9 @@ debounce;exports.default = _default;
 
 /***/ }),
 /* 57 */
-/*!**********************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/function/throttle.js ***!
-  \**********************************************************************************************************************/
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/function/throttle.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12082,9 +12005,9 @@ throttle;exports.default = _default;
 
 /***/ }),
 /* 58 */
-/*!******************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/config/config.js ***!
-  \******************************************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/config/config.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12105,9 +12028,9 @@ var version = '1.8.4';var _default =
 
 /***/ }),
 /* 59 */
-/*!******************************************************************************************************************!*\
-  !*** C:/Users/Administrator.SC-202102031251/Documents/HBuilderProjects/video-xcx/uview-ui/libs/config/zIndex.js ***!
-  \******************************************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/project/zhuijushenqi-views/uview-ui/libs/config/zIndex.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
