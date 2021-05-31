@@ -1,10 +1,10 @@
 <template>
 	<view class="mb-2" :class="listClass" @click="openDetail(item.vod_id)" style="position: relative;width: 210rpx;">
-		<image :src="item.vod_pic" mode="aspectFill" class="vod-img" lazy-load></image>
+		<u-lazy-load :image="item.vod_pic" img-mode="aspectFill" class="vod-img" height="300" border-radius="10"></u-lazy-load>
 		<view v-if="iconText" class="top_icon">{{icon(item,iconText)}}</view>
 		<view class="vod_remark">{{item.vod_remarks.length > 8 ? '' :item.vod_remarks}}</view>
 		<view class="vod_score" v-if="isScore">{{item.vod_score}}</view>
-		<view class="u-text-center text-ellipsis1 font26">
+		<view class="u-text-center text-ellipsis1 font26 mt-1">
 			{{item.vod_name}}
 		</view>
 	</view>
@@ -41,10 +41,7 @@
 
 <style>
 	.vod-img{
-		will-change: transform;
 		width: 210rpx;
-		height: 300rpx;
-		border-radius: 10rpx;
 	}
 	
 	.vod_remark {
@@ -72,6 +69,6 @@
 		left: 0rpx;
 		color: #fff;
 		font-size: 22rpx;
-		padding: 2rpx 7rpx 0rpx 7rpx;
+		padding: 0rpx 10rpx;
 	}
 </style>

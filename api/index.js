@@ -26,8 +26,44 @@ export default {
 		});
 	},
 	// 获取热门电影
+	getVodHotMovie(page, pageSize){
+		return http.get('/vod/hot/movie', {
+			params: {
+				page,
+				pageSize
+			}
+		});
+	},
+	// 获取热门电视剧
+	getVodHotTv(page, pageSize){
+		return http.get('/vod/hot/tv', {
+			params: {
+				page,
+				pageSize
+			}
+		});
+	},
+	// 获取热门综艺
+	getVodHotVariety(page, pageSize){
+		return http.get('/vod/hot/variety', {
+			params: {
+				page,
+				pageSize
+			}
+		});
+	},
+	// 获取热门动漫
+	getVodHotComic(page, pageSize){
+		return http.get('/vod/hot/comic', {
+			params: {
+				page,
+				pageSize
+			}
+		});
+	},
+	// 获取热门列表
 	getVodHot(page, pageSize){
-		return http.get('/vod/hot', {
+		return http.get('/vod/hot/index', {
 			params: {
 				page,
 				pageSize

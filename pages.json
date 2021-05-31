@@ -10,7 +10,58 @@
 				"navigationBarTextStyle": "black"
 			}
 		}
-	],
+	    ,{
+            "path" : "pages/more/more",
+            "style" :                                                                                    
+            {
+               "navigationStyle":"custom",
+               "navigationBarTextStyle": "black"
+            }
+            
+        }
+        ,{
+            "path" : "pages/search/search",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/history/history",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
+	"tabBar": {
+		"color": "#888888",
+		"selectedColor": "#222",
+		"borderStyle": "white",
+		"backgroundColor": "#ffffff",
+		"list": [{
+				"pagePath": "pages/index/index",
+				"iconPath": "/static/images/home.png",
+				"selectedIconPath": "static/images/home-active.png",
+				"text": "首页"
+			}, {
+				"pagePath": "pages/search/search",
+				"iconPath": "static/images/search.png",
+				"selectedIconPath": "static/images/search-active.png",
+				"text": "搜索"
+			},
+			{
+				"pagePath": "pages/history/history",
+				"iconPath": "static/images/video.png",
+				"selectedIconPath": "static/images/video-active.png",
+				"text": "浏览记录"
+			}
+		]
+	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "超前点播追剧神器",
