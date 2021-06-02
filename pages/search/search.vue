@@ -1,6 +1,7 @@
 <template>
 	<view>
-		<u-navbar title-color="#222" title="搜索影片" title-bold :border-bottom="false" title-size="30" :is-back="false">
+		<u-navbar :is-back="false" title-color="#222" title-bold :border-bottom="false" title-size="30">
+			<view class="ml-3 f7 font33">搜索影片</view>
 		</u-navbar>
 		<view class="px-2 pt-1 pb-2 bg-bai" style="z-index: 999999;position: sticky;" :style="{top:searchTop+'px'}">
 			<u-search placeholder="输入影片名 演员或导演搜索" v-model="keyword" :show-action="false" @search="submit()"
@@ -10,7 +11,7 @@
 			<template v-if="isSubmit == false">
 				<template v-if="hisList.length">
 					<!-- 搜索历史 -->
-					<view class="flex align-center justify-between mb-2">
+					<view class="flex align-center justify-between mb-2 mt-1">
 						<text class="hei">搜索历史</text>
 						<text class="font27 gray" @click="dumpHistory()">清空</text>
 					</view>
@@ -23,7 +24,7 @@
 					</view>
 				</template>
 				<!-- 搜索热词 -->
-				<view class="hei">大家都在搜</view>
+				<view class="hei mt-1">大家都在搜</view>
 				<block v-for="(item,index) in hotWords" :key="index">
 					<view class="flex align-center border-bottom-hui w100 py-2" @click="clickWord(item.keyword)"
 						hover-class="bg-hui">

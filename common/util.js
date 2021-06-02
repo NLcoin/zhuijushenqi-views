@@ -201,9 +201,28 @@ export default {
 			url: '/pages/detail/detail?id=' + id
 		});
 	},
-	
-	getConfig(name){
+
+	getConfig(name) {
 		let config = uni.getStorageSync('config');
 		return config[name];
+	},
+
+	getExt(filePath) {
+		const index = filePath.lastIndexOf(".");
+		const ext = filePath.substr(index + 1);
+		return ext;
+	},
+
+	getNetwork() {
+		return new Promise((resolve, reject) => {
+			uni.getNetworkType({
+				success: (res) => {
+					resolve(res.networkType);
+				},
+				fail: (e) => {
+					reject(e);
+				}
+			});
+		});
 	}
 }

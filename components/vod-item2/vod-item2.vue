@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view class="flex align-center mt-2">
+		<view class="flex align-center">
 			<view style="min-width: 225rpx;">
 				<u-lazy-load :image="item.vod_pic" img-mode="aspectFill" height="310" border-radius="5"
 					:is-effect="false">
@@ -20,7 +20,7 @@
 				</view>
 			</view>
 		</view>
-		<view style="margin: 25rpx -20rpx 0 -20rpx;">
+		<view style="margin: 20rpx -20rpx">
 			<u-gap height="20" bg-color="#f8f8fa"></u-gap>
 		</view>
 	</view>
