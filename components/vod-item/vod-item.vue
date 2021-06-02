@@ -1,5 +1,5 @@
 <template>
-	<view class="mb-2 mian" :class="listClass" @click="openDetail(item.vod_id)">
+	<view class="mb-2 mian" :class="listClass" @click="$H.toDetail(item.vod_id)">
 		<u-lazy-load :image="item.vod_pic" img-mode="aspectFill" height="310" border-radius="5" :is-effect="false">
 		</u-lazy-load>
 		<view v-if="iconText" class="top_icon">{{icon(item,iconText)}}</view>

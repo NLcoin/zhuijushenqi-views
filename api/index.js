@@ -79,4 +79,12 @@ export default {
 	searchHotWords() {
 		return http.get('/vod/search/hotwords');
 	},
+	// 影片详情
+	vodDetail(id) {
+		return http.get('/vod/detail/' + id, {
+			params: {
+				vod_id: id
+			}
+		});
+	}
 }
