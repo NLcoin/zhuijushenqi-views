@@ -3,6 +3,10 @@ import {
 } from '@/api/service.js';
 
 export default {
+	// 获取配置信息
+	getConfig() {
+		return http.get('/config');
+	},
 	// 获取影片轮播图
 	getVodSlider() {
 		return http.get('/vod/slider');
@@ -16,17 +20,8 @@ export default {
 			}
 		});
 	},
-	// 获取最新资讯
-	getArtNew(page, pageSize){
-		return http.get('/art/new', {
-			params: {
-				page,
-				pageSize
-			}
-		});
-	},
 	// 获取热门电影
-	getVodHotMovie(page, pageSize){
+	getVodHotMovie(page, pageSize) {
 		return http.get('/vod/hot/movie', {
 			params: {
 				page,
@@ -35,7 +30,7 @@ export default {
 		});
 	},
 	// 获取热门电视剧
-	getVodHotTv(page, pageSize){
+	getVodHotTv(page, pageSize) {
 		return http.get('/vod/hot/tv', {
 			params: {
 				page,
@@ -44,7 +39,7 @@ export default {
 		});
 	},
 	// 获取热门综艺
-	getVodHotVariety(page, pageSize){
+	getVodHotVariety(page, pageSize) {
 		return http.get('/vod/hot/variety', {
 			params: {
 				page,
@@ -53,7 +48,7 @@ export default {
 		});
 	},
 	// 获取热门动漫
-	getVodHotComic(page, pageSize){
+	getVodHotComic(page, pageSize) {
 		return http.get('/vod/hot/comic', {
 			params: {
 				page,
@@ -62,12 +57,26 @@ export default {
 		});
 	},
 	// 获取热门列表
-	getVodHot(page, pageSize){
+	getVodHot(page, pageSize) {
 		return http.get('/vod/hot/index', {
 			params: {
 				page,
 				pageSize
 			}
 		});
-	}
+	},
+	// 搜索影片
+	searchVod(keyword, page = 1, pageSize = 10) {
+		return http.get('/vod/search/index', {
+			params: {
+				keyword,
+				page,
+				pageSize
+			}
+		});
+	},
+	// 搜索热词
+	searchHotWords() {
+		return http.get('/vod/search/hotwords');
+	},
 }

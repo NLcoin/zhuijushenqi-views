@@ -1,6 +1,7 @@
 <template>
-	<view class="mb-2" :class="listClass" @click="openDetail(item.vod_id)" style="position: relative;width: 210rpx;">
-		<u-lazy-load :image="item.vod_pic" img-mode="aspectFill" class="vod-img" height="300" border-radius="10"></u-lazy-load>
+	<view class="mb-2 mian" :class="listClass" @click="openDetail(item.vod_id)">
+		<u-lazy-load :image="item.vod_pic" img-mode="aspectFill" height="310" border-radius="5" :is-effect="false">
+		</u-lazy-load>
 		<view v-if="iconText" class="top_icon">{{icon(item,iconText)}}</view>
 		<view class="vod_remark">{{item.vod_remarks.length > 8 ? '' :item.vod_remarks}}</view>
 		<view class="vod_score" v-if="isScore">{{item.vod_score}}</view>
@@ -22,11 +23,6 @@
 			listClass: String
 		},
 		methods: {
-			openDetail(id) {
-				uni.navigateTo({
-					url: '/pages/detail/movie/movie?id=' + id
-				});
-			},
 			icon(item, text) {
 				if (text == 'class') return item.type.type_name;
 				if (text == 'hits_day') return '今日热度' + item.vod_hits_day;
@@ -40,10 +36,11 @@
 </script>
 
 <style>
-	.vod-img{
-		width: 210rpx;
+	.mian {
+		position: relative;
+		width: 220rpx;
 	}
-	
+
 	.vod_remark {
 		font-size: 24rpx;
 		position: absolute;

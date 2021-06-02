@@ -571,11 +571,11 @@
 	flex-wrap: wrap;
 }
 
-.flex-row{
+.flex-row {
 	flex-direction: row;
 }
 
-.flex-reverse{
+.flex-reverse {
 	flex-direction: row-reverse;
 }
 
@@ -656,7 +656,7 @@
 	background-color: #ef5952;
 }
 
-.hong{
+.hong {
 	color: red;
 }
 
@@ -817,4 +817,10 @@
 .voditem::after {
 	content: '';
 	width: 210rpx;
+}
+
+.vodskeleton {
+	width: 220rpx;
+	height: 320rpx;
+	border-radius: 5rpx;
 }

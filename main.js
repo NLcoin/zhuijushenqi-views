@@ -23,6 +23,9 @@ Vue.prototype.$C = $C;
 import $H from '@/common/util.js';
 Vue.prototype.$H = $H;
 
+let mpShare = require('uview-ui/libs/mixin/mpShare.js');
+Vue.mixin(mpShare);
+
 Vue.config.productionTip = false
 
 App.mpType = 'app'

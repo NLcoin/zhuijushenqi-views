@@ -1,10 +1,35 @@
 <script>
 	export default {
 		onLaunch: function() {
-			console.log('App Launch')
+			this.$api.getConfig().then(res => {
+				uni.setStorageSync('config',res);
+			});
 		},
 		onShow: function() {
-			console.log('App Show')
+			const updateManager = uni.getUpdateManager(); // 获取更新管理器对象
+			updateManager.onCheckForUpdate(function(res) {
+				if (res.hasUpdate) {
+					updateManager.onUpdateReady(function() {
+						uni.showModal({
+							title: '版本更新',
+							content: '新版本已经准备好，点击确定重新启动',
+							showCancel: false,
+							success: res => {
+								if (res.confirm) {
+									updateManager.applyUpdate();
+								}
+							}
+						})
+					})
+					updateManager.onUpdateFailed(function() {
+						uni.showModal({
+							title: '更新失败',
+							content: '更新包下载失败，请检查网络设置',
+							showCancel: false
+						})
+					})
+				}
+			})
 		},
 		onHide: function() {
 			console.log('App Hide')

@@ -200,5 +200,10 @@ export default {
 		uni.navigateTo({
 			url: '/pages/detail/detail?id=' + id
 		});
+	},
+	
+	getConfig(name){
+		let config = uni.getStorageSync('config');
+		return config[name];
 	}
 }

@@ -1,44 +1,24 @@
 <template>
 	<view>
 		<u-navbar title-color="#222" :title="title" title-bold :border-bottom="false" 
-		title-size="30" back-icon-color="#222" back-icon-size="37" back-icon-name="arrow-left">
+		title-size="30" back-icon-color="#222" back-icon-size="40">
 		</u-navbar>
 		<view class="u-skeleton m-2">
 			<template v-if="loading">
 				<!-- 骨架屏模拟数据 -->
 				<view class="flex align-center justify-between flex-wrap">
-					<view style="width: 210rpx;height: 310rpx;border-radius: 10rpx;"
-						class="u-skeleton-fillet mr-3 mb-4">
-					</view>
-					<view style="width: 210rpx;height: 310rpx;border-radius: 10rpx;"
-						class="u-skeleton-fillet mr-3 mb-4">
-					</view>
-					<view style="width: 210rpx;height: 310rpx;border-radius: 10rpx;" class="u-skeleton-fillet mb-4">
-					</view>
-					<view style="width: 210rpx;height: 310rpx;border-radius: 10rpx;"
-						class="u-skeleton-fillet mr-3 mb-4">
-					</view>
-					<view style="width: 210rpx;height: 310rpx;border-radius: 10rpx;"
-						class="u-skeleton-fillet mr-3 mb-4">
-					</view>
-					<view style="width: 210rpx;height: 310rpx;border-radius: 10rpx;" class="u-skeleton-fillet mb-4">
-					</view>
-					<view style="width: 210rpx;height: 310rpx;border-radius: 10rpx;"
-						class="u-skeleton-fillet mr-3 mb-4">
-					</view>
-					<view style="width: 210rpx;height: 310rpx;border-radius: 10rpx;"
-						class="u-skeleton-fillet mr-3 mb-4">
-					</view>
-					<view style="width: 210rpx;height: 310rpx;border-radius: 10rpx;" class="u-skeleton-fillet mb-4">
-					</view>
-					<view style="width: 210rpx;height: 310rpx;border-radius: 10rpx;"
-						class="u-skeleton-fillet mr-3 mb-4">
-					</view>
-					<view style="width: 210rpx;height: 310rpx;border-radius: 10rpx;"
-						class="u-skeleton-fillet mr-3 mb-4">
-					</view>
-					<view style="width: 210rpx;height: 310rpx;border-radius: 10rpx;" class="u-skeleton-fillet mb-4">
-					</view>
+					<view class="u-skeleton-fillet vodskeleton mr-1 mb-4"></view>
+					<view class="u-skeleton-fillet vodskeleton mr-1 mb-4"></view>
+					<view class="u-skeleton-fillet vodskeleton mb-4"></view>
+					<view class="u-skeleton-fillet vodskeleton mr-1 mb-4"></view>
+					<view class="u-skeleton-fillet vodskeleton mr-1 mb-4"></view>
+					<view class="u-skeleton-fillet vodskeleton mb-4"></view>
+					<view class="u-skeleton-fillet vodskeleton mr-1 mb-4"></view>
+					<view class="u-skeleton-fillet vodskeleton mr-1 mb-4"></view>
+					<view class="u-skeleton-fillet vodskeleton mb-4"></view>
+					<view class="u-skeleton-fillet vodskeleton mr-1 mb-4"></view>
+					<view class="u-skeleton-fillet vodskeleton mr-1 mb-4"></view>
+					<view class="u-skeleton-fillet vodskeleton mb-4"></view>
 				</view>
 				<!-- end -->
 			</template>
@@ -66,7 +46,7 @@
 				loading:true,
 				result: {
 					page: 1,
-					pageSize: 15,
+					pageSize: 12,
 					total: 0,
 					list: [],
 					loadStatus: 'loadmore'
