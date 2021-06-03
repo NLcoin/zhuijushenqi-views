@@ -376,7 +376,6 @@ export default {
 	right: 0;
 	top: 0;
 	bottom: 0;
-	background-color: #ffffff;
 }
 
 .u-drawer-top {

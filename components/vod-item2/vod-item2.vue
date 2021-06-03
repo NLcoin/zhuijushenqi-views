@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view class="flex align-center">
+		<view class="flex align-center" @click="$H.toDetail(item.vod_id)">
 			<view style="min-width: 225rpx;">
 				<u-lazy-load :image="item.vod_pic" img-mode="aspectFill" height="310" border-radius="5"
 					:is-effect="false">
@@ -15,7 +15,7 @@
 				<view class="text-ellipsis2 font28" v-html="replaceCon(item.vod_director)"></view>
 				<view class="text-ellipsis2 font28" v-html="replaceCon(item.vod_actor)"></view>
 				<view class="tc" style="width: 210rpx;height: 65rpx;background-color: #ff6022;border-radius: 8rpx;"
-					@click="openDetail(item.vod_id)">
+					@click="$H.toDetail(item.vod_id)">
 					<text style="color: #FFFFFF;line-height: 65rpx;">查看详情</text>
 				</view>
 			</view>

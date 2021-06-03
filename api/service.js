@@ -52,10 +52,14 @@ http.interceptors.response.use(async (response) => {
 	}
 	return response.data;
 }, (response) => {
-	uni.showLoading({
-		title:response.data.msg
-	});
-	return;
+	try{
+		uni.showLoading({
+			title:response.data.msg
+		});
+		return;
+	}catch(e){
+		return response;
+	}
 })
 
 export {

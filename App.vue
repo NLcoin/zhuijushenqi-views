@@ -2,7 +2,44 @@
 	export default {
 		onLaunch: function() {
 			this.$api.getConfig().then(res => {
-				uni.setStorageSync('config',res);
+				uni.setStorageSync('config', res);
+			});
+			// 检测网络状态
+			uni.getNetworkType({
+				success: res => {
+					if (res.networkType == 'none') {
+						uni.showLoading({
+							title: '无网络',
+							mask: true
+						});
+						return false;
+					}
+					if (res.networkType != 'wifi') {
+						uni.showToast({
+							duration: 3000,
+							title: '当前处于非wifi环境下，请留意流量使用',
+							icon: 'none'
+						})
+					}
+				}
+			});
+			uni.onNetworkStatusChange(res => {
+				if (res.isConnected) {
+					uni.hideLoading();
+				} else {
+					uni.showLoading({
+						title: '无网络',
+						mask: true
+					});
+					return false;
+				}
+				if (res.networkType != 'wifi') {
+					uni.showToast({
+						duration: 2000,
+						title: '当前处于非wifi环境下，请留意流量使用',
+						icon: 'none'
+					});
+				}
 			});
 		},
 		onShow: function() {
