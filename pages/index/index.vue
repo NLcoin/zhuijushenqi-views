@@ -15,7 +15,7 @@
 			<view class="mx-2">
 				<view class="mb-3 mt-1 u-skeleton-fillet">
 					<u-swiper :list="sliderList" img-mode="aspectFill" :title="true" bg-color="#fff" height="380"
-						border-radius="8" :effect3d="$H.getConfig('effect3d')">
+						border-radius="8" :effect3d="$H.getConfig('effect3d')" @click="clickSwiper">
 					</u-swiper>
 				</view>
 
@@ -274,6 +274,10 @@
 				uni.switchTab({
 					url: '/pages/search/search'
 				})
+			},
+			clickSwiper(index){
+				let vodId = this.sliderList[index].vod_id;
+				this.$H.toDetail(vodId);
 			}
 		}
 	}

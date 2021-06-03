@@ -39,6 +39,11 @@
 			</template>
 			<template v-else>
 				<vod-item2 v-for="(item,index) in result.list" :key="index" :item="item"></vod-item2>
+				<view v-if="!result.list.length">
+					<u-button :hair-line="false" show-message-card send-message-img open-type="contact" send-message-path send-message-title :custom-style="{border:'none',fontSize:'28rpx'}">
+						没找到想看的影片？点此联系客服添加
+					</u-button>
+				</view>
 				<view class="py-4">
 					<u-loadmore :status="result.loadStatus" />
 				</view>

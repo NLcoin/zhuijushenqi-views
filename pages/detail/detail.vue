@@ -3,11 +3,10 @@
 		<u-navbar title-color="#222" :title="detail.vod_name || '影片名称'" title-bold :border-bottom="false"
 			title-size="30" back-icon-color="#222" back-icon-size="40">
 		</u-navbar>
-		<video :src="src" id="play" controls :play-strategy="strategy" show-casting-button
-			style="width: 750rpx;" @fullscreenchange="fullscreenchange" :autoplay="autoplay"
-			@controlstoggle="showControls" :object-fit="objectFit" show-mute-btn enable-play-gesture vslide-gesture
-			show-screen-lock-button @timeupdate="timeupdate" :poster="detail.vod_pic" @ended="nextEpisode()"
-			@error="error()" direction="90">
+		<video :src="src" id="play" controls :play-strategy="strategy" show-casting-button style="width: 750rpx;"
+			@fullscreenchange="fullscreenchange" :autoplay="autoplay" @controlstoggle="showControls"
+			:object-fit="objectFit" show-mute-btn enable-play-gesture vslide-gesture show-screen-lock-button
+			@timeupdate="timeupdate" :poster="detail.vod_pic" @ended="nextEpisode()" @error="error()" direction="90">
 			<template v-if="isFullscreen && controls">
 				<view style="position: absolute;top: 53rpx;right: 200rpx;">
 					<view class="top-icon" @click.stop="openRateMenu()">倍速</view>
@@ -68,12 +67,12 @@
 			<template v-if="isFullscreen && episodeListMenu">
 				<u-popup v-model="episodeListMenu" mode="right" width="600" :mask="false"
 					:custom-style="{backgroundColor: 'rgba(0, 0, 0, 0.7)'}">
+					<view class="mx-2 border-bottom-hui w100" style="height: 90rpx;">
+						<text
+							style="font-size: 28rpx;line-height: 90rpx;color: #FFFFFF;">全部剧集({{episode.length}})-{{fromName}}</text>
+					</view>
 					<scroll-view scroll-y="true" :scroll-with-animation="true" :show-scrollbar="false" scroll-anchoring
-						:scroll-into-view="toEpi" style="height: 100%;">
-						<view class="mx-2 border-bottom-hui w100" style="height: 90rpx;" id="epi0">
-							<text
-								style="font-size: 28rpx;line-height: 90rpx;color: #FFFFFF;">全部剧集({{episode.length}})-{{fromName}}</text>
-						</view>
+						:scroll-into-view="toEpi" style="height: 100%">
 						<view :id="'epi'+ (index+1)" v-for="(item,index) in episode" :key="index"
 							class="flex align-center justify-between border-bottom-hui mx-25"
 							style="height: 80rpx;line-height: 80rpx;" @click.stop="changeEpisode(index)">
@@ -84,9 +83,41 @@
 					</scroll-view>
 				</u-popup>
 			</template>
-
 		</video>
-		
+		<view class="px-2 u-skeleton">
+			<view class="flex align-center justify-between mt-1">
+				<view class="font30 f6 u-skeleton-rect">
+					{{$H.ellipsis(detail.vod_name)}}
+				</view>
+				<view style="margin-right: -20rpx;" class="u-skeleton-rect">
+					<u-button :hair-line="false" open-type="share" :custom-style="{border:'none',fontSize:'27rpx'}"
+						size="mini">
+						分享给好友
+					</u-button>
+				</view>
+			</view>
+
+			<view class="my-1 flex align-center justify-between">
+				<view class="font25 gray u-skeleton-rect"> {{detail.parentType ? detail.parentType.type_name : '未知'}} ·
+					{{detail.vod_remarks ? replaceRemarks : '暂无'}} · {{detail.vod_hits}}次播放
+				</view>
+				<view class="u-skeleton-rect">
+					<u-rate v-model="detail.vod_score / 2" disabled></u-rate><text
+						class="hon ml-1">{{detail.vod_score}}分</text>
+				</view>
+			</view>
+			
+			<view class="mt-2 flex align-center justify-between">
+				<view class="font28">播放列表</view>
+				<view class="flex align-center">
+					<view class="gray font26 mr-1">
+						展开
+					</view>
+					<u-icon name="arrow-down" color="gray" ></u-icon>
+				</view>
+			</view>
+		</view>
+		<u-skeleton :loading="loading" :animation="true" bgColor="#FFF"></u-skeleton>
 	</view>
 </template>
 
@@ -104,6 +135,7 @@
 				objectFit: 'contain', // 视频填充模式
 				episodeCurrent: 0, // 当前播放集数
 				toEpi: null,
+				loading: true,
 				episode: [], // 当前播放剧集列表
 				episodeList: [], // 剧集列表
 				playFrom: [], // 播放源
@@ -138,6 +170,34 @@
 
 		},
 		computed: {
+			replaceDirector() {
+				try {
+					return this.detail.vod_director.replace(/,/g, ' ');
+				} catch (e) {
+					//TODO handle the exception
+				}
+			},
+			replaceActor() {
+				try {
+					return this.detail.vod_actor.replace(/,/g, ' ');
+				} catch (e) {
+					//TODO handle the exception
+				}
+			},
+			replaceContent() {
+				try {
+					return this.detail.vod_content.replace(/<[^>]+>/g, "");
+				} catch (e) {
+					//TODO handle the exception
+				}
+			},
+			replaceRemarks() {
+				try {
+					return this.$H.ellipsis(this.detail.vod_remarks);
+				} catch (e) {
+					//TODO handle the exception
+				}
+			},
 			strategy() {
 				try {
 					return this.$H.getExt(this.src) == 'm3u8' ? 3 : 0;
@@ -168,11 +228,19 @@
 			}
 		},
 		methods: {
+			onShareAppMessage() {
+				return {
+					title: this.title,
+					path: "", //页面路径及参数
+					imageUrl: "", //图片链接，必须是网络连接，后面拼接时间戳防止本地缓存
+				}
+			},
 			initPlay() {
 				this.handle = uni.createVideoContext(`play`, this);
 				this.episodeList = this.detail.vod_play_url;
 				this.playFrom = this.detail.vod_play_from;
 				this.episode = this.episodeList[this.playFromIndex];
+				this.loading = false;
 			},
 			fullscreenchange(e) {
 				this.isFullscreen = e.detail.fullscreen;
@@ -224,9 +292,9 @@
 			openEpisodeListMenu() {
 				this.episodeListMenu = !this.episodeListMenu;
 				this.toEpi = null;
-				setTimeout(()=>{
+				setTimeout(() => {
 					this.changeToEpi();
-				},this.episode.length > 100 ? 300 : 100);
+				}, this.episode.length > 100 ? 300 : 100);
 			},
 			changeToEpi() {
 				const index = this.episodeCurrent + 1;
