@@ -81,12 +81,12 @@
 					<template v-if="isFullscreen && episodeListMenu">
 						<u-popup v-model="episodeListMenu" mode="right" width="600" :mask="false"
 							:custom-style="{backgroundColor: 'rgba(0, 0, 0, 0.7)'}">
-							<view class="mx-2 border-bottom-hui w100" style="height: 90rpx;position: sticky;top: 0;">
-								<text
-									style="font-size: 28rpx;line-height: 90rpx;color: #FFFFFF;">全部剧集({{episode.length}})-{{fromName}}</text>
-							</view>
 							<scroll-view scroll-y="true" :scroll-with-animation="true" :show-scrollbar="false"
 								scroll-anchoring :scroll-into-view="toEpi" style="height: 100%">
+								<view class="mx-2 border-bottom-hui w100" style="height: 90rpx;">
+									<text
+										style="font-size: 28rpx;line-height: 90rpx;color: #FFFFFF;">全部剧集({{episode.length}})-{{fromName}}</text>
+								</view>
 								<view :id="'epi'+ (index+1)" v-for="(item,index) in episode" :key="index"
 									class="flex align-center justify-between border-bottom-hui mx-25"
 									style="height: 80rpx;line-height: 80rpx;" @click.stop="changeEpisode(index)">
@@ -163,6 +163,7 @@
 									</view>
 									<view class="gray font25" v-if="episodeCurrent == index">正在播放</view>
 								</view>
+								<view class="bg-bai" style="height: 80rpx;"></view>
 							</scroll-view>
 						</view>
 					</uni-popup>

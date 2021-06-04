@@ -53,7 +53,7 @@
         "appid" : "wxaa2234acfdc414dd",
         "setting" : {
             "urlCheck" : false,
-            "minified" : false
+            "minified" : true
         },
         "usingComponents" : true
     },

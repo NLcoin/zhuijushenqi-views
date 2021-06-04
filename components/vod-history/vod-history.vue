@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view class="flex align-center" @click="$H.toDetail(item.vod_id)">
-			<view class="flex align-center mt-15 vod">
+			<view class="flex align-center vod">
 				<view class="vod-pic-position">
 					<image :src="item.vod_pic" class="vod-pic" mode="aspectFill" lazy-load>
 					</image>
