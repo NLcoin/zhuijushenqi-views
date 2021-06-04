@@ -24,7 +24,10 @@
 					</view>
 				</template>
 				<!-- 搜索热词 -->
-				<view class="hei my-1">大家都在搜</view>
+				<view class="my-1 flex align-center justify-between">
+					<view class="hei">大家都在搜</view>
+					<view class="font27 gray" @click="hotSearchWordsList()">刷新</view>
+				</view>
 				<block v-for="(item,index) in hotWords" :key="index">
 					<view class="flex align-center border-bottom-hui w100 py-2" @click="clickWord(item.keyword)"
 						hover-class="bg-hui">
@@ -39,12 +42,13 @@
 			</template>
 			<template v-else>
 				<vod-item2 v-for="(item,index) in result.list" :key="index" :item="item"></vod-item2>
-				<view v-if="!result.list.length">
-					<u-button :hair-line="false" show-message-card 
-					hover-class="none"
-					send-message-img open-type="contact" send-message-path send-message-title 
-					:custom-style="{border:'none',fontSize:'28rpx'}">
-						没找到想看的影片？点此联系客服添加
+				<view v-if="!result.list.length" class="flex flex-column justify-center flex-wrap">
+					<view class="my-3 font28 hon">
+						没找到想看的影片？可尝试去除符号/空格或缩短关键词
+					</view>
+					<u-button show-message-card type="success" size="mini"
+					send-message-img open-type="contact" send-message-path :send-message-title="keyword">
+						如果您有任何疑问或需要帮助可点此联系我们
 					</u-button>
 				</view>
 				<view class="py-4">
