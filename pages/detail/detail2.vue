@@ -15,7 +15,7 @@
 							style="height: 330rpx;width: 230rpx;border-radius: 8rpx;"></image>
 					</view>
 					<view class="flex flex-column justify-between" style="height: 340rpx;">
-						<view class="f7 font30 text-ellipsis1 u-skeleton-rect">{{detail.vod_name}}</view>
+						<view class="f7 font31 text-ellipsis1 u-skeleton-rect">{{detail.vod_name}}</view>
 						<view class="font27 text-ellipsis1 u-skeleton-rect">{{detail.vod_area}} / {{detail.vod_lang}} /
 							{{detail.type.type_name}}
 						</view>
