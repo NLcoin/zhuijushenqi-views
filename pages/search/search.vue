@@ -82,6 +82,13 @@
 			await this.hotSearchWordsList();
 		},
 		methods: {
+			onShareAppMessage() {
+				return {
+					title: '全网影片搜索',
+					path: "", //页面路径及参数
+					imageUrl: "", //图片链接，必须是网络连接，后面拼接时间戳防止本地缓存
+				}
+			},
 			async hotSearchWordsList() {
 				let res = await this.$api.searchHotWords();
 				this.hotWords = res.data.list;

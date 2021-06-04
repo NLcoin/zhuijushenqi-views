@@ -132,7 +132,7 @@
 		methods: {
 			onShareAppMessage() {
 				return {
-					title: this.title,
+					title: this.detail.vod_name,
 					path: "", //页面路径及参数
 					imageUrl: this.detail.vod_pic, //图片链接，必须是网络连接，后面拼接时间戳防止本地缓存
 				}
