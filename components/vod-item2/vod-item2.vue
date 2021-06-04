@@ -14,8 +14,7 @@
 				</view>
 				<view class="text-ellipsis2 font28" v-html="replaceCon(item.vod_director)"></view>
 				<view class="text-ellipsis2 font28" v-html="replaceCon(item.vod_actor)"></view>
-				<view class="tc" style="width: 210rpx;height: 65rpx;background-color: #ff6022;border-radius: 8rpx;"
-					@click="$H.toDetail(item.vod_id)">
+				<view class="tc" style="width: 210rpx;height: 65rpx;background-color: #ff6022;border-radius: 8rpx;">
 					<text style="color: #FFFFFF;line-height: 65rpx;">查看详情</text>
 				</view>
 			</view>

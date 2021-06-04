@@ -44,7 +44,7 @@
 	.vod_remark {
 		font-size: 24rpx;
 		position: absolute;
-		text-shadow: 0 0 4px rgb(0 0 0 / 70%);
+		text-shadow: 0 0 10rpx rgb(0 0 0 / 70%);
 		bottom: 50rpx;
 		left: 10rpx;
 		color: #fff;

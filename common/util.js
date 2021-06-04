@@ -197,9 +197,15 @@ export default {
 	},
 
 	toDetail(id) {
-		uni.navigateTo({
-			url: '/pages/detail/detail?id=' + id
-		});
+		if (!this.getConfig('check')) {
+			uni.navigateTo({
+				url: '/pages/detail/detail?id=' + id
+			});
+		} else {
+			uni.navigateTo({
+				url: '/pages/detail/detail2?id=' + id
+			});
+		}
 	},
 
 	getConfig(name) {
@@ -211,6 +217,10 @@ export default {
 		const index = filePath.lastIndexOf(".");
 		const ext = filePath.substr(index + 1);
 		return ext;
+	},
+
+	getIePlayUrl(url) {
+		return $C.parse_url + url;
 	},
 
 	getNetwork() {

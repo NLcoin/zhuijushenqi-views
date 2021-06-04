@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<u-navbar title-color="#222" :title="title" title-bold :border-bottom="false" 
-		title-size="30" back-icon-color="#222" back-icon-size="40">
+		title-size="30" back-icon-color="#222" back-icon-size="38" back-icon-name="arrow-left">
 		</u-navbar>
 		<view class="u-skeleton m-2">
 			<template v-if="loading">

@@ -11,7 +11,7 @@
 			<template v-if="isSubmit == false">
 				<template v-if="hisList.length">
 					<!-- 搜索历史 -->
-					<view class="flex align-center justify-between mb-2 mt-1">
+					<view class="flex align-center justify-between mb-2 my-1">
 						<text class="hei">搜索历史</text>
 						<text class="font27 gray" @click="dumpHistory()">清空</text>
 					</view>
@@ -24,7 +24,7 @@
 					</view>
 				</template>
 				<!-- 搜索热词 -->
-				<view class="hei mt-1">大家都在搜</view>
+				<view class="hei my-1">大家都在搜</view>
 				<block v-for="(item,index) in hotWords" :key="index">
 					<view class="flex align-center border-bottom-hui w100 py-2" @click="clickWord(item.keyword)"
 						hover-class="bg-hui">
@@ -40,7 +40,10 @@
 			<template v-else>
 				<vod-item2 v-for="(item,index) in result.list" :key="index" :item="item"></vod-item2>
 				<view v-if="!result.list.length">
-					<u-button :hair-line="false" show-message-card send-message-img open-type="contact" send-message-path send-message-title :custom-style="{border:'none',fontSize:'28rpx'}">
+					<u-button :hair-line="false" show-message-card 
+					hover-class="none"
+					send-message-img open-type="contact" send-message-path send-message-title 
+					:custom-style="{border:'none',fontSize:'28rpx'}">
 						没找到想看的影片？点此联系客服添加
 					</u-button>
 				</view>
