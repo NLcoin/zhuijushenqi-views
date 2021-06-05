@@ -12,11 +12,11 @@
 				<view class="u-skeleton-rect" style="width: 750rpx;height: 225px;"></view>
 			</template>
 			<template v-else>
-				<video :src="src" id="play" controls :play-strategy="strategy" show-casting-button style="width: 750rpx;"
-					@fullscreenchange="fullscreenchange" :autoplay="autoplay" @controlstoggle="showControls"
-					:object-fit="objectFit" show-mute-btn enable-play-gesture vslide-gesture show-screen-lock-button
-					@timeupdate="timeupdate" :poster="detail.vod_pic" @ended="nextEpisode()" direction="90"
-					:duration="duration" :initial-time="current">
+				<video v-if="fromData.online" :src="src" id="play" controls :play-strategy="strategy"
+					show-casting-button style="width: 750rpx;" @fullscreenchange="fullscreenchange" :autoplay="autoplay"
+					@controlstoggle="showControls" :object-fit="objectFit" show-mute-btn enable-play-gesture
+					vslide-gesture show-screen-lock-button @timeupdate="timeupdate" :poster="detail.vod_pic"
+					@ended="nextEpisode()" direction="90" :duration="duration" :initial-time="current">
 					<template v-if="isFullscreen && controls">
 						<view style="position: absolute;top: 53rpx;right: 200rpx;">
 							<view class="top-icon" @click.stop="openRateMenu()">倍速</view>
@@ -41,12 +41,9 @@
 								</view>
 							</view>
 						</view>
-						<view style="position: absolute;top: 48%;right: 7%" @click.stop="copyIePlay()">
-							<u-icon name="ie" color="#FFF" size="41"></u-icon>
-						</view>
 						<view style="position: absolute;top: 55rpx;left: 10%;" @click.stop="handle.exitFullScreen()">
 							<view class="font28 white">
-								{{title}}
+								{{$H.ellipsis(title,16)}}
 							</view>
 						</view>
 					</template>
@@ -55,29 +52,31 @@
 							<view class="font35 mb-3 white">倍速</view>
 							<view class="flex align-center mt-3">
 								<view class="rate-btn" v-for="(item,index) in supportRate" :key="index"
-									:class="rateIndex == index ? 'rate-btn-active' : ''" @click.stop="changeRate(index)">
+									:class="rateIndex == index ? 'rate-btn-active' : ''"
+									@click.stop="changeRate(index)">
 									{{item.toFixed(1)}}X
 								</view>
 							</view>
 						</view>
 					</template>
-				
+
 					<template v-if="fromMenu && isFullscreen && controls">
 						<view style="position: absolute;left:15%;top:30%;" class="flex flex-column">
 							<view class="font35 mb-3 white">播放源</view>
 							<scroll-view scroll-x="true" :scroll-with-animation="true" :show-scrollbar="false"
 								scroll-anchoring>
 								<view class="flex align-center mt-3">
-									<view class="from-btn flex align-center justify-center" v-for="(item,index) in playFrom"
-										:key="index" :class="playFromIndex == index ? 'rate-btn-active' : ''"
+									<view class="from-btn flex align-center justify-center"
+										v-for="(item,index) in playFrom" :key="index"
+										:class="playFromIndex == index ? 'rate-btn-active' : ''"
 										@click.stop="changeFrom(index)">
-										<text class="mb-2">{{$H.ellipsis(item,8)}}</text>
+										<text class="mb-2">{{$H.ellipsis(item.name,8)}}</text>
 									</view>
 								</view>
 							</scroll-view>
 						</view>
 					</template>
-				
+
 					<template v-if="isFullscreen && episodeListMenu">
 						<u-popup v-model="episodeListMenu" mode="right" width="600" :mask="false"
 							:custom-style="{backgroundColor: 'rgba(0, 0, 0, 0.7)'}">
@@ -90,12 +89,20 @@
 								<view :id="'epi'+ (index+1)" v-for="(item,index) in episode" :key="index"
 									class="flex align-center justify-between border-bottom-hui mx-25"
 									style="height: 80rpx;line-height: 80rpx;" @click.stop="changeEpisode(index)">
-									<view :class="episodeCurrent == index ? 'hon' :'white'">{{$H.ellipsis(item.episode,16)}}
+									<view :class="episodeCurrent == index ? 'hon' :'white'">
+										{{$H.ellipsis(item.episode,16)}}
 									</view>
 									<view class="gray font25" v-if="episodeCurrent == index">正在播放</view>
 								</view>
 							</scroll-view>
 						</u-popup>
+					</template>
+					
+					<template v-if="controls">
+						<view style="position: absolute;" :style="isFullscreen ? 'top: 47%;right: 8%' : 'top: 47%;right: 6%'"
+						@click.stop="copyIePlay()">
+							<u-icon name="ie" color="#FFF" size="41"></u-icon>
+						</view>
 					</template>
 				</video>
 			</template>
@@ -146,12 +153,13 @@
 
 
 				<template v-if="!isFullscreen && episodeListMenu">
-					<uni-popup type="bottom" ref="epiList">
+					<uni-popup type="bottom" ref="epiList" :maskShow="fromData.online == false"
+						@clickMask="openEpisodeListMenu()">
 						<view :style="{height:popupH}" class="w100 bg-bai">
 							<view class="flex align-center justify-between border-bottom-hui" style="height: 80rpx;"
 								@click="openEpisodeListMenu()">
-								<text style="font-size: 29rpx;line-height: 80rpx;"
-									class="ml-2">全部剧集({{episode.length}})</text>
+								<text style="font-size: 30rpx;line-height: 80rpx;"
+									class="ml-2 f6">全部剧集({{episode.length}})</text>
 								<u-icon name="arrow-down" size="30" color="gray" class="mr-2"></u-icon>
 							</view>
 							<scroll-view scroll-y="true" :scroll-with-animation="true" :show-scrollbar="true"
@@ -159,7 +167,8 @@
 								<view :id="'epi'+ (index+1)" v-for="(item,index) in episode" :key="index"
 									class="flex align-center justify-between border-bottom-hui mx-25"
 									style="height: 80rpx;line-height: 80rpx;" @click.stop="changeEpisode(index)">
-									<view :class="episodeCurrent == index ? 'hon' :''">{{$H.ellipsis(item.episode,16)}}
+									<view :class="episodeCurrent == index ? 'hon' :''" class="f6">
+										{{$H.ellipsis(item.episode,16)}}
 									</view>
 									<view class="gray font25" v-if="episodeCurrent == index">正在播放</view>
 								</view>
@@ -185,7 +194,7 @@
 				</template>
 				<template v-else>
 					<view class="mt-2" style="margin-left: -10rpx;">
-						<u-tabs-zdy :list="fromTabs" :current="playFromIndex" @change="changeFrom" :show-bar="false"
+						<u-tabs-zdy :list="playFrom" :current="playFromIndex" @change="changeFrom" :show-bar="false"
 							:active-item-style="{backgroundColor:'#f7f9fb'}" active-color="#ff6022"
 							itemBgColor="#f7f9fb">
 						</u-tabs-zdy>
@@ -218,7 +227,7 @@
 					<!-- end -->
 				</template>
 				<template v-else>
-					<view class="flex align-center justify-between flex-wrap">
+					<view class="flex align-center justify-between flex-wrap voditem">
 						<block v-for="(item,index) in moreList" :key="index">
 							<vod-item :item="item"></vod-item>
 						</block>
@@ -276,6 +285,7 @@
 			let more = await this.$api.getVodHot(1, 6);
 			this.moreList = more.data.list;
 			this.loading = false;
+			this.checkOnline();
 		},
 		onShow() {
 			if (!this.handle) return;
@@ -286,6 +296,18 @@
 		},
 		onUnload() {
 			this.cachePlay();
+		},
+		watch: {
+			playFromIndex(val, oldVal) {
+				this.checkOnline();
+			},
+			episodeCurrent(val, oldVal) {
+				if (this.fromData.online == false) { // 不支持在线播放
+					setTimeout(() => {
+						this.handle.stop();
+					}, 10);
+				}
+			}
 		},
 		computed: {
 			replaceContent() {
@@ -318,26 +340,24 @@
 			},
 			title() {
 				try {
-					return this.$H.ellipsis(this.detail.vod_name, 11) + ' ' + this.episode[this.episodeCurrent].episode;
+					return this.detail.vod_name + ' ' + this.episode[this.episodeCurrent].episode;
 				} catch (e) {
 					//TODO handle the exception
 				}
 			},
 			fromName() {
 				try {
-					return this.playFrom[this.playFromIndex];
+					return this.playFrom[this.playFromIndex].name;
 				} catch (e) {
 					//TODO handle the exception
 				}
 			},
-			fromTabs() {
-				let arr = [];
-				for (let i = 0; i < this.playFrom.length; i++) {
-					arr.push({
-						name: this.playFrom[i]
-					});
+			fromData() {
+				try {
+					return this.playFrom[this.playFromIndex];
+				} catch (e) {
+					//TODO handle the exception
 				}
-				return arr;
 			}
 		},
 		methods: {
@@ -349,35 +369,49 @@
 				}
 			},
 			copyIePlay() {
+				const parse_url = this.fromData.parse_url + this.src + '&vod_title=' + this.title;
 				uni.setClipboardData({
-					data: this.$H.getIePlayUrl(this.src),
+					data: parse_url,
 					success: () => {
 						uni.hideToast();
 						this.$H.msg('复制播放地址成功');
 					}
 				});
 			},
-			async initPlay() {
-				this.handle = uni.createVideoContext(`play`, this);
-				if (this.cache) {
-					this.playFromIndex = this.cache.playFrom;
-					this.episodeCurrent = this.cache.episodeCurrent;
-					this.duration = this.cache.duration;
-					this.current = this.cache.current;
-					this.$H.msg('正在为你跳转至上次播放的位置', 2000);
+			checkOnline() {
+				if (this.fromData.online == false) { // 不支持在线播放
+					setTimeout(() => {
+						this.handle.stop();
+						uni.showModal({
+							title: '提示信息',
+							content: '该播放源不支持在线播放，可点击想看的集数复制链接到浏览器观看',
+							showCancel: false,
+							confirmText: '我知道了',
+							success: res => {
+								if (res.confirm) {
+									this.copyIePlay();
+								}
+							}
+						});
+					}, 100);
 				}
+			},
+			async initPlay() {
+				if(!this.handle) this.handle = uni.createVideoContext(`play`, this);
 				this.episodeList = this.detail.vod_play_url;
 				this.playFrom = this.detail.vod_play_from;
 				this.episode = this.episodeList[this.playFromIndex];
 			},
 			cachePlay() {
-				if(!this.detail){
-					return ;
+				if (!this.detail) {
+					return;
 				}
 				let {
 					vod_id,
 					vod_pic,
-					vod_remarks
+					vod_remarks,
+					type,
+					parentType
 				} = this.detail;
 				let cache = uni.getStorageSync('history') || [];
 				let cacheId = cache.findIndex(v => v.vod_id == vod_id);
@@ -385,6 +419,8 @@
 					vod_id,
 					vod_pic,
 					vod_remarks,
+					type,
+					parentType,
 					duration: Math.floor(this.duration),
 					current: Math.floor(this.current),
 					episodeCurrent: this.episodeCurrent,
@@ -407,6 +443,13 @@
 				let cacheId = cache.findIndex(v => v.vod_id == vod_id);
 				if (cacheId == '-1') return;
 				this.cache = cache[cacheId];
+				if (this.cache) {
+					this.playFromIndex = this.cache.playFrom;
+					this.episodeCurrent = this.cache.episodeCurrent;
+					this.duration = this.cache.duration;
+					this.current = this.cache.current;
+					this.$H.msg('正在加载上次播放记录');
+				}
 			},
 			fullscreenchange(e) {
 				this.isFullscreen = e.detail.fullscreen;
@@ -450,6 +493,9 @@
 				// this.episodeListMenu = false;
 				this.controls = false;
 				this.episodeCurrent = index;
+				if (this.fromData.online == false) { // 不支持在线播放
+					this.copyIePlay();
+				}
 				setTimeout(() => {
 					this.changeToEpi();
 					this.controls = true
@@ -479,6 +525,7 @@
 				this.playFromIndex = index;
 				this.fromMenu = false;
 				this.episodeCurrent = 0; // 重置当前播放 不同的播放源 相同的集数key不同
+				this.current = 0;
 				this.initPlay();
 			},
 			error() {

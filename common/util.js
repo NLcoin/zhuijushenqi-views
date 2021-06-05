@@ -219,10 +219,6 @@ export default {
 		return ext;
 	},
 
-	getIePlayUrl(url) {
-		return $C.parse_url + url;
-	},
-
 	getNetwork() {
 		return new Promise((resolve, reject) => {
 			uni.getNetworkType({

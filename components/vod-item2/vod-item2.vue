@@ -20,7 +20,7 @@
 			</view>
 		</view>
 		<view style="margin: 20rpx -20rpx">
-			<u-gap height="20" bg-color="#f8f8fa"></u-gap>
+			<u-gap height="10" bg-color="#f8f8fa"></u-gap>
 		</view>
 	</view>
 </template>

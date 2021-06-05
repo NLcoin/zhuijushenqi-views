@@ -1,21 +1,21 @@
 <template>
 	<view>
 		<u-navbar :is-back="false" title-color="#222" title-bold :border-bottom="false" title-size="30">
-			<view class="ml-3 f7 font33">{{$H.getConfig('index_name')}}</view>
+			<view class="ml-3 f7 font33">热门影视分享</view>
 		</u-navbar>
 		<view class="u-skeleton">
-			<u-notice-bar type="none" :list="$H.getConfig('notices')" v-if="!loading">
+			<u-notice-bar type="none" :hair-line="false" :list="$H.getConfig('notices')" v-if="!loading && $H.getConfig('notices')">
 			</u-notice-bar>
 			<view style="z-index: 99;position: sticky;" :style="{top:searchTop+'px'}">
-				<view class="px-2 pb-2 pt-1 bg-bai">
-					<u-search :placeholder="$H.getConfig('searchInput')" :show-action="false" disabled class="u-skeleton-fillet"
+				<view class="p-2 bg-bai">
+					<u-search placeholder="输入影片名 演员或导演搜索" :show-action="false" disabled class="u-skeleton-fillet"
 						@click="toSearch()"></u-search>
 				</view>
 			</view>
 			<view class="mx-2">
-				<view class="mb-3 mt-1 u-skeleton-fillet">
+				<view class="mb-3 u-skeleton-fillet">
 					<u-swiper :list="sliderList" img-mode="aspectFill" :title="true" bg-color="#fff" height="380"
-						border-radius="8" :effect3d="$H.getConfig('effect3d')" @click="clickSwiper">
+						border-radius="8" :effect3d="false" @click="clickSwiper">
 					</u-swiper>
 				</view>
 
@@ -66,7 +66,7 @@
 					<!-- end -->
 				</template>
 				<template v-else>
-					<view class="flex align-center justify-between flex-wrap">
+					<view class="flex align-center justify-between flex-wrap voditem">
 						<block v-for="(item,index) in hotMovie" :key="index">
 							<vod-item :item="item"></vod-item>
 						</block>
@@ -74,7 +74,7 @@
 				</template>
 
 				<view class="mt-4 mb-3 u-skeleton-rect">
-					<u-section title="猜你在追" font-size="29" :show-line="false" @click="toMore('猜你在追','hotTv')">
+					<u-section title="热门电视剧" font-size="29" :show-line="false" @click="toMore('热门电视剧','hotTv')">
 					</u-section>
 				</view>
 
@@ -94,7 +94,7 @@
 					<!-- end -->
 				</template>
 				<template v-else>
-					<view class="flex align-center justify-between flex-wrap">
+					<view class="flex align-center justify-between flex-wrap voditem">
 						<block v-for="(item,index) in hotTv" :key="index">
 							<vod-item :item="item"></vod-item>
 						</block>
@@ -122,7 +122,7 @@
 					<!-- end -->
 				</template>
 				<template v-else>
-					<view class="flex align-center justify-between flex-wrap">
+					<view class="flex align-center justify-between flex-wrap voditem">
 						<block v-for="(item,index) in hotVariety" :key="index">
 							<vod-item :item="item"></vod-item>
 						</block>
@@ -151,7 +151,7 @@
 					<!-- end -->
 				</template>
 				<template v-else>
-					<view class="flex align-center justify-between flex-wrap">
+					<view class="flex align-center justify-between flex-wrap voditem">
 						<block v-for="(item,index) in hotComic" :key="index">
 							<vod-item :item="item"></vod-item>
 						</block>
@@ -162,7 +162,7 @@
 					<view class="mt-4 mb-3 u-skeleton-rect">
 						<u-section title="更多影片" font-size="29" :show-line="false" :right="false"></u-section>
 					</view>
-					<view class="flex align-center justify-between flex-wrap">
+					<view class="flex align-center justify-between flex-wrap voditem">
 						<block v-for="(item,index) in more.list" :key="index">
 							<vod-item :item="item"></vod-item>
 						</block>
@@ -205,6 +205,15 @@
 		},
 		async onReachBottom() {
 			await this.loadMore();
+		},
+		async onPullDownRefresh(){
+			uni.showLoading({
+				title:'正在刷新',
+				mask:true
+			});
+			await this.loadPageData();
+			uni.stopPullDownRefresh();
+			uni.hideLoading();
 		},
 		methods: {
 			async loadPageData() {

@@ -14,13 +14,15 @@
 						{{played > 0 ? '已观看 ' + played + '%' : '观看不足1%'}}
 						播放来源：{{item.fromName}}
 					</view>
-					<u-line-progress :striped="true" :percent="played" :striped-active="true" active-color="#ff6022">
-					</u-line-progress>
+					<view style="width: 400rpx;">
+						<u-line-progress height="20" :percent="played || 0" :striped-active="true" active-color="#ff6022">
+						</u-line-progress>
+					</view>
 				</view>
 			</view>
 		</view>
 		<view style="margin: 20rpx -20rpx">
-			<u-gap height="20" bg-color="#f8f8fa"></u-gap>
+			<u-gap height="10" bg-color="#f8f8fa"></u-gap>
 		</view>
 	</view>
 </template>

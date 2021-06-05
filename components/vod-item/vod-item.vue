@@ -5,7 +5,7 @@
 		<view v-if="iconText" class="top_icon">{{icon(item,iconText)}}</view>
 		<view class="vod_remark">{{item.vod_remarks.length > 8 ? '' :item.vod_remarks}}</view>
 		<view class="vod_score" v-if="isScore">{{item.vod_score}}</view>
-		<view class="u-text-center text-ellipsis1 font26 mt-1">
+		<view class="tc text-ellipsis1 font26 mt-1">
 			{{item.vod_name}}
 		</view>
 	</view>

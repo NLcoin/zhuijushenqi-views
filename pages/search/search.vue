@@ -3,7 +3,7 @@
 		<u-navbar :is-back="false" title-color="#222" title-bold :border-bottom="false" title-size="30">
 			<view class="ml-3 f7 font33">搜索影片</view>
 		</u-navbar>
-		<view class="px-2 pt-1 pb-2 bg-bai" style="z-index: 999999;position: sticky;" :style="{top:searchTop+'px'}">
+		<view class="p-2 bg-bai" style="z-index: 999999;position: sticky;" :style="{top:searchTop+'px'}">
 			<u-search placeholder="输入影片名 演员或导演搜索" v-model="keyword" :show-action="false" @search="submit()"
 				@change="change()"></u-search>
 		</view>
@@ -24,10 +24,7 @@
 					</view>
 				</template>
 				<!-- 搜索热词 -->
-				<view class="my-1 flex align-center justify-between">
-					<view class="hei">大家都在搜</view>
-					<view class="font27 gray" @click="hotSearchWordsList()">刷新</view>
-				</view>
+				<view class="hei my-1 ">大家都在搜</view>
 				<block v-for="(item,index) in hotWords" :key="index">
 					<view class="flex align-center border-bottom-hui w100 py-2" @click="clickWord(item.keyword)"
 						hover-class="bg-hui">
@@ -42,13 +39,10 @@
 			</template>
 			<template v-else>
 				<vod-item2 v-for="(item,index) in result.list" :key="index" :item="item"></vod-item2>
-				<view v-if="!result.list.length" class="flex flex-column justify-center flex-wrap">
-					<view class="my-3 font28 hon">
-						没找到想看的影片？可尝试去除符号/空格或缩短关键词
-					</view>
-					<u-button show-message-card type="success" size="mini"
-					send-message-img open-type="contact" send-message-path :send-message-title="keyword">
-						如果您有任何疑问或需要帮助可点此联系我们
+				<view v-if="!result.list.length" class="flex align-center justify-center my-5">
+					<u-button show-message-card type="default" size="mini" send-message-img open-type="contact"
+						send-message-path :send-message-title="keyword" :custom-style="{border:'none',fontSize:'31rpx',textDecoration:'underline'}" :hair-line="false" >
+						如果您有推荐的影片可以点此联系我们添加
 					</u-button>
 				</view>
 				<view class="py-4">
@@ -126,6 +120,14 @@
 				this.result.total = res.data.total;
 				this.result.loadStatus = 'loadmore';
 				if (res.data.list.length < this.result.pageSize) this.result.loadStatus = 'nomore';
+				if(!this.result.list.length){
+					uni.showModal({
+					    title: '提示信息',
+					    content: '没有查找到影片，可尝试去除符号或缩短关键词重新搜索',
+						showCancel:false,
+						confirmText:'我知道了'
+					});
+				}
 			},
 			async submit() {
 				if (!this.keyword.length) {

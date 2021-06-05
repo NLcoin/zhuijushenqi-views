@@ -50,6 +50,10 @@
 			maskClick: {
 				type: Boolean,
 				default: true
+			},
+			maskShow:{
+				type: Boolean,
+				default: false
 			}
 		},
 		provide() {
@@ -95,7 +99,6 @@
 					'left': 0,
 					'right': 0,
 				},
-				maskShow: false,
 				mkclick: true,
 				popupstyle: 'top'
 			}
@@ -155,6 +158,7 @@
 			},
 			onTap() {
 				if (!this.mkclick) return
+				this.$emit('clickMask');
 				this.close()
 			},
 			/**

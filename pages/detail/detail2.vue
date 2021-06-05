@@ -14,7 +14,7 @@
 						<image :src="detail.vod_pic" mode="aspectFill"
 							style="height: 330rpx;width: 230rpx;border-radius: 8rpx;"></image>
 					</view>
-					<view class="flex flex-column justify-between" style="height: 340rpx;">
+					<view class="flex flex-column justify-between mb-1" style="height: 330rpx;">
 						<view class="f7 font31 text-ellipsis1 u-skeleton-rect">{{detail.vod_name}}</view>
 						<view class="font27 text-ellipsis1 u-skeleton-rect">{{detail.vod_area}} / {{detail.vod_lang}} /
 							{{detail.type.type_name}}
@@ -98,6 +98,37 @@
 			let more = await this.$api.getVodHot(1, 6);
 			this.moreList = more.data.list;
 			this.loading = false;
+		},
+		onUnload() {
+			if(!this.detail){
+				return ;
+			}
+			let {
+				vod_id,
+				vod_pic,
+				vod_remarks,
+				vod_name,
+				vod_score,
+				type,
+				parentType
+			} = this.detail;
+			let cache = uni.getStorageSync('history2') || [];
+			let cacheId = cache.findIndex(v => v.vod_id == vod_id);
+			let saveData = {
+				vod_id,
+				vod_name,
+				vod_pic,
+				vod_remarks,
+				vod_score,
+				type,
+				parentType
+			};
+			if (cacheId == '-1') {
+				cache.unshift(saveData);
+			} else {
+				cache[cacheId] = saveData;
+			}
+			uni.setStorageSync('history2', cache);
 		},
 		computed: {
 			replaceDirector() {
