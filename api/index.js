@@ -5,7 +5,7 @@ import {
 export default {
 	// 获取配置信息
 	getConfig() {
-		return http.get('/newconfig');
+		return http.get('/config3');
 	},
 	// 获取影片轮播图
 	getVodSlider() {

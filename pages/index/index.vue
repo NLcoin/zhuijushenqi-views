@@ -18,7 +18,7 @@
 						border-radius="8" :effect3d="false" @click="clickSwiper">
 					</u-swiper>
 				</view>
-
+				
 				<view class="mt-4 mb-3 u-skeleton-rect">
 					<u-section title="今日更新" font-size="29" :show-line="false"
 						@click="toMore('今日更新'+today.total+'部影片','today')">
@@ -44,6 +44,9 @@
 						</view>
 					</template>
 				</scroll-view>
+				
+				<!-- ad -->
+				<vod-ad name="index_banner" class="u-skeleton-rect"></vod-ad>
 
 				<view class="mt-4 mb-3 u-skeleton-rect">
 					<u-section title="热门电影" font-size="29" :show-line="false" @click="toMore('热门电影','hotMovie')">
@@ -100,6 +103,9 @@
 						</block>
 					</view>
 				</template>
+				
+				<!-- ad -->
+				<vod-ad name="index_banner2" class="u-skeleton-rect"></vod-ad>
 
 				<view class="mt-4 mb-3 u-skeleton-rect">
 					<u-section title="热门综艺" font-size="29" :show-line="false" @click="toMore('热门综艺','hotVariety')">
@@ -157,6 +163,9 @@
 						</block>
 					</view>
 				</template>
+				
+				<!-- ad -->
+				<vod-ad name="index_banner3" class="u-skeleton-rect"></vod-ad>
 
 				<template v-if="!loading">
 					<view class="mt-4 mb-3 u-skeleton-rect">

@@ -6,10 +6,10 @@
 		<view :id="id">
 			<scroll-view scroll-x class="u-scroll-view" :scroll-left="scrollLeft" scroll-with-animation>
 				<view class="u-scroll-box" :class="{'u-tabs-scorll-flex': !isScroll}">
-					<view class="u-tab-item u-line-1" :id="'u-tab-item-' + index" v-for="(item, index) in list" :key="index" @tap="clickTab(index)"
-					 :style="[tabItemStyle(index)]">
+					<view class="u-tab-item u-line-1" :id="'u-tab-item-' + index" v-for="(item, index) in list"
+						:key="index" @tap="clickTab(index)" :style="[tabItemStyle(index)]">
 						<u-badge :count="item[count] || item['count'] || 0" :offset="offset" size="mini"></u-badge>
-						{{ item[name] || item['name']}}
+						{{ item[name] || formatNumber(index + 1)}}
 					</view>
 					<view v-if="showBar" class="u-tab-bar" :style="[tabBarStyle]"></view>
 				</view>
@@ -117,7 +117,7 @@
 				default: '#ffffff'
 			},
 			// item 背景颜色
-			itemBgColor:{
+			itemBgColor: {
 				type: String,
 				default: '#ffffff'
 			},
@@ -146,7 +146,7 @@
 			// 当前活动tab item的样式
 			activeItemStyle: {
 				type: Object,
-				default() {
+				default () {
 					return {}
 				}
 			},
@@ -158,7 +158,7 @@
 			// 底部滑块的自定义样式
 			barStyle: {
 				type: Object,
-				default() {
+				default () {
 					return {}
 				}
 			},
@@ -185,7 +185,7 @@
 			// 后台获取的（如新闻app顶部的菜单），获取返回需要一定时间，所以list变化时，重新获取布局信息
 			list(n, o) {
 				// list变动时，重制内部索引，否则可能导致超出数组边界的情况
-				if(n.length !== o.length) this.currentIndex = 0;
+				if (n.length !== o.length) this.currentIndex = 0;
 				// 用$nextTick等待视图更新完毕后再计算tab的局部信息，否则可能因为tab还没生成就获取，就会有问题
 				this.$nextTick(() => {
 					this.init();
@@ -229,9 +229,9 @@
 						'transition-duration': `${this.duration}s`,
 						padding: this.isScroll ? `0 ${this.gutter}rpx` : '',
 						flex: this.isScroll ? 'auto' : '1',
-						backgroundColor:this.itemBgColor,
-						marginRight:'10rpx',
-						marginLeft:'10rpx',
+						backgroundColor: this.itemBgColor,
+						marginRight: '10rpx',
+						marginLeft: '10rpx',
 						width: this.$u.addUnit(this.itemWidth)
 					};
 					// 字体加粗
@@ -260,10 +260,16 @@
 			},
 			// 点击某一个tab菜单
 			clickTab(index) {
+				// 点击触发事件
+				this.$emit('onTap', index);
 				// 点击当前活动tab，不触发事件
-				if(index == this.currentIndex) return ;
+				if (index == this.currentIndex) return;
 				// 发送事件给父组件
 				this.$emit('change', index);
+			},
+			formatNumber(num) {
+				num = num.toString()
+				return num[1] ? num : '0' + num
 			},
 			// 查询tab的布局信息
 			getTabRect() {
@@ -304,7 +310,7 @@
 				this.scrollBarLeft = left - uni.upx2px(this.barWidth) / 2;
 				// 第一次移动滑块的时候，barFirstTimeMove为true，放到延时中将其设置false
 				// 延时是因为scrollBarLeft作用于computed计算时，需要一个过程需，否则导致出错
-				if(this.barFirstTimeMove == true) {
+				if (this.barFirstTimeMove == true) {
 					setTimeout(() => {
 						this.barFirstTimeMove = false;
 					}, 100)
@@ -335,6 +341,7 @@
 		-webkit-appearance: none;
 		background: transparent;
 	}
+
 	/* #endif */
 
 	.u-scroll-box {
@@ -353,6 +360,7 @@
 		-webkit-appearance: none;
 		background: transparent;
 	}
+
 	/* #endif */
 
 	.u-scroll-view {

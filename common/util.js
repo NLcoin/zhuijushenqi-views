@@ -209,14 +209,23 @@ export default {
 	},
 
 	getConfig(name) {
-		let config = uni.getStorageSync('config');
-		return config[name];
+		try{
+			let config = uni.getStorageSync('config');
+			return config[name];
+		}catch(e){
+			return '';
+		}
 	},
 
 	getExt(filePath) {
 		const index = filePath.lastIndexOf(".");
 		const ext = filePath.substr(index + 1);
 		return ext;
+	},
+	
+	formatNumber(num) {
+		num = num.toString()
+		return num[1] ? num : '0' + num
 	},
 
 	getNetwork() {

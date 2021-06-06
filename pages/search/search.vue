@@ -41,10 +41,12 @@
 				<vod-item2 v-for="(item,index) in result.list" :key="index" :item="item"></vod-item2>
 				<view v-if="!result.list.length" class="flex align-center justify-center my-5">
 					<u-button show-message-card type="default" size="mini" send-message-img open-type="contact"
-						send-message-path :send-message-title="keyword" :custom-style="{border:'none',fontSize:'31rpx',textDecoration:'underline'}" :hair-line="false" >
+						send-message-path :send-message-title="keyword"
+						:custom-style="{border:'none',fontSize:'31rpx',textDecoration:'underline'}" :hair-line="false">
 						如果您有推荐的影片可以点此联系我们添加
 					</u-button>
 				</view>
+				<vod-ad name="search_banner"></vod-ad>
 				<view class="py-4">
 					<u-loadmore :status="result.loadStatus" />
 				</view>
@@ -120,12 +122,12 @@
 				this.result.total = res.data.total;
 				this.result.loadStatus = 'loadmore';
 				if (res.data.list.length < this.result.pageSize) this.result.loadStatus = 'nomore';
-				if(!this.result.list.length){
+				if (!this.result.list.length) {
 					uni.showModal({
-					    title: '提示信息',
-					    content: '没有查找到影片，可尝试去除符号或缩短关键词重新搜索',
-						showCancel:false,
-						confirmText:'我知道了'
+						title: '提示信息',
+						content: '没有查找到影片，可尝试去除符号或缩短关键词重新搜索',
+						showCancel: false,
+						confirmText: '我知道了'
 					});
 				}
 			},

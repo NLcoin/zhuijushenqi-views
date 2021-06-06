@@ -1,5 +1,5 @@
 {
-    "name" : "追剧神器",
+    "name" : "热门影视推荐",
     "appid" : "",
     "description" : "",
     "versionName" : "1.0.0",
@@ -68,5 +68,8 @@
     },
     "uniStatistics" : {
         "enable" : false
+    },
+    "mp-qq" : {
+        "appid" : "1111916306"
     }
 }
