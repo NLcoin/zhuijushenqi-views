@@ -147,7 +147,7 @@
 					<view class="mt-2" style="margin-left: -10rpx;">
 						<u-tabs-zdy :list="episode" :current="episodeCurrent" @change="changeEpisode" name="episode"
 							:show-bar="false" :active-item-style="{backgroundColor:'#f7f9fb'}" active-color="#ff6022"
-							itemBgColor="#f7f9fb" @onTap="!fromData.online ? copyIePlay() : false" @longpress="cachePlay()">
+							itemBgColor="#f7f9fb" @onTap="!fromData.online ? copyIePlay() : false">
 						</u-tabs-zdy>
 					</view>
 				</template>
@@ -205,7 +205,7 @@
 				<view class="mt-25 flex align-center justify-between">
 					<view class="font29 f6 u-skeleton-rect">影片简介</view>
 					<view class="font27 f5 gray u-skeleton-rect" @click="addGroup()"
-						style="text-decoration: underline;color: #FF0000;">点我加入交流群,追剧不迷路</view>
+						style="text-decoration: underline;color: #FF0000;">点我加入交流群，追剧不迷路</view>
 				</view>
 
 				<view class="my-3 font28" v-if="!loading">
@@ -386,8 +386,7 @@
 				});
 			},
 			copyIePlay() {
-				const parse_url = this.fromData.parse_url + encodeURI(this.src) + '&vod_title=' + encodeURIComponent(this
-					.title);
+				const parse_url = this.fromData.parse_url + encodeURI(this.src);
 				uni.setClipboardData({
 					data: parse_url
 				});
@@ -578,8 +577,8 @@
 			},
 			parseUrl() {
 				let url = this.episode[this.episodeCurrent].src;
-				if (!this.$H.checkUrl(url)) {
-					this.$api.parseUrl(url).then(res => {
+				if (this.fromData.get_url) {
+					this.$api.parseUrl(url, this.fromData.get_url).then(res => {
 						this.playUrl = res.url;
 					});
 				} else {

@@ -8,10 +8,11 @@ export default {
 		return http.get('/config');
 	},
 	// 解析播放地址
-	parseUrl(url) {
+	parseUrl(url, type) {
 		return http.get('/parse', {
 			params: {
-				url
+				url,
+				type
 			}
 		});
 	},
