@@ -17,7 +17,7 @@
 					@fullscreenchange="fullscreenchange" :autoplay="autoplay" @controlstoggle="showControls"
 					:object-fit="objectFit" show-mute-btn enable-play-gesture vslide-gesture show-screen-lock-button
 					@timeupdate="timeupdate" :poster="detail.vod_pic" @ended="nextEpisode()" direction="90"
-					:duration="duration" :initial-time="current" :unit-id="$H.getConfig('play_start_ad')">
+					:duration="duration" :initial-time="current" :unit-id="$H.getConfig('play_start_ad')" @error="error()">
 					<template v-if="isFullscreen && controls">
 						<view style="position: absolute;top: 29px;right:110px;">
 							<view class="top-icon" @click.stop="openRateMenu()">倍速</view>
@@ -106,7 +106,7 @@
 					</view>
 				</template>
 			</template>
-			<view class="px-2">
+			<view class="px-2 vodinfo">
 				<view class="flex align-center justify-between mt-1">
 					<view class="font32 f7 u-skeleton-rect">
 						{{$H.ellipsis(detail.vod_name || '影片名称')}}
@@ -146,14 +146,14 @@
 					<view class="mt-2" style="margin-left: -10rpx;">
 						<u-tabs-zdy :list="episode" :current="episodeCurrent" @change="changeEpisode" name="episode"
 							:show-bar="false" :active-item-style="{backgroundColor:'#f7f9fb'}" active-color="#ff6022"
-							itemBgColor="#f7f9fb" @onTap="!fromData.online ? copyIePlay() : false ">
+							itemBgColor="#f7f9fb" >
 						</u-tabs-zdy>
 					</view>
 				</template>
 
 
 				<template v-if="!isFullscreen && episodeListMenu">
-					<uni-popup type="bottom" ref="epiList" :maskShow="fromData.online == false"
+					<uni-popup type="bottom" ref="epiList" :maskShow="true"
 						@clickMask="openEpisodeListMenu()">
 						<view :style="{height:popupH}" class="w100 bg-bai">
 							<view class="flex align-center justify-between border-bottom-hui" style="height: 80rpx;"
@@ -166,13 +166,14 @@
 								:scroll-into-view="toEpi" style="height: 100%;background-color: #fff;">
 								<view :id="'epi'+ (index+1)" v-for="(item,index) in episode" :key="index"
 									class="flex align-center justify-between border-bottom-hui mx-25"
-									style="height: 80rpx;line-height: 80rpx;" @click.stop="!fromData.online ? copyIePlay() : changeEpisode(index)">
+									style="height: 80rpx;line-height: 80rpx;"
+									@click.stop="!fromData.online ? copyIePlay() : changeEpisode(index)">
 									<view :class="episodeCurrent == index ? 'hon' :''" class="f6">
 										{{$H.ellipsis(item.episode,16) || $H.formatNumber(index+1)}}
 									</view>
 									<view class="gray font25" v-if="episodeCurrent == index">正在播放</view>
 								</view>
-								<view class="bg-bai" style="height: 80rpx;"></view>
+								<!-- <view class="bg-bai" style="height: 80rpx;"></view> -->
 							</scroll-view>
 						</view>
 					</uni-popup>
@@ -203,6 +204,8 @@
 
 				<view class="mt-25 flex align-center justify-between">
 					<view class="font29 f6 u-skeleton-rect">影片简介</view>
+					<view class="font27 f5 gray u-skeleton-rect" @click="addGroup()"
+						style="text-decoration: underline;color: #FF0000;">点我加入交流群，追剧不迷路</view>
 				</view>
 
 				<view class="my-2 font28" v-if="!loading">
@@ -251,7 +254,7 @@
 				duration: 0, // 视频总时长
 				current: 0, // 当前播放进度
 				controls: false, // 是否打开控制层
-				objectFit: 'cover', // 视频填充模式
+				objectFit: 'contain', // 视频填充模式
 				episodeCurrent: 0, // 当前播放集数
 				toEpi: null,
 				loading: true,
@@ -276,6 +279,8 @@
 				isRadLoad: false, // 是否加载完成
 				redAd: null,
 				lock: true, // 影片锁
+				isShowRad: false, // 是否已经调用了ad show方法了
+				isError:false
 			}
 		},
 		async onLoad(e) {
@@ -284,12 +289,12 @@
 			await this.initCache();
 			await this.initPlay();
 			this.initRedAd();
+			let sysInfo = uni.getSystemInfoSync();
+			this.popupH = sysInfo.windowHeight - sysInfo.statusBarHeight - uni.upx2px(520) + 'px';
+			this.checkOnline();
 			let more = await this.$api.getVodHot(1, 6);
 			this.moreList = more.data.list;
 			this.loading = false;
-			let sysInfo = uni.getSystemInfoSync();
-			this.popupH = sysInfo.windowHeight - sysInfo.statusBarHeight -  uni.upx2px(420) + 'px';
-			this.checkOnline();
 		},
 		onShow() {
 			if (!this.handle) return;
@@ -337,6 +342,7 @@
 			},
 			src() {
 				try {
+					this.parseUrl();
 					return this.episode[this.episodeCurrent].src;
 				} catch (e) {
 					//TODO handle the exception
@@ -372,6 +378,12 @@
 					imageUrl: this.detail.vod_pic, //图片链接，必须是网络连接，后面拼接时间戳防止本地缓存
 				}
 			},
+			addGroup() {
+				uni.previewImage({
+					current: 'https://upyun.2oc.cc/group.jpg', // 当前显示图片的http链接
+					urls: ['https://upyun.2oc.cc/group.jpg'] // 需要预览的图片http链接列表
+				});
+			},
 			copyIePlay() {
 				const parse_url = this.fromData.parse_url + encodeURI(this.src) + '&vod_title=' + encodeURIComponent(this
 					.title);
@@ -386,21 +398,16 @@
 					adUnitId: this.$H.getConfig('rewarded_ad')
 				});
 				this.redAd.onLoad(e => {
-					// 加载了激励广告 就不加载视频前广告了
-					this.isStartPlayAd = false;
 					this.isRadLoad = true;
 				});
 				this.redAd.onError(e => {
-					// 拉取失败 使用视频前广告
-					this.isStartPlayAd = true;
 					this.isRadLoad = false;
 					this.handle.play();
 				});
 				this.redAd.onClose(res => {
 					if (res && res.isEnded) {
-						this.handle.play(); // 播放开始
 						this.lock = false; // 解锁影片
-						this.isStartPlayAd = true; // 开启视频前广告  嘿嘿
+						this.handle.play(); // 播放开始
 					} else {
 						uni.showModal({
 							title: '提示信息',
@@ -420,9 +427,13 @@
 					title: '提示信息',
 					content: '该影片需要观看视频后解锁，解锁后可一次性解锁该剧所有剧集无广告高速播放，是否观看？',
 					success: (res) => {
-						if (res.cancel) return;
-						this.redAd.show();
-						return;
+						if (res.confirm) {
+							setTimeout(() => {
+								this.redAd.show();
+							}, 50);
+						} else {
+							this.isShowRad = false;
+						}
 					}
 				});
 			},
@@ -447,6 +458,17 @@
 			},
 			async initPlay() {
 				if (!this.handle) this.handle = uni.createVideoContext(`play`, this);
+				if (!this.detail.vod_play_from.length) {
+					uni.showModal({
+						showCancel: false,
+						title: '提示信息',
+						content: '该影片资源缺失暂时无法观看，我们正在处理中',
+						confirmText: '我知道了',
+						success: res => {
+							this.$H.back();
+						}
+					})
+				}
 				this.episodeList = this.detail.vod_play_url;
 				this.playFrom = this.detail.vod_play_from;
 				this.episode = this.episodeList[this.playFromIndex];
@@ -479,6 +501,7 @@
 				};
 				if (cacheId == '-1') {
 					cache.unshift(saveData);
+					if (cache.length >= 30) cache.pop();
 				} else {
 					cache[cacheId] = saveData;
 				}
@@ -506,7 +529,10 @@
 			timeupdate(e) {
 				this.duration = e.detail.duration;
 				this.current = e.detail.currentTime;
-				this.showRad();
+				if (this.isShowRad == false) {
+					this.isShowRad = true;
+					this.showRad();
+				}
 			},
 			showControls(e) {
 				this.controls = e.detail.show;
@@ -548,6 +574,13 @@
 					this.controls = true
 				}, 10);
 			},
+			parseUrl(){
+				if(!this.$H.checkUrl(this.episode[this.episodeCurrent].src)){
+					this.$api.parseUrl(this.episode[this.episodeCurrent].src).then(res=>{
+						this.episode[this.episodeCurrent].src = res.url;
+					});
+				}
+			},
 			openEpisodeListMenu() {
 				this.episodeListMenu = !this.episodeListMenu;
 				this.toEpi = null;
@@ -558,7 +591,7 @@
 				}
 				setTimeout(() => {
 					this.changeToEpi();
-				}, this.episode.length > 100 ? 300 : 100);
+				}, 500);
 			},
 			changeToEpi() {
 				const index = this.episodeCurrent + 1;
@@ -579,8 +612,15 @@
 					this.controls = true
 				}, 10);
 			},
-			error() {
-				return this.$H.msg('视频资源加载出错，可尝试切换播放源');
+			error(e) {
+				if(this.isError) return;
+				this.isError = true;
+				uni.showModal({
+					showCancel:false,
+					title:'温馨提示',
+					content:'视频加载慢或长时间无反应，可尝试切换播放源,部分蓝光资源可能加载时间会稍微长一些，有任何疑问可加群或联系客服解决。',
+					confirmText:'我知道了'
+				});
 			}
 		}
 	}

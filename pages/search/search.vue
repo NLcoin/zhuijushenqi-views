@@ -3,9 +3,9 @@
 		<u-navbar :is-back="false" title-color="#222" title-bold :border-bottom="false" title-size="30">
 			<view class="ml-3 f7 font33">搜索影片</view>
 		</u-navbar>
-		<view class="p-2 bg-bai" style="z-index: 999999;position: sticky;" :style="{top:searchTop+'px'}">
-			<u-search placeholder="输入影片名 演员或导演搜索" v-model="keyword" :show-action="false" @search="submit()"
-				@change="change()"></u-search>
+		<view class="p-2 bg-bai w100" style="z-index: 999999;position: sticky;" :style="{top:searchTop+'px'}">
+			<u-search placeholder="输入影片名 演员或导演搜索" v-model="keyword"  @search="submit()"
+				@change="change()" @custom="submit()"></u-search>
 		</view>
 		<view class="mx-2">
 			<template v-if="isSubmit == false">
@@ -60,7 +60,7 @@
 		data() {
 			return {
 				keyword: '',
-				hotWords: [],
+				hotWords: uni.getStorageSync('hotwords') || [],
 				hisList: uni.getStorageSync('search_cache') || [],
 				isSubmit: false,
 				searchTop: 0,
@@ -88,6 +88,7 @@
 			async hotSearchWordsList() {
 				let res = await this.$api.searchHotWords();
 				this.hotWords = res.data.list;
+				uni.setStorageSync('hotwords', this.hotWords);
 			},
 			async onReachBottom() {
 				await this.loadMore();

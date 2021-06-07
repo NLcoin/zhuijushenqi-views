@@ -43,7 +43,7 @@
 					</view>
 				</view>
 				
-				<vod-ad name="index_banner2" class="u-skeleton-rect"></vod-ad>
+				<vod-ad name="index_banner2" v-if="!loading"></vod-ad>
 
 				<view class="mt-2 flex align-center justify-between">
 					<view class="font29 f6 u-skeleton-rect">影片简介</view>

@@ -7,9 +7,9 @@
 			<scroll-view scroll-x class="u-scroll-view" :scroll-left="scrollLeft" scroll-with-animation>
 				<view class="u-scroll-box" :class="{'u-tabs-scorll-flex': !isScroll}">
 					<view class="u-tab-item u-line-1" :id="'u-tab-item-' + index" v-for="(item, index) in list"
-						:key="index" @tap="clickTab(index)" :style="[tabItemStyle(index)]">
+						:key="index" @tap="clickTab(index)" :style="[tabItemStyle(index)]" @longpress="longpress(index)">
 						<u-badge :count="item[count] || item['count'] || 0" :offset="offset" size="mini"></u-badge>
-						{{ item[name] || formatNumber(index + 1)}}
+						{{ item[name] || item['name']}}
 					</view>
 					<view v-if="showBar" class="u-tab-bar" :style="[tabBarStyle]"></view>
 				</view>
@@ -270,6 +270,9 @@
 			formatNumber(num) {
 				num = num.toString()
 				return num[1] ? num : '0' + num
+			},
+			longpress(index){
+				this.$emit('longpress', index);
 			},
 			// 查询tab的布局信息
 			getTabRect() {

@@ -46,7 +46,7 @@
 				</scroll-view>
 				
 				<!-- ad -->
-				<vod-ad name="index_banner" class="u-skeleton-rect"></vod-ad>
+				<vod-ad name="index_banner" v-if="!loading"></vod-ad>
 
 				<view class="mt-4 mb-3 u-skeleton-rect">
 					<u-section title="热门电影" font-size="29" :show-line="false" @click="toMore('热门电影','hotMovie')">
@@ -105,7 +105,7 @@
 				</template>
 				
 				<!-- ad -->
-				<vod-ad name="index_banner2" class="u-skeleton-rect"></vod-ad>
+				<vod-ad name="index_banner2" v-if="!loading"></vod-ad>
 
 				<view class="mt-4 mb-3 u-skeleton-rect">
 					<u-section title="热门综艺" font-size="29" :show-line="false" @click="toMore('热门综艺','hotVariety')">
@@ -165,7 +165,7 @@
 				</template>
 				
 				<!-- ad -->
-				<vod-ad name="index_banner3" class="u-skeleton-rect"></vod-ad>
+				<vod-ad name="index_banner3" v-if="!loading"></vod-ad>
 
 				<template v-if="!loading">
 					<view class="mt-4 mb-3 u-skeleton-rect">
