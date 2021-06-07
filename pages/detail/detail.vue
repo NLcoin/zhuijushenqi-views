@@ -181,12 +181,12 @@
 
 				<view class="mt-2 flex align-center justify-between">
 					<view class="font29 f6 u-skeleton-rect">播放来源</view>
-					<view style="margin-right: -35rpx;">
+					<view style="margin-right: -33rpx;">
 						<u-button :hair-line="false" show-message-card hover-class="none"
 							:send-message-img="detail.vod_pic" open-type="contact" send-message-path
 							:send-message-title="title" :custom-style="{border:'none',fontSize:'28rpx'}" size="mini"
 							class="u-skeleton-rect">
-							<text class="font27 gray">播放遇到问题?</text>
+							<text class="font27 gray">播放遇到问题？</text>
 						</u-button>
 					</view>
 				</view>
@@ -291,7 +291,7 @@
 			await this.initPlay();
 			this.initRedAd();
 			let sysInfo = uni.getSystemInfoSync();
-			this.popupH = sysInfo.windowHeight - sysInfo.statusBarHeight - uni.upx2px(550) + 'px';
+			this.popupH = sysInfo.windowHeight - sysInfo.statusBarHeight - uni.upx2px(560) + 'px';
 			this.checkOnline();
 			let more = await this.$api.getVodHot(1, 6);
 			this.moreList = more.data.list;
@@ -416,6 +416,7 @@
 							showCancel: false,
 							confirmText: '我知道了'
 						});
+						this.isShowRad = false;
 					}
 				});
 			},
