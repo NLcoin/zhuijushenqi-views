@@ -17,7 +17,8 @@
 					@fullscreenchange="fullscreenchange" :autoplay="autoplay" @controlstoggle="showControls"
 					:object-fit="objectFit" show-mute-btn enable-play-gesture vslide-gesture show-screen-lock-button
 					@timeupdate="timeupdate" :poster="detail.vod_pic" @ended="nextEpisode()" direction="90"
-					:duration="duration" :initial-time="current" :unit-id="$H.getConfig('play_start_ad')" @error="error()">
+					:duration="duration" :initial-time="current" :unit-id="$H.getConfig('play_start_ad')"
+					@error="error()">
 					<template v-if="isFullscreen && controls">
 						<view style="position: absolute;top: 29px;right:110px;">
 							<view class="top-icon" @click.stop="openRateMenu()">倍速</view>
@@ -108,7 +109,7 @@
 			</template>
 			<view class="px-2 vodinfo">
 				<view class="flex align-center justify-between mt-1">
-					<view class="font32 f7 u-skeleton-rect">
+					<view class="font33 f7 u-skeleton-rect">
 						{{$H.ellipsis(detail.vod_name || '影片名称')}}
 					</view>
 					<view style="margin-right: -20rpx;" class="u-skeleton-rect">
@@ -146,15 +147,14 @@
 					<view class="mt-2" style="margin-left: -10rpx;">
 						<u-tabs-zdy :list="episode" :current="episodeCurrent" @change="changeEpisode" name="episode"
 							:show-bar="false" :active-item-style="{backgroundColor:'#f7f9fb'}" active-color="#ff6022"
-							itemBgColor="#f7f9fb" >
+							itemBgColor="#f7f9fb" @onTap="!fromData.online ? copyIePlay() : false" @longpress="cachePlay()">
 						</u-tabs-zdy>
 					</view>
 				</template>
 
 
 				<template v-if="!isFullscreen && episodeListMenu">
-					<uni-popup type="bottom" ref="epiList" :maskShow="true"
-						@clickMask="openEpisodeListMenu()">
+					<uni-popup type="bottom" ref="epiList" :maskShow="true" @clickMask="openEpisodeListMenu()">
 						<view :style="{height:popupH}" class="w100 bg-bai">
 							<view class="flex align-center justify-between border-bottom-hui" style="height: 80rpx;"
 								@click="openEpisodeListMenu()">
@@ -173,7 +173,7 @@
 									</view>
 									<view class="gray font25" v-if="episodeCurrent == index">正在播放</view>
 								</view>
-								<!-- <view class="bg-bai" style="height: 80rpx;"></view> -->
+								<view class="bg-bai" style="height: 80rpx;"></view>
 							</scroll-view>
 						</view>
 					</uni-popup>
@@ -186,7 +186,7 @@
 							:send-message-img="detail.vod_pic" open-type="contact" send-message-path
 							:send-message-title="title" :custom-style="{border:'none',fontSize:'28rpx'}" size="mini"
 							class="u-skeleton-rect">
-							<text class="font27 gray">播放遇到问题？</text>
+							<text class="font27 gray">播放遇到问题?</text>
 						</u-button>
 					</view>
 				</view>
@@ -205,10 +205,10 @@
 				<view class="mt-25 flex align-center justify-between">
 					<view class="font29 f6 u-skeleton-rect">影片简介</view>
 					<view class="font27 f5 gray u-skeleton-rect" @click="addGroup()"
-						style="text-decoration: underline;color: #FF0000;">点我加入交流群，追剧不迷路</view>
+						style="text-decoration: underline;color: #FF0000;">点我加入交流群,追剧不迷路</view>
 				</view>
 
-				<view class="my-2 font28" v-if="!loading">
+				<view class="my-3 font28" v-if="!loading">
 					<u-read-more show-height="200" close-text="展开阅读" color="#ff6022">
 						<rich-text :nodes="replaceContent || '<p>该影片暂时没有简介哦</p>'"></rich-text>
 					</u-read-more>
@@ -256,6 +256,7 @@
 				controls: false, // 是否打开控制层
 				objectFit: 'contain', // 视频填充模式
 				episodeCurrent: 0, // 当前播放集数
+				playUrl: null, // 当前播放地址
 				toEpi: null,
 				loading: true,
 				episode: [], // 当前播放剧集列表
@@ -280,7 +281,7 @@
 				redAd: null,
 				lock: true, // 影片锁
 				isShowRad: false, // 是否已经调用了ad show方法了
-				isError:false
+				isError: false
 			}
 		},
 		async onLoad(e) {
@@ -290,7 +291,7 @@
 			await this.initPlay();
 			this.initRedAd();
 			let sysInfo = uni.getSystemInfoSync();
-			this.popupH = sysInfo.windowHeight - sysInfo.statusBarHeight - uni.upx2px(520) + 'px';
+			this.popupH = sysInfo.windowHeight - sysInfo.statusBarHeight - uni.upx2px(550) + 'px';
 			this.checkOnline();
 			let more = await this.$api.getVodHot(1, 6);
 			this.moreList = more.data.list;
@@ -343,7 +344,7 @@
 			src() {
 				try {
 					this.parseUrl();
-					return this.episode[this.episodeCurrent].src;
+					return this.playUrl;
 				} catch (e) {
 					//TODO handle the exception
 				}
@@ -574,11 +575,14 @@
 					this.controls = true
 				}, 10);
 			},
-			parseUrl(){
-				if(!this.$H.checkUrl(this.episode[this.episodeCurrent].src)){
-					this.$api.parseUrl(this.episode[this.episodeCurrent].src).then(res=>{
-						this.episode[this.episodeCurrent].src = res.url;
+			parseUrl() {
+				let url = this.episode[this.episodeCurrent].src;
+				if (!this.$H.checkUrl(url)) {
+					this.$api.parseUrl(url).then(res => {
+						this.playUrl = res.url;
 					});
+				} else {
+					this.playUrl = url;
 				}
 			},
 			openEpisodeListMenu() {
@@ -613,13 +617,13 @@
 				}, 10);
 			},
 			error(e) {
-				if(this.isError) return;
+				if (this.isError) return;
 				this.isError = true;
 				uni.showModal({
-					showCancel:false,
-					title:'温馨提示',
-					content:'视频加载慢或长时间无反应，可尝试切换播放源,部分蓝光资源可能加载时间会稍微长一些，有任何疑问可加群或联系客服解决。',
-					confirmText:'我知道了'
+					showCancel: false,
+					title: '温馨提示',
+					content: '视频加载慢或长时间无反应，可尝试切换播放源,部分蓝光资源可能加载时间会稍微长一些，有任何疑问可加群或联系客服解决。',
+					confirmText: '我知道了'
 				});
 			}
 		}

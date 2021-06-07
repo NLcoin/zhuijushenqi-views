@@ -13,7 +13,7 @@
 					<!-- 搜索历史 -->
 					<view class="flex align-center justify-between mb-2 my-1">
 						<text class="hei">搜索历史</text>
-						<text class="font27 gray" @click="dumpHistory()">清空</text>
+						<text class="font27 mr-15 gray" @click="dumpHistory()">清空</text>
 					</view>
 					<view class="flex align-center flex-wrap my-1">
 						<block v-for="(item,index) in hisList" :key="index">
