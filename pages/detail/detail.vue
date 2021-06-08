@@ -132,9 +132,9 @@
 				</view>
 
 				<view class="my-1 flex align-center justify-between">
-					<view class="font25 gray u-skeleton-rect">
-						{{detail.parentType ? detail.parentType.type_name : '未知'}} ·
-						{{detail.vod_remarks ? replaceRemarks : '暂无'}} · {{detail.vod_hits}}次播放
+					<view class="font25 gray u-skeleton-rect text-ellipsis1" style="width: 400rpx;">
+						{{detail.parentType ? detail.parentType.type_name : detail.type.type_name}} ·
+						{{detail.vod_remarks ? detail.vod_remarks : '暂无'}} · {{detail.vod_hits}}次播放
 					</view>
 					<view class="u-skeleton-rect">
 						<u-rate v-model="detail.vod_score / 2" disabled></u-rate><text
@@ -342,13 +342,6 @@
 					//TODO handle the exception
 				}
 			},
-			replaceRemarks() {
-				try {
-					return this.$H.ellipsis(this.detail.vod_remarks);
-				} catch (e) {
-					//TODO handle the exception
-				}
-			},
 			strategy() {
 				try {
 					return this.$H.getExt(this.src) == 'm3u8' ? 3 : 0;
@@ -416,7 +409,7 @@
 						this.handle.play(); // 播放开始
 						this.$H.msg('切换高速线路成功');
 					} else {
-						this.$H.msg('您未完整观看视频，无法获得高速播放');
+						this.$H.msg('您未完整观看视频，无法获得高速播放奖励');
 					}
 				});
 			},
@@ -426,7 +419,7 @@
 				this.handle.pause(); // 暂停播放
 				uni.showModal({
 					title: '温馨提示',
-					content: '播放视频后可使用高速播放通道，是否观看视频？',
+					content: '播放视频后可获得高速播放奖励，是否领取？',
 					cancelText: '不了',
 					confirmText: '好的',
 					success: (res) => {
@@ -599,7 +592,7 @@
 						uni.showModal({
 							showCancel: false,
 							title: '提示信息',
-							content: '该播放源解析资源失败，请切换播放源，如果都不可播放请联系客服处理'
+							content: '该播放源解析资源失败，请切换播放源如无其他播放源可搜索同名其他资源播放，如果都不可播放请联系客服处理'
 						});
 						this.exitFullScreen();
 						this.showVideoAd = true;
@@ -649,7 +642,7 @@
 				uni.showModal({
 					showCancel: false,
 					title: '温馨提示',
-					content: '视频加载慢或长时间无反应，可尝试切换播放源,部分蓝光资源可能加载时间会稍微长一些，有任何疑问可加群或联系客服解决。',
+					content: '视频加载慢或长时间无反应，可尝试切换播放源如无其他播放源可搜索同名其他资源播放,部分蓝光资源可能加载时间会稍微长一些，有任何疑问可加群或联系客服解决。',
 					confirmText: '我知道了'
 				});
 			}

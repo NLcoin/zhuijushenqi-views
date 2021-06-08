@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<u-navbar :is-back="false" title-color="#222" title-bold :border-bottom="false" title-size="30">
-			<view class="ml-3 f7 font33">热门影视分享</view>
+			<view class="ml-3 f7 font33">热门影视推荐</view>
 		</u-navbar>
 		<view class="u-skeleton">
 			<u-notice-bar type="none" :hair-line="false" :list="$H.getConfig('notices')" v-if="!loading && $H.getConfig('notices')">
@@ -46,7 +46,9 @@
 				</scroll-view>
 				
 				<!-- ad -->
-				<vod-ad name="index_banner" v-if="!loading"></vod-ad>
+				<view class="mt-2">
+					<vod-ad name="index_banner" v-if="!loading"></vod-ad>
+				</view>
 
 				<view class="mt-4 mb-3 u-skeleton-rect">
 					<u-section title="热门电影" font-size="29" :show-line="false" @click="toMore('热门电影','hotMovie')">
@@ -105,7 +107,9 @@
 				</template>
 				
 				<!-- ad -->
-				<vod-ad name="index_banner2" v-if="!loading"></vod-ad>
+				<view class="mt-2">
+					<vod-ad name="index_banner2" v-if="!loading"></vod-ad>
+				</view>
 
 				<view class="mt-4 mb-3 u-skeleton-rect">
 					<u-section title="热门综艺" font-size="29" :show-line="false" @click="toMore('热门综艺','hotVariety')">
@@ -165,7 +169,9 @@
 				</template>
 				
 				<!-- ad -->
-				<vod-ad name="index_banner3" v-if="!loading"></vod-ad>
+				<view class="mt-2">
+					<vod-ad name="index_banner3" v-if="!loading"></vod-ad>
+				</view>
 
 				<template v-if="!loading">
 					<view class="mt-4 mb-3 u-skeleton-rect">

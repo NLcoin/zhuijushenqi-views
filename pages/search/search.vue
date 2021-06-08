@@ -23,8 +23,11 @@
 						</block>
 					</view>
 				</template>
+				<view class="mb-3 mt-1"> 
+					<vod-ad name="search_banner"></vod-ad>
+				</view>
 				<!-- 搜索热词 -->
-				<view class="hei my-1 ">大家都在搜</view>
+				<view class="hei my-1">大家都在搜</view>
 				<block v-for="(item,index) in hotWords" :key="index">
 					<view class="flex align-center border-bottom-hui w100 py-2" @click="clickWord(item.keyword)"
 						hover-class="bg-hui">
