@@ -5,11 +5,11 @@ import {
 export default {
 	// 获取配置信息
 	getConfig() {
-		return http.get('/config3');
+		return http.get('/config');
 	},
 	// 解析播放地址
 	parseUrl(url, type) {
-		return http.get('/parse', {
+		return http.get('/vod/parse', {
 			params: {
 				url,
 				type

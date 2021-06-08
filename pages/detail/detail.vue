@@ -2,9 +2,13 @@
 	<view style="width: 750rpx;overflow-x: hidden;">
 		<u-navbar title-color="#222" :title="detail.vod_name || '影片名称'" title-bold :border-bottom="false"
 			title-size="30" back-icon-color="#222" back-icon-size="40" :is-back="false">
-			<view>
-				<u-icon name="arrow-left" class="mx-2" @click="$H.back()" size="38"></u-icon>
-				<u-icon name="home" class="ml-2" @click="$H.toTab('index/index')" size="38"></u-icon>
+			<view class="flex align-center">
+				<view style="width: 80rpx;" class="ml-2" @click="$H.back()">
+					<u-icon name="arrow-left" size="38"></u-icon>
+				</view>
+				<view style="width: 80rpx;" @click="$H.toTab('index/index')">
+					<u-icon name="home" size="38"></u-icon>
+				</view>
 			</view>
 		</u-navbar>
 		<view class="u-skeleton">
@@ -12,8 +16,8 @@
 				<view class="u-skeleton-rect" style="width: 750rpx;height: 420rpx;"></view>
 			</template>
 			<template v-else>
-				<video v-if="fromData.online" :src="playUrl" id="play" :title="$H.ellipsis(title,16)" controls
-					:play-strategy="strategy" show-casting-button style="width: 750rpx;height: 420rpx;"
+				<video v-if="fromData.online && !showVideoAd" :src="playUrl" id="play" :title="$H.ellipsis(title,16)"
+					controls :play-strategy="strategy" show-casting-button style="width: 750rpx;height: 420rpx;"
 					@fullscreenchange="fullscreenchange" :autoplay="autoplay" @controlstoggle="showControls"
 					:object-fit="objectFit" show-mute-btn enable-play-gesture vslide-gesture show-screen-lock-button
 					@timeupdate="timeupdate" :poster="detail.vod_pic" @ended="nextEpisode()" direction="90"
@@ -58,20 +62,24 @@
 					</template>
 
 					<template v-if="fromMenu && isFullscreen && controls">
-						<view style="position: absolute;left:15%;top:30%;" class="flex flex-column">
-							<view class="font35 mb-3 white">播放源</view>
-							<scroll-view scroll-x="true" :scroll-with-animation="true" :show-scrollbar="false"
-								scroll-anchoring>
-								<view class="flex align-center mt-3">
-									<view class="from-btn flex align-center justify-center"
-										v-for="(item,index) in playFrom" :key="index"
-										:class="playFromIndex == index ? 'rate-btn-active' : ''"
-										@click.stop="changeFrom(index)">
-										<text class="mb-2">{{$H.ellipsis(item.name,8)}}</text>
+						<u-popup v-model="fromMenu" mode="right" width="600" :mask="false"
+							:custom-style="{backgroundColor: 'rgba(0, 0, 0, 0.7)'}">
+							<scroll-view scroll-y="true" :scroll-with-animation="true" :show-scrollbar="false"
+								scroll-anchoring :scroll-into-view="toEpi" style="height: 100%">
+								<view class="mx-2 border-bottom-hui w100" style="height: 90rpx;">
+									<text
+										style="font-size: 28rpx;line-height: 90rpx;color: #FFFFFF;">当前播放源-{{fromName}}</text>
+								</view>
+								<view v-for="(item,index) in playFrom" :key="index"
+									class="flex align-center justify-between border-bottom-hui mx-25"
+									style="height: 80rpx;line-height: 80rpx;" @click.stop="changeFrom(index)">
+									<view :class="playFromIndex == index ? 'hon' :'white'">
+										{{$H.ellipsis(item.name,8)}}
 									</view>
+									<view class="gray font25" v-if="playFromIndex == index">正在使用</view>
 								</view>
 							</scroll-view>
-						</view>
+						</u-popup>
 					</template>
 
 					<template v-if="isFullscreen && episodeListMenu">
@@ -97,7 +105,8 @@
 				</video>
 
 
-				<template v-if="!fromData.online && $H.getConfig('video_ad')">
+				<template
+					v-if="(!fromData.online && $H.getConfig('video_ad')) || (showVideoAd && $H.getConfig('video_ad'))">
 					<ad :unit-id="$H.getConfig('video_ad')" ad-type="video" ad-theme="white"></ad>
 				</template>
 				<template v-else-if="!fromData.online && !$H.getConfig('video_ad')">
@@ -281,7 +290,8 @@
 				redAd: null,
 				lock: true, // 影片锁
 				isShowRad: false, // 是否已经调用了ad show方法了
-				isError: false
+				isError: false,
+				showVideoAd: false,
 			}
 		},
 		async onLoad(e) {
@@ -309,6 +319,7 @@
 		},
 		watch: {
 			playFromIndex(val, oldVal) {
+				this.showVideoAd = false;
 				this.checkOnline();
 			},
 			episodeCurrent(val, oldVal) {
@@ -418,7 +429,7 @@
 				this.handle.pause(); // 暂停播放
 				uni.showModal({
 					title: '提示信息',
-					content: '该影片需要观看视频后解锁，解锁后可一次性解锁该剧所有剧集无广告高速播放，是否观看？',
+					content: '该影片需要观看视频(6-30s)后解锁，解锁后可一次性观看该剧所有剧集无广告高速播放(包括蓝光)，是否观看？',
 					success: (res) => {
 						if (res.confirm) {
 							setTimeout(() => {
@@ -433,7 +444,7 @@
 			checkOnline() {
 				if (this.fromData.online == false) { // 不支持在线播放
 					this.handle.stop();
-					if (this.isFullscreen) this.handle.exitFullScreen();
+					this.exitFullScreen();
 					setTimeout(() => {
 						uni.showModal({
 							title: '提示信息',
@@ -448,6 +459,9 @@
 						});
 					}, 100);
 				}
+			},
+			exitFullScreen() {
+				if (this.isFullscreen && this.handle) this.handle.exitFullScreen();
 			},
 			async initPlay() {
 				if (!this.handle) this.handle = uni.createVideoContext(`play`, this);
@@ -576,8 +590,19 @@
 						title: '解析中'
 					});
 					let res = await this.$api.parseUrl(url, this.fromData.get_url);
-					this.playUrl = res.url;
 					uni.hideLoading();
+					if (!res || !res.data.url) {
+						this.playUrl = '';
+						uni.showModal({
+							showCancel: false,
+							title: '提示信息',
+							content: '该播放源解析资源失败，请切换播放源，如果都不可播放请联系客服处理'
+						});
+						this.exitFullScreen();
+						this.showVideoAd = true;
+						return;
+					}
+					this.playUrl = res.data.url;
 				} else {
 					this.playUrl = url;
 				}
