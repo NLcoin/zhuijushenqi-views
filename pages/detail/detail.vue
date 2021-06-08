@@ -287,11 +287,11 @@
 				fromMenu: false, // 播放源菜单
 				moreList: [],
 				isRadLoad: false, // 是否加载完成
+				isShowRad: false, // 是否 ad show过了
 				redAd: null,
-				lock: true, // 影片锁
-				isShowRad: false, // 是否已经调用了ad show方法了
 				isError: false,
 				showVideoAd: false,
+				timer: null
 			}
 		},
 		async onLoad(e) {
@@ -306,6 +306,7 @@
 			let more = await this.$api.getVodHot(1, 6);
 			this.moreList = more.data.list;
 			this.loading = false;
+
 		},
 		onShow() {
 			if (!this.handle) return;
@@ -315,6 +316,7 @@
 			this.handle.pause();
 		},
 		onUnload() {
+			clearTimeout(this.timer);
 			this.cachePlay();
 		},
 		watch: {
@@ -409,34 +411,29 @@
 				});
 				this.redAd.onClose(res => {
 					if (res && res.isEnded) {
-						this.lock = false; // 解锁影片
 						this.handle.play(); // 播放开始
+						this.$H.msg('切换高速线路成功');
 					} else {
-						uni.showModal({
-							title: '提示信息',
-							content: '您没有完整观看视频，影片解锁失败',
-							showCancel: false,
-							confirmText: '我知道了'
-						});
-						this.isShowRad = false;
+						this.$H.msg('您未完整观看视频，无法获得高速播放');
 					}
 				});
 			},
 			showRad() {
 				if (!this.isRadLoad) return;
-				if (!this.lock) return; // 解锁后不触发广告了
 				if (!this.fromData.online) return; // 不支持在线播放也不触发
 				this.handle.pause(); // 暂停播放
 				uni.showModal({
-					title: '提示信息',
-					content: '该影片需要观看视频(6-30s)后解锁，解锁后可一次性观看该剧所有剧集无广告高速播放(包括蓝光)，是否观看？',
+					title: '温馨提示',
+					content: '播放视频后可使用高速播放通道，是否观看视频？',
+					cancelText: '不了',
+					confirmText: '好的',
 					success: (res) => {
 						if (res.confirm) {
 							setTimeout(() => {
 								this.redAd.show();
 							}, 50);
 						} else {
-							this.isShowRad = false;
+							this.handle.play();
 						}
 					}
 				});
@@ -539,7 +536,10 @@
 				this.current = e.detail.currentTime;
 				if (this.isShowRad == false) {
 					this.isShowRad = true;
-					this.showRad();
+					clearTimeout(this.timer);
+					this.timer = setTimeout(() => {
+						this.showRad();
+					}, 30000);
 				}
 			},
 			showControls(e) {
