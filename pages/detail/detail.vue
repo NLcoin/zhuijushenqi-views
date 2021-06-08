@@ -72,7 +72,8 @@
 								</view>
 								<view v-for="(item,index) in playFrom" :key="index"
 									class="flex align-center justify-between border-bottom-hui mx-25"
-									style="height: 80rpx;line-height: 80rpx;" @click.stop="changeFrom(index)">
+									style="height: 80rpx;line-height: 80rpx;"
+									@click.stop="changeFrom(index)">
 									<view :class="playFromIndex == index ? 'hon' :'white'">
 										{{$H.ellipsis(item.name,8)}}
 									</view>
@@ -93,7 +94,8 @@
 								</view>
 								<view :id="'epi'+ (index+1)" v-for="(item,index) in episode" :key="index"
 									class="flex align-center justify-between border-bottom-hui mx-25"
-									style="height: 80rpx;line-height: 80rpx;" @click.stop="changeEpisode(index)">
+									style="height: 80rpx;line-height: 80rpx;"
+									@click.stop="changeEpisode(index)">
 									<view :class="episodeCurrent == index ? 'hon' :'white'">
 										{{$H.ellipsis(item.episode,16)}}
 									</view>
@@ -574,6 +576,7 @@
 				this.changeEpisode(this.episodeCurrent + 1);
 			},
 			changeEpisode(index) {
+				if(this.episodeCurrent == index) return;
 				this.controls = false;
 				this.episodeCurrent = index;
 				this.parseUrl(true);
@@ -629,6 +632,7 @@
 				this.rateMenu = false;
 			},
 			changeFrom(index) {
+				if(this.playFromIndex == index) return;
 				this.playFromIndex = index;
 				this.fromMenu = false;
 				this.episodeCurrent = 0; // 重置当前播放 不同的播放源 相同的集数key不同
