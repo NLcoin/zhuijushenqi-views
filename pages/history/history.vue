@@ -12,7 +12,8 @@
 				</view>
 			</template>
 			<template v-else>
-				<vod-history v-for="(item,index) in list" :key="index" :item="item"></vod-history>
+				<vod-history v-for="(item,index) in list" :key="index" :item="item" :index="index" @del="del">
+				</vod-history>
 			</template>
 			<template v-if="!list.length">
 				<u-empty text="没有更多数据了" mode="data" margin-top="35"></u-empty>
@@ -48,10 +49,28 @@
 		methods: {
 			getData() {
 				let check = this.$H.getConfig('check');
+				let data = [];
 				if (check) {
-					return uni.getStorageSync('history2');
+					data = uni.getStorageSync('history2');
 				}
-				return uni.getStorageSync('history');
+				data = uni.getStorageSync('history');
+				if(!data) return [];
+				return data.sort((a, b) => {
+					return b.uptime - a.uptime;
+				});
+			},
+			del(index) {
+				uni.showModal({
+					title: '删除确认',
+					content: '你确定要删除该记录吗？',
+					success: (res) => {
+						if (res.confirm) {
+							this.list.splice(index, 1);
+							uni.setStorageSync('history', this.list);
+							this.$H.msg('删除成功');
+						}
+					}
+				});
 			}
 		}
 	}

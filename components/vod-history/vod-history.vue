@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view class="flex align-center" @click="$H.toDetail(item.vod_id)">
+		<view class="flex align-center" @click="$H.toDetail(item.vod_id)" @longpress="delItem()">
 			<view class="flex align-center vod">
 				<view class="vod-pic-position">
 					<image :src="item.vod_pic" class="vod-pic" mode="aspectFill" lazy-load>
@@ -15,7 +15,8 @@
 						播放来源：{{item.fromName}}
 					</view>
 					<view style="width: 400rpx;">
-						<u-line-progress height="20" :percent="played || 0" :striped-active="true" active-color="#ff6022">
+						<u-line-progress height="20" :percent="played || 0" :striped-active="true"
+							active-color="#ff6022">
 						</u-line-progress>
 					</view>
 				</view>
@@ -31,7 +32,8 @@
 	export default {
 		name: "vod-history",
 		props: {
-			item: Object
+			item: Object,
+			index: Number
 		},
 		data() {
 			return {
@@ -41,6 +43,11 @@
 		computed: {
 			played() {
 				return Math.round((this.item.current / this.item.duration) * 100);
+			}
+		},
+		methods: {
+			delItem() {
+				this.$emit('del', this.index);
 			}
 		}
 	}

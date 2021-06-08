@@ -72,8 +72,7 @@
 								</view>
 								<view v-for="(item,index) in playFrom" :key="index"
 									class="flex align-center justify-between border-bottom-hui mx-25"
-									style="height: 80rpx;line-height: 80rpx;"
-									@click.stop="changeFrom(index)">
+									style="height: 80rpx;line-height: 80rpx;" @click.stop="changeFrom(index)">
 									<view :class="playFromIndex == index ? 'hon' :'white'">
 										{{$H.ellipsis(item.name,8)}}
 									</view>
@@ -94,8 +93,7 @@
 								</view>
 								<view :id="'epi'+ (index+1)" v-for="(item,index) in episode" :key="index"
 									class="flex align-center justify-between border-bottom-hui mx-25"
-									style="height: 80rpx;line-height: 80rpx;"
-									@click.stop="changeEpisode(index)">
+									style="height: 80rpx;line-height: 80rpx;" @click.stop="changeEpisode(index)">
 									<view :class="episodeCurrent == index ? 'hon' :'white'">
 										{{$H.ellipsis(item.episode,16)}}
 									</view>
@@ -305,10 +303,13 @@
 			let sysInfo = uni.getSystemInfoSync();
 			this.popupH = sysInfo.windowHeight - sysInfo.statusBarHeight - uni.upx2px(560) + 'px';
 			this.checkOnline();
-			let more = await this.$api.getVodHot(1, 6);
-			this.moreList = more.data.list;
 			this.loading = false;
-
+		},
+		onReady() {
+			setTimeout(async () => {
+				let more = await this.$api.getVodHot(1, 6);
+				this.moreList = more.data.list;
+			}, 300);
 		},
 		onShow() {
 			if (!this.handle) return;
@@ -474,15 +475,13 @@
 				this.parseUrl();
 			},
 			cachePlay() {
-				if (!this.detail) {
+				if (!this.handle) {
 					return;
 				}
 				let {
 					vod_id,
 					vod_pic,
-					vod_remarks,
-					type,
-					parentType
+					vod_remarks
 				} = this.detail;
 				let cache = uni.getStorageSync('history') || [];
 				let cacheId = cache.findIndex(v => v.vod_id == vod_id);
@@ -490,8 +489,7 @@
 					vod_id,
 					vod_pic,
 					vod_remarks,
-					type,
-					parentType,
+					uptime: this.$H.getTime(),
 					duration: Math.floor(this.duration),
 					current: Math.floor(this.current),
 					episodeCurrent: this.episodeCurrent,
@@ -501,7 +499,7 @@
 				};
 				if (cacheId == '-1') {
 					cache.unshift(saveData);
-					if (cache.length >= 30) cache.pop();
+					if (cache.length >= 20) cache.pop();
 				} else {
 					cache[cacheId] = saveData;
 				}
@@ -569,7 +567,7 @@
 				this.changeEpisode(this.episodeCurrent + 1);
 			},
 			changeEpisode(index) {
-				if(this.episodeCurrent == index) return;
+				if (this.episodeCurrent == index) return;
 				this.controls = false;
 				this.episodeCurrent = index;
 				this.parseUrl(true);
@@ -625,7 +623,7 @@
 				this.rateMenu = false;
 			},
 			changeFrom(index) {
-				if(this.playFromIndex == index) return;
+				if (this.playFromIndex == index) return;
 				this.playFromIndex = index;
 				this.fromMenu = false;
 				this.episodeCurrent = 0; // 重置当前播放 不同的播放源 相同的集数key不同
