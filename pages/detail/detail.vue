@@ -12,7 +12,7 @@
 				<view class="u-skeleton-rect" style="width: 750rpx;height: 420rpx;"></view>
 			</template>
 			<template v-else>
-				<video v-if="fromData.online" :src="src" id="play" :title="$H.ellipsis(title,16)" controls
+				<video v-if="fromData.online" :src="playUrl" id="play" :title="$H.ellipsis(title,16)" controls
 					:play-strategy="strategy" show-casting-button style="width: 750rpx;height: 420rpx;"
 					@fullscreenchange="fullscreenchange" :autoplay="autoplay" @controlstoggle="showControls"
 					:object-fit="objectFit" show-mute-btn enable-play-gesture vslide-gesture show-screen-lock-button
@@ -309,6 +309,7 @@
 		},
 		watch: {
 			playFromIndex(val, oldVal) {
+				this.parseUrl();
 				this.checkOnline();
 			},
 			episodeCurrent(val, oldVal) {
@@ -337,14 +338,6 @@
 			strategy() {
 				try {
 					return this.$H.getExt(this.src) == 'm3u8' ? 3 : 0;
-				} catch (e) {
-					//TODO handle the exception
-				}
-			},
-			src() {
-				try {
-					this.parseUrl();
-					return this.playUrl;
 				} catch (e) {
 					//TODO handle the exception
 				}
@@ -473,6 +466,7 @@
 				this.episodeList = this.detail.vod_play_url;
 				this.playFrom = this.detail.vod_play_from;
 				this.episode = this.episodeList[this.playFromIndex];
+				this.parseUrl();
 			},
 			cachePlay() {
 				if (!this.detail) {
@@ -569,21 +563,26 @@
 			changeEpisode(index) {
 				this.controls = false;
 				this.episodeCurrent = index;
-				this.current = 0;
+				this.parseUrl(1);
 				setTimeout(() => {
 					this.changeToEpi();
-					this.controls = true
+					this.controls = true;
 				}, 10);
 			},
-			parseUrl() {
+			async parseUrl(rest = false) {
 				let url = this.episode[this.episodeCurrent].src;
-				if (this.fromData.get_url) {
-					this.$api.parseUrl(url, this.fromData.get_url).then(res => {
-						this.playUrl = res.url;
+				if (this.fromData.get_url && url) {
+					uni.showLoading({
+						mask: true,
+						title: '解析中'
 					});
+					let res = await this.$api.parseUrl(url, this.fromData.get_url);
+					this.playUrl = res.url;
+					uni.hideLoading();
 				} else {
 					this.playUrl = url;
 				}
+				if (rest) this.current = 0;
 			},
 			openEpisodeListMenu() {
 				this.episodeListMenu = !this.episodeListMenu;
