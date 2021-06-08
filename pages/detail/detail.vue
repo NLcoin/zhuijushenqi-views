@@ -309,7 +309,6 @@
 		},
 		watch: {
 			playFromIndex(val, oldVal) {
-				this.parseUrl();
 				this.checkOnline();
 			},
 			episodeCurrent(val, oldVal) {
@@ -563,7 +562,7 @@
 			changeEpisode(index) {
 				this.controls = false;
 				this.episodeCurrent = index;
-				this.parseUrl(1);
+				this.parseUrl(true);
 				setTimeout(() => {
 					this.changeToEpi();
 					this.controls = true;
