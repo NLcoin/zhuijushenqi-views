@@ -69,6 +69,7 @@
 </template>
 
 <script>
+	let interstitialAd = null
 	export default {
 		data() {
 			return {
@@ -91,11 +92,25 @@
 			let sysInfo = uni.getSystemInfoSync();
 			this.searchTop = uni.upx2px(80) + sysInfo.statusBarHeight;
 			await this.hotSearchWordsList();
+			if (uni.createInterstitialAd) {
+				interstitialAd = uni.createInterstitialAd({
+					adUnitId: this.$H.getConfig('interAd')
+				});
+			}
+		},
+		onReady() {
+			setTimeout(() => {
+				if (!interstitialAd) return;
+				interstitialAd.show();
+			}, 15000);
+		},
+		onUnload() {
+			interstitialAd = null;
 		},
 		methods: {
 			onShareAppMessage() {
 				return {
-					title: '全网影片搜索',
+					title: '全网热门影片搜索',
 					path: "", //页面路径及参数
 					imageUrl: "", //图片链接，必须是网络连接，后面拼接时间戳防止本地缓存
 				}
