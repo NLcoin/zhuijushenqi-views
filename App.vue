@@ -1,9 +1,8 @@
 <script>
 	export default {
-		onLaunch: function() {
-			this.$api.getConfig().then(res => {
-				uni.setStorageSync('config', res);
-			});
+		onLaunch: async function() {
+			let res = await this.$api.getConfig();
+			uni.setStorageSync('config', res);
 			// 检测网络状态
 			uni.getNetworkType({
 				success: res => {

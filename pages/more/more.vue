@@ -1,7 +1,7 @@
 <template>
 	<view>
-		<u-navbar title-color="#222" :title="title" title-bold :border-bottom="false" 
-		title-size="30" back-icon-color="#222" back-icon-size="38" back-icon-name="arrow-left">
+		<u-navbar title-color="#222" :title="title" title-bold :border-bottom="false" title-size="30"
+			back-icon-color="#222" back-icon-size="38" back-icon-name="arrow-left">
 		</u-navbar>
 		<view class="u-skeleton m-2">
 			<template v-if="loading">
@@ -43,7 +43,8 @@
 			return {
 				title: '查看更多',
 				type: '',
-				loading:true,
+				current: 0,
+				loading: true,
 				result: {
 					page: 1,
 					pageSize: 12,
@@ -56,6 +57,7 @@
 		async onLoad(e) {
 			this.title = e.title;
 			this.type = e.type;
+			this.current = e.current;
 			await this.loadData();
 			this.loading = false;
 		},
@@ -67,7 +69,7 @@
 				let res = null;
 				switch (this.type) {
 					case 'today':
-						res = await this.$api.getVodToday(this.result.page, this.result.pageSize);
+						res = await this.$api.getVodToday(this.result.page, this.result.pageSize, this.current);
 						break;
 					case 'hotMovie':
 						res = await this.$api.getVodHotMovie(this.result.page, this.result.pageSize);

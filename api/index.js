@@ -17,15 +17,20 @@ export default {
 		});
 	},
 	// 获取影片轮播图
-	getVodSlider() {
-		return http.get('/vod/slider');
+	getVodSlider(type) {
+		return http.get('/vod/slider', {
+			params: {
+				type
+			}
+		});
 	},
 	// 获取影片今日更新
-	getVodToday(page, pageSize) {
+	getVodToday(page, pageSize, type) {
 		return http.get('/vod/today', {
 			params: {
 				page,
-				pageSize
+				pageSize,
+				type
 			}
 		});
 	},
@@ -66,11 +71,12 @@ export default {
 		});
 	},
 	// 获取热门列表
-	getVodHot(page, pageSize) {
+	getVodHot(page, pageSize, type) {
 		return http.get('/vod/hot/index', {
 			params: {
 				page,
-				pageSize
+				pageSize,
+				type
 			}
 		});
 	},
@@ -80,6 +86,15 @@ export default {
 			params: {
 				keyword,
 				page,
+				pageSize
+			}
+		});
+	},
+	// 搜索提示
+	searchComplete(keyword, pageSize = 10) {
+		return http.get('/vod/search/complete', {
+			params: {
+				keyword,
 				pageSize
 			}
 		});

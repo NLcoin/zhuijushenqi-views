@@ -1,12 +1,14 @@
 <template>
-	<view class="mb-2 mian" :class="listClass" @click="$H.toDetail(item.vod_id)">
-		<u-lazy-load :image="item.vod_pic" img-mode="aspectFill" height="310" border-radius="5" :is-effect="false">
-		</u-lazy-load>
-		<view v-if="iconText" class="top_icon">{{icon(item,iconText)}}</view>
-		<view class="vod_remark">{{item.vod_remarks.length > 8 ? '' :item.vod_remarks}}</view>
-		<view class="vod_score" v-if="isScore">{{item.vod_score}}</view>
-		<view class="tc text-ellipsis1 font26 mt-1">
-			{{item.vod_name}}
+	<view>
+		<view class="mb-2 mian" :class="listClass" @click="$H.toDetail(item.vod_id)">
+			<u-lazy-load :image="item.vod_pic" img-mode="aspectFill" height="310" border-radius="5" :is-effect="false">
+			</u-lazy-load>
+			<view v-if="iconText" class="top_icon">{{icon(item,iconText)}}</view>
+			<view class="vod_remark">{{item.vod_remarks.length > 8 ? '' :item.vod_remarks}}</view>
+			<view class="vod_score" v-if="isScore">{{item.vod_score}}</view>
+			<view class="tc text-ellipsis1 font26 mt-1">
+				{{item.vod_name}}
+			</view>
 		</view>
 	</view>
 </template>

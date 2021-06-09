@@ -7,7 +7,8 @@
 			"path": "pages/index/index",
 			"style": {
 				"navigationStyle": "custom",
-				"enablePullDownRefresh": true
+				"disableScroll": true,
+				"enablePullDownRefresh": false
 			}
 		}, {
 			"path": "pages/more/more",

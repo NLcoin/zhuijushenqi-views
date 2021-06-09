@@ -9,8 +9,8 @@
 			<view class="flex flex-column justify-between ml-2" style="height: 310rpx;">
 				<view class="text-ellipsis1 font28" v-html="item.vod_name"></view>
 				<view class="font28">
-					{{item.vod_year || '未知'}} · {{item.parentType ? item.parentType.type_name : '未知'}} ·
-					{{item.vod_area || '未知'}} · {{item.vod_lang || '未知'}}
+					{{item.parentType ? item.parentType.type_name : '未知'}} ·
+					{{item.vod_area || '未知'}} · {{item.vod_lang || '未知'}} · {{item.vod_remarks}}
 				</view>
 				<view class="text-ellipsis2 font28" v-html="replaceCon(item.vod_director)"></view>
 				<view class="text-ellipsis2 font28" v-html="replaceCon(item.vod_actor)"></view>

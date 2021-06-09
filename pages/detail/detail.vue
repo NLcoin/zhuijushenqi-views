@@ -587,6 +587,7 @@
 					uni.hideLoading();
 					if (!res || !res.data.url) {
 						this.playUrl = '';
+						this.handle.pause();
 						uni.showModal({
 							showCancel: false,
 							title: '提示信息',
@@ -612,7 +613,7 @@
 				}
 				setTimeout(() => {
 					this.changeToEpi();
-				}, 500);
+				}, 300);
 			},
 			changeToEpi() {
 				const index = this.episodeCurrent + 1;

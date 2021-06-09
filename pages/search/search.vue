@@ -4,44 +4,54 @@
 			<view class="ml-3 f7 font33">搜索影片</view>
 		</u-navbar>
 		<view class="p-2 bg-bai w100" style="z-index: 999999;position: sticky;" :style="{top:searchTop+'px'}">
-			<u-search placeholder="输入影片名 演员或导演搜索" v-model="keyword"  @search="submit()"
-				@change="change()" @custom="submit()"></u-search>
+			<u-search placeholder="输入影片名 演员或导演搜索" v-model="keyword" @search="submit()" @change="change()"
+				@custom="submit()" @focus="focusChange()" @blur="blurChange()"></u-search>
 		</view>
 		<view class="mx-2">
 			<template v-if="isSubmit == false">
-				<template v-if="hisList.length">
-					<!-- 搜索历史 -->
-					<view class="flex align-center justify-between mb-2 my-1">
-						<text class="hei">搜索历史</text>
-						<text class="font27 mr-15 gray" @click="dumpHistory()">清空</text>
+				<template v-if="!focus && !keyword">
+					<template v-if="hisList.length">
+						<!-- 搜索历史 -->
+						<view class="flex align-center justify-between mb-2 my-1">
+							<text class="hei">搜索历史</text>
+							<text class="font27 mr-15 gray" @click="dumpHistory()">清空</text>
+						</view>
+						<view class="flex align-center flex-wrap my-1">
+							<block v-for="(item,index) in hisList" :key="index">
+								<view class="his-word mr-2 mb-2" @click="clickWord(item)">
+									<text class="font24 hei">{{item}}</text>
+								</view>
+							</block>
+						</view>
+					</template>
+					<view class="mb-3 mt-1">
+						<vod-ad name="search_banner"></vod-ad>
 					</view>
-					<view class="flex align-center flex-wrap my-1">
-						<block v-for="(item,index) in hisList" :key="index">
-							<view class="his-word mr-2 mb-2" @click="clickWord(item)">
-								<text class="font24 hei">{{item}}</text>
+					<!-- 搜索热词 -->
+					<view class="hei my-1">大家都在搜</view>
+					<block v-for="(item,index) in hotWords" :key="index">
+						<view class="flex align-center border-bottom-hui w100 py-2" @click="clickWord(item.keyword)"
+							hover-class="bg-hui">
+							<view class="hot-num" :class="index+1 <= 3 ? 'hot-num-'+(index+1) : 'hot-num-other'">
+								{{index+1}}
 							</view>
-						</block>
-					</view>
+							<view class="font28">
+								{{item.keyword}}
+							</view>
+						</view>
+					</block>
 				</template>
-				<view class="mb-3 mt-1"> 
-					<vod-ad name="search_banner"></vod-ad>
-				</view>
-				<!-- 搜索热词 -->
-				<view class="hei my-1">大家都在搜</view>
-				<block v-for="(item,index) in hotWords" :key="index">
-					<view class="flex align-center border-bottom-hui w100 py-2" @click="clickWord(item.keyword)"
-						hover-class="bg-hui">
-						<view class="hot-num" :class="index+1 <= 3 ? 'hot-num-'+(index+1) : 'hot-num-other'">
-							{{index+1}}
-						</view>
-						<view class="font28">
-							{{item.keyword}}
-						</view>
-					</view>
-				</block>
+
+				<template v-else>
+					<block v-for="(item,index) in completeList" :key="index">
+						<search-complete-list :item="item" @doSearch="clickWord"></search-complete-list>
+					</block>
+				</template>
 			</template>
 			<template v-else>
-				<vod-item2 v-for="(item,index) in result.list" :key="index" :item="item"></vod-item2>
+				<view class="mt-1">
+					<vod-item2 v-for="(item,index) in result.list" :key="index" :item="item"></vod-item2>
+				</view>
 				<view v-if="!result.list.length" class="flex align-center justify-center my-5">
 					<u-button show-message-card type="default" size="mini" send-message-img open-type="contact"
 						send-message-path :send-message-title="keyword"
@@ -66,13 +76,15 @@
 				hotWords: uni.getStorageSync('hotwords') || [],
 				hisList: uni.getStorageSync('search_cache') || [],
 				isSubmit: false,
+				focus: false,
 				searchTop: 0,
 				result: {
 					page: 1,
 					pageSize: 10,
 					loadStatus: 'loading',
 					list: []
-				}
+				},
+				completeList: []
 			}
 		},
 		async onLoad() {
@@ -150,8 +162,11 @@
 				uni.hideLoading();
 			},
 			async change(val) {
-				if (!val.length) {
+				this.keyword = val;
+				if (!this.keyword.length) {
 					this.isSubmit = false;
+					this.focus = false;
+					this.completeList = [];
 					this.result = {
 						page: 1,
 						pageSize: 10,
@@ -160,10 +175,32 @@
 					};
 					return;
 				}
+				this.searchComplete(val);
 			},
 			clickWord(val) {
 				this.keyword = val;
 				this.submit();
+			},
+			focusChange() {
+				this.focus = true;
+				this.isSubmit = false;
+				this.searchComplete(this.keyword);
+			},
+			blurChange() {
+				this.focus = false;
+			},
+			searchComplete(e) {
+				if (!e || !e.length) return;
+				this.$u.debounce(async () => {
+					let res = await this.$api.searchComplete(encodeURIComponent(e));
+					for (let i = 0; i < res.data.list.length; i++) {
+						let oReg = new RegExp(this.keyword, "g");
+						let replaceString;
+						replaceString = '<span style="color:#ff6022;">' + this.keyword + '</span>';
+						res.data.list[i].vod_name2 = res.data.list[i].vod_name.replace(oReg, replaceString);
+					}
+					this.completeList = res.data.list;
+				}, 150);
 			},
 			saveSearchLog() {
 				uni.getStorage({
