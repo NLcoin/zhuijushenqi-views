@@ -48,7 +48,7 @@
 							</view>
 						</view>
 					</template>
-					<template v-if="rateMenu && isFullscreen && controls">
+					<template v-if="rateMenu && isFullscreen">
 						<view style="position: absolute;left:15%;top:30%;" class="flex flex-column">
 							<view class="font35 mb-3 white">倍速</view>
 							<view class="flex align-center mt-3">
@@ -61,7 +61,7 @@
 						</view>
 					</template>
 
-					<template v-if="fromMenu && isFullscreen && controls">
+					<template v-if="fromMenu && isFullscreen">
 						<u-popup v-model="fromMenu" mode="right" width="600" :mask="false"
 							:custom-style="{backgroundColor: 'rgba(0, 0, 0, 0.7)'}">
 							<scroll-view scroll-y="true" :scroll-with-animation="true" :show-scrollbar="false"
@@ -210,11 +210,15 @@
 						</u-tabs-zdy>
 					</view>
 				</template>
-
+				
+				<view class="my-2">
+					<official-account></official-account>
+				</view>
+				
 				<view class="mt-25 flex align-center justify-between">
 					<view class="font29 f6 u-skeleton-rect">影片简介</view>
-					<view class="font27 f5 gray u-skeleton-rect" @click="addGroup()"
-						style="text-decoration: underline;color: #FF0000;">点我加入交流群，追剧不迷路</view>
+					<view class="font27 f5 gray u-skeleton-rect" @click="dingyue()"
+						style="text-decoration: underline;color: #FF0000;">点我关注官方订阅号，追剧不迷路</view>
 				</view>
 
 				<view class="my-3 font28" v-if="!loading">
@@ -380,10 +384,10 @@
 					imageUrl: this.detail.vod_pic, //图片链接，必须是网络连接，后面拼接时间戳防止本地缓存
 				}
 			},
-			addGroup() {
+			dingyue() {
 				uni.previewImage({
-					current: 'https://upyun.2oc.cc/group.jpg', // 当前显示图片的http链接
-					urls: ['https://upyun.2oc.cc/group.jpg'] // 需要预览的图片http链接列表
+					current: 'https://upyun.2oc.cc/dingyue.jpg', // 当前显示图片的http链接
+					urls: ['https://upyun.2oc.cc/dingyue.jpg'] // 需要预览的图片http链接列表
 				});
 			},
 			copyIePlay() {
@@ -425,6 +429,7 @@
 					confirmText: '好的',
 					success: (res) => {
 						if (res.confirm) {
+							this.exitFullScreen();
 							setTimeout(() => {
 								this.redAd.show();
 							}, 50);
@@ -537,10 +542,6 @@
 			},
 			showControls(e) {
 				this.controls = e.detail.show;
-				if (!this.controls) {
-					this.rateMenu = false;
-					this.fromMenu = false;
-				}
 			},
 			openRateMenu() {
 				this.rateMenu = !this.rateMenu;
@@ -586,8 +587,8 @@
 					let res = await this.$api.parseUrl(url, this.fromData.get_url);
 					uni.hideLoading();
 					if (!res || !res.data.url) {
-						this.playUrl = '';
-						this.handle.pause();
+						this.playUrl = null;
+						this.episodeCurrent = 0;
 						uni.showModal({
 							showCancel: false,
 							title: '提示信息',
