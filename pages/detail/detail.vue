@@ -16,10 +16,10 @@
 				<view class="u-skeleton-rect" style="width: 750rpx;height: 420rpx;"></view>
 			</template>
 			<template v-else>
-				<video v-if="fromData.online && !showVideoAd" :src="playUrl" id="play" :title="$H.ellipsis(title,16)"
-					controls :play-strategy="strategy" show-casting-button style="width: 750rpx;height: 420rpx;"
+				<video v-if="!showVideoAd" :src="playUrl" id="play" :title="$H.ellipsis(title,16)" controls
+					:play-strategy="strategy" show-casting-button style="width: 750rpx;height: 420rpx;"
 					@fullscreenchange="fullscreenchange" :autoplay="autoplay" @controlstoggle="showControls"
-					:object-fit="objectFit" show-mute-btn enable-play-gesture vslide-gesture show-screen-lock-button
+					:object-fit="objectFit" show-mute-btn enable-play-gesture show-screen-lock-button
 					@timeupdate="timeupdate" :poster="detail.vod_pic" @ended="nextEpisode()" direction="90"
 					:duration="duration" :initial-time="current" :unit-id="$H.getConfig('play_start_ad')"
 					@error="error()">
@@ -105,14 +105,13 @@
 				</video>
 
 
-				<template
-					v-if="(!fromData.online && $H.getConfig('video_ad')) || (showVideoAd && $H.getConfig('video_ad'))">
+				<template v-if="showVideoAd && $H.getConfig('video_ad')">
 					<ad :unit-id="$H.getConfig('video_ad')" ad-type="video" ad-theme="white"></ad>
 				</template>
-				<template v-else-if="!fromData.online && !$H.getConfig('video_ad')">
-					<view style="width: 750rpx;height: 225px;background-color: #000000;"
+				<template v-else-if="!showVideoAd  &&  !$H.getConfig('video_ad')">
+					<view style="width: 750rpx;height: 420rpx;background-color: #000000;"
 						class="flex align-center justify-center">
-						<image :src="detail.vod_pic" mode="aspectFit" style="height: 225px;"></image>
+						<image :src="detail.vod_pic" mode="aspectFit" style="height: 420rpx;"></image>
 					</view>
 				</template>
 			</template>
@@ -154,13 +153,12 @@
 				</template>
 				<template v-else>
 					<view class="mt-2" style="margin-left: -10rpx;">
-						<u-tabs-zdy :list="episode" :current="episodeCurrent" @change="changeEpisode" name="episode"
-							:show-bar="false" :active-item-style="{backgroundColor:'#f7f9fb'}" active-color="#ff6022"
-							itemBgColor="#f7f9fb" @onTap="!fromData.online ? copyIePlay() : false">
+						<u-tabs-zdy ref="epitabs" :list="episode" :current="episodeCurrent" @change="changeEpisode"
+							name="episode" :show-bar="false" :active-item-style="{backgroundColor:'#f7f9fb'}"
+							active-color="#ff6022" itemBgColor="#f7f9fb">
 						</u-tabs-zdy>
 					</view>
 				</template>
-
 
 				<template v-if="!isFullscreen && episodeListMenu">
 					<uni-popup type="bottom" ref="epiList" :maskShow="true" @clickMask="openEpisodeListMenu()">
@@ -175,8 +173,7 @@
 								:scroll-into-view="toEpi" style="height: 100%;background-color: #fff;">
 								<view :id="'epi'+ (index+1)" v-for="(item,index) in episode" :key="index"
 									class="flex align-center justify-between border-bottom-hui mx-25"
-									style="height: 80rpx;line-height: 80rpx;"
-									@click.stop="!fromData.online ? copyIePlay() : changeEpisode(index)">
+									style="height: 80rpx;line-height: 80rpx;" @click.stop="changeEpisode(index)">
 									<view :class="episodeCurrent == index ? 'hon' :''" class="f6">
 										{{$H.ellipsis(item.episode,16) || $H.formatNumber(index+1)}}
 									</view>
@@ -210,15 +207,17 @@
 						</u-tabs-zdy>
 					</view>
 				</template>
-				
-				<view class="my-2">
-					<official-account></official-account>
+
+				<view class="my-2 flex justify-between flex-column" style="height: 450rpx;">
+					<view class="font29 f6 u-skeleton-rect">用户须知</view>
+					<view class="u-skeleton-rect">1、视频中的跑马灯，水印等广告请不要相信，资源收集时自带，本小程序无法控制。</view>
+					<view class="u-skeleton-rect">2、资源每30分钟更新一次，不同的播放源可播放的集数和清晰度不同，大家可自行选择</view>
+					<view class="u-skeleton-rect">3、遇到无法播放，加载慢，等可切换播放源，无法解决问题请点击“播放遇到问题？”</view>
+					<view class="hon u-skeleton-rect" @click="addGroup()">4、防止不可控因素导致小程序关闭，强烈建议大家加入我们的微信交流群，避免之后找不到小程序，点我加群</view>
 				</view>
-				
+
 				<view class="mt-25 flex align-center justify-between">
 					<view class="font29 f6 u-skeleton-rect">影片简介</view>
-					<view class="font27 f5 gray u-skeleton-rect" @click="dingyue()"
-						style="text-decoration: underline;color: #FF0000;">点我关注官方订阅号，追剧不迷路</view>
 				</view>
 
 				<view class="my-3 font28" v-if="!loading">
@@ -306,7 +305,6 @@
 			this.initRedAd();
 			let sysInfo = uni.getSystemInfoSync();
 			this.popupH = sysInfo.windowHeight - sysInfo.statusBarHeight - uni.upx2px(560) + 'px';
-			this.checkOnline();
 			this.loading = false;
 		},
 		onReady() {
@@ -329,14 +327,6 @@
 		watch: {
 			playFromIndex(val, oldVal) {
 				this.showVideoAd = false;
-				this.checkOnline();
-			},
-			episodeCurrent(val, oldVal) {
-				if (this.fromData.online == false) { // 不支持在线播放
-					setTimeout(() => {
-						this.handle.stop();
-					}, 10);
-				}
 			}
 		},
 		computed: {
@@ -349,7 +339,7 @@
 			},
 			strategy() {
 				try {
-					return this.$H.getExt(this.src) == 'm3u8' ? 3 : 0;
+					return this.$H.getExt(this.playUrl) == 'm3u8' ? 3 : 0;
 				} catch (e) {
 					//TODO handle the exception
 				}
@@ -384,21 +374,19 @@
 					imageUrl: this.detail.vod_pic, //图片链接，必须是网络连接，后面拼接时间戳防止本地缓存
 				}
 			},
-			dingyue() {
+			addGroup() {
 				uni.previewImage({
-					current: 'https://upyun.2oc.cc/dingyue.jpg', // 当前显示图片的http链接
-					urls: ['https://upyun.2oc.cc/dingyue.jpg'] // 需要预览的图片http链接列表
+					current: 'https://sp.2oc.cc/static/group.jpg', // 当前显示图片的http链接
+					urls: ['https://sp.2oc.cc/static/group.jpg'] // 需要预览的图片http链接列表
 				});
 			},
-			copyIePlay() {
-				const parse_url = this.fromData.parse_url + encodeURI(this.src);
+			copyIePlay(index) {
+				const parse_url = this.fromData.parse_url + encodeURI(this.playUrl);
 				uni.setClipboardData({
 					data: parse_url
 				});
 			},
 			initRedAd() {
-				// 不支持在线播放的，不播放激励视频
-				if (!this.fromData.online) return;
 				this.redAd = uni.createRewardedVideoAd({
 					adUnitId: this.$H.getConfig('rewarded_ad')
 				});
@@ -420,7 +408,6 @@
 			},
 			showRad() {
 				if (!this.isRadLoad) return;
-				if (!this.fromData.online) return; // 不支持在线播放也不触发
 				this.handle.pause(); // 暂停播放
 				uni.showModal({
 					title: '温馨提示',
@@ -439,30 +426,11 @@
 					}
 				});
 			},
-			checkOnline() {
-				if (this.fromData.online == false) { // 不支持在线播放
-					this.handle.stop();
-					this.exitFullScreen();
-					setTimeout(() => {
-						uni.showModal({
-							title: '提示信息',
-							content: '该播放源不支持在线播放，可点击想看的集数复制链接到浏览器观看',
-							showCancel: false,
-							confirmText: '我知道了',
-							success: res => {
-								if (res.confirm) {
-									this.copyIePlay();
-								}
-							}
-						});
-					}, 100);
-				}
-			},
 			exitFullScreen() {
 				if (this.isFullscreen && this.handle) this.handle.exitFullScreen();
 			},
 			async initPlay() {
-				if (!this.handle) this.handle = uni.createVideoContext(`play`, this);
+				this.handle = uni.createVideoContext(`play`, this);
 				if (!this.detail.vod_play_from.length) {
 					uni.showModal({
 						showCancel: false,
@@ -477,7 +445,7 @@
 				this.episodeList = this.detail.vod_play_url;
 				this.playFrom = this.detail.vod_play_from;
 				this.episode = this.episodeList[this.playFromIndex];
-				this.parseUrl();
+				await this.parseUrl();
 			},
 			cachePlay() {
 				if (!this.handle) {
@@ -567,11 +535,11 @@
 				}
 				this.changeEpisode(this.episodeCurrent + 1);
 			},
-			changeEpisode(index) {
+			async changeEpisode(index) {
 				if (this.episodeCurrent == index) return;
 				this.controls = false;
 				this.episodeCurrent = index;
-				this.parseUrl(true);
+				await this.parseUrl(true);
 				setTimeout(() => {
 					this.changeToEpi();
 					this.controls = true;
@@ -602,7 +570,9 @@
 				} else {
 					this.playUrl = url;
 				}
-				if (rest) this.current = 0;
+				if (rest) {
+					this.current = 0;
+				}
 			},
 			openEpisodeListMenu() {
 				this.episodeListMenu = !this.episodeListMenu;
@@ -624,16 +594,16 @@
 				this.fromMenu = !this.fromMenu;
 				this.rateMenu = false;
 			},
-			changeFrom(index) {
+			async changeFrom(index) {
 				if (this.playFromIndex == index) return;
 				this.playFromIndex = index;
 				this.fromMenu = false;
-				this.episodeCurrent = 0; // 重置当前播放 不同的播放源 相同的集数key不同
-				this.current = 0;
 				this.controls = false;
-				this.initPlay();
+				await this.initPlay();
+				this.current = 0;
+				this.episodeCurrent = 0;
 				setTimeout(() => {
-					this.controls = true
+					this.controls = true;
 				}, 10);
 			},
 			error(e) {

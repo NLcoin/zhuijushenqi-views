@@ -32,9 +32,6 @@ export default {
 			await this.initHotVariety();
 			// 热门动漫
 			await this.initHotComic();
-			// 更多...
-			await this.loadReData();
-			this.recommend.load = true;
 		},
 		async initSlider() {
 			let res = await this.$api.getVodSlider(0);

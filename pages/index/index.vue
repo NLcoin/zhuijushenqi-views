@@ -479,9 +479,16 @@
 			async loadPageData() {
 				if (this.current == 0) {
 					if (this.recommend.load) return;
+					uni.showLoading({
+						mask: true,
+						title: '加载中'
+					});
 					this.loading = true;
 					await this.loadRePage();
 					this.loading = false;
+					uni.hideLoading();
+					await this.loadReData();
+					this.recommend.load = true;
 				} else {
 					await this.loadOtPageData();
 				}
