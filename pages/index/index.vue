@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<u-navbar :is-back="false" title-color="#222" title-bold :border-bottom="false" title-size="30">
-			<view style="width: 550rpx;font-weight: 500;">
+			<view style="width: 550rpx;font-weight: 600;">
 				<u-tabs :list="tabs" active-color="#ff6022" @change="changeTabs" :current="current"
 					inactive-color="#222" font-size="32" :active-item-style="{fontSize:'33rpx'}"></u-tabs>
 			</view>
@@ -24,7 +24,7 @@
 							<view class="mb-3 u-skeleton-rect">
 								<u-swiper :list="recommend.sliderList" img-mode="aspectFill" :title="true"
 									bg-color="#fff" height="410" border-radius="0" :effect3d="false"
-									@click="clickSwiper">
+									@click="clickRecommendSwiper">
 								</u-swiper>
 							</view>
 							<view class="mt-4 mb-3 u-skeleton-rect">
@@ -141,7 +141,7 @@
 									<vod-item :item="item"></vod-item>
 								</block>
 							</view>
-							<view class="pt-3">
+							<view class="pt-3" style="padding-bottom: 130rpx;">
 								<u-loadmore :status="recommend.more.loadStatus" />
 							</view>
 						</view>
@@ -190,7 +190,7 @@
 									<vod-item :item="item"></vod-item>
 								</block>
 							</view>
-							<view class="pt-3">
+							<view class="pt-3" style="padding-bottom: 130rpx;">
 								<u-loadmore :status="more.dy.loadStatus" />
 							</view>
 						</view>
@@ -239,7 +239,7 @@
 									<vod-item :item="item"></vod-item>
 								</block>
 							</view>
-							<view class="pt-3">
+							<view class="pt-3" style="padding-bottom: 130rpx;">
 								<u-loadmore :status="more.dsj.loadStatus" />
 							</view>
 						</view>
@@ -288,7 +288,7 @@
 									<vod-item :item="item"></vod-item>
 								</block>
 							</view>
-							<view class="pt-3">
+							<view class="pt-3" style="padding-bottom: 130rpx;">
 								<u-loadmore :status="more.zy.loadStatus" />
 							</view>
 						</view>
@@ -337,7 +337,7 @@
 									<vod-item :item="item"></vod-item>
 								</block>
 							</view>
-							<view class="pt-3">
+							<view class="pt-3" style="padding-bottom: 130rpx;">
 								<u-loadmore :status="more.dm.loadStatus" />
 							</view>
 						</view>
@@ -443,11 +443,18 @@
 				interstitialAd = uni.createInterstitialAd({
 					adUnitId: this.$H.getConfig('interAd')
 				});
-				setTimeout(() => {
-					interstitialAd.show().catch((err) => {
-						console.error(err)
-					});
-				}, 5000);
+			}
+		},
+		onReady() {
+			setTimeout(() => {
+				if (!interstitialAd) return;
+				interstitialAd.show();
+			}, 15000);
+		},
+		computed: {
+			currentKey() {
+				const key = ['dy', 'dsj', 'zy', 'dm'];
+				return key[this.current - 1];
 			}
 		},
 		methods: {
@@ -462,7 +469,11 @@
 				})
 			},
 			clickSwiper(index) {
-				let vodId = this.sliderList[index].vod_id;
+				let vodId = this.sliderList[this.currentKey][index].vod_id;
+				this.$H.toDetail(vodId);
+			},
+			clickRecommendSwiper(index) {
+				let vodId = this.recommend.sliderList[index].vod_id;
 				this.$H.toDetail(vodId);
 			},
 			async loadPageData() {
@@ -476,8 +487,7 @@
 				}
 			},
 			async loadOtPageData() {
-				const key = ['dy', 'dsj', 'zy', 'dm'];
-				let index = key[this.current - 1];
+				let index = this.currentKey;
 				if (this.load[index] == true) return;
 				uni.showLoading({
 					mask: true,
