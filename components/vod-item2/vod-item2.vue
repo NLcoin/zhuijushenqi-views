@@ -8,12 +8,12 @@
 			</view>
 			<view class="flex flex-column justify-between ml-2" style="height: 310rpx;">
 				<view class="text-ellipsis1 font28" v-html="item.vod_name"></view>
-				<view class="font28">
-					{{item.parentType ? item.parentType.type_name : '未知'}} ·
-					{{item.vod_area || '未知'}} · {{item.vod_lang || '未知'}} · {{item.vod_remarks}}
+				<view class="font28 text-ellipsis2">
+					{{item.parentType ? item.parentType.type_name : item.type.type_name}} ·
+					{{item.vod_area || '未知'}} · {{item.vod_lang || '未知'}}
 				</view>
-				<view class="text-ellipsis2 font28" v-html="replaceCon(item.vod_director)"></view>
-				<view class="text-ellipsis2 font28" v-html="replaceCon(item.vod_actor)"></view>
+				<view class="text-ellipsis1 font28" v-html="replaceCon(item.vod_director)"></view>
+				<view class="text-ellipsis1 font28" v-html="replaceCon(item.vod_actor)"></view>
 				<view class="tc" style="width: 210rpx;height: 65rpx;background-color: #ff6022;border-radius: 8rpx;">
 					<text style="color: #FFFFFF;line-height: 65rpx;">查看详情</text>
 				</view>

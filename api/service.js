@@ -19,7 +19,7 @@ const http = new Request()
 http.setConfig((config) => {
 	/* 设置全局配置 */
 	config.baseURL = $C.api_url
-	config.timeout = 60000;
+	config.timeout = 15000;
 	return config
 })
 

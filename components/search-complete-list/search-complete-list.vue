@@ -3,9 +3,8 @@
 	hover-class="bg-hui" 
 	@click.stop="doSearch(item.vod_name)">
 		<u-icon name="search" color="gray" size="31"></u-icon>
-		<view class="ml-2 font27 words-list-text flex align-center">
+		<view class="ml-2 font27 words-list-text flex align-center text-ellipsis1">
 			<view v-html="item.vod_name2"></view>
-			<view>- {{item.vod_remarks}}</view>
 		</view>
 	</view>
 </template>

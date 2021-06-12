@@ -102,7 +102,7 @@
 			setTimeout(() => {
 				if (!interstitialAd) return;
 				interstitialAd.show();
-			}, 15000);
+			}, 3000);
 		},
 		onUnload() {
 			interstitialAd = null;

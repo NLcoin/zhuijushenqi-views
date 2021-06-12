@@ -16,13 +16,12 @@
 				<view class="u-skeleton-rect" style="width: 750rpx;height: 420rpx;"></view>
 			</template>
 			<template v-else>
-				<video v-if="!showVideoAd" :src="playUrl" id="play" :title="$H.ellipsis(title,16)" controls
-					:play-strategy="strategy" show-casting-button style="width: 750rpx;height: 420rpx;"
-					@fullscreenchange="fullscreenchange" :autoplay="autoplay" @controlstoggle="showControls"
-					:object-fit="objectFit" show-mute-btn enable-play-gesture show-screen-lock-button
-					@timeupdate="timeupdate" :poster="detail.vod_pic" @ended="nextEpisode()" direction="90"
-					:duration="duration" :initial-time="current" :unit-id="$H.getConfig('play_start_ad')"
-					@error="error()">
+				<video :src="playUrl" id="play" :title="$H.ellipsis(title,16)" controls show-casting-button
+					style="width: 750rpx;height: 420rpx;" @fullscreenchange="fullscreenchange" :autoplay="autoplay"
+					@controlstoggle="showControls" :object-fit="objectFit" show-mute-btn enable-play-gesture
+					show-screen-lock-button @timeupdate="timeupdate" :poster="detail.vod_pic" @ended="nextEpisode()"
+					direction="90" :duration="duration" :initial-time="current" :unit-id="$H.getConfig('play_start_ad')"
+					@error="error()" @loadedmetadata="loaded">
 					<template v-if="isFullscreen && controls">
 						<view style="position: absolute;top: 29px;right:110px;">
 							<view class="top-icon" @click.stop="openRateMenu()">倍速</view>
@@ -103,17 +102,6 @@
 						</u-popup>
 					</template>
 				</video>
-
-
-				<template v-if="showVideoAd && $H.getConfig('video_ad')">
-					<ad :unit-id="$H.getConfig('video_ad')" ad-type="video" ad-theme="white"></ad>
-				</template>
-				<template v-else-if="!showVideoAd  &&  !$H.getConfig('video_ad')">
-					<view style="width: 750rpx;height: 420rpx;background-color: #000000;"
-						class="flex align-center justify-center">
-						<image :src="detail.vod_pic" mode="aspectFit" style="height: 420rpx;"></image>
-					</view>
-				</template>
 			</template>
 			<view class="px-2 vodinfo">
 				<view class="flex align-center justify-between mt-1">
@@ -131,7 +119,7 @@
 				<view class="my-1 flex align-center justify-between">
 					<view class="font25 gray u-skeleton-rect text-ellipsis1" style="width: 400rpx;">
 						{{detail.parentType ? detail.parentType.type_name : detail.type.type_name}} ·
-						{{detail.vod_remarks ? detail.vod_remarks : '暂无'}} · {{detail.vod_hits}}次播放
+						最新 · {{detail.vod_hits}}次播放
 					</view>
 					<view class="u-skeleton-rect">
 						<u-rate v-model="detail.vod_score / 2" disabled></u-rate><text
@@ -208,46 +196,20 @@
 					</view>
 				</template>
 
-				<view class="my-2 flex justify-between flex-column" style="height: 450rpx;">
+				<view class="my-2 flex justify-between flex-column" style="height: 380rpx;">
 					<view class="font29 f6 u-skeleton-rect">用户须知</view>
-					<view class="u-skeleton-rect">1、视频中的跑马灯，水印等广告请不要相信，资源收集时自带，本小程序无法控制。</view>
+					<view class="u-skeleton-rect">1、视频中的跑马灯，水印等广告请不要相信，资源收集时自带，本小程序无法控制。播放源：腾讯视频，优酷视频等是官方资源，播放快无广告推荐使用，但稳定性一般，高峰期可能会出现无法播放</view>
 					<view class="u-skeleton-rect">2、资源每30分钟更新一次，不同的播放源可播放的集数和清晰度不同，大家可自行选择</view>
-					<view class="u-skeleton-rect">3、遇到无法播放，加载慢，等可切换播放源，无法解决问题请点击“播放遇到问题？”</view>
-					<view class="hon u-skeleton-rect" @click="addGroup()">4、防止不可控因素导致小程序关闭，强烈建议大家加入我们的微信交流群，避免之后找不到小程序，点我加群</view>
+					<view class="u-skeleton-rect">3、遇到无法播放，加载慢，等可切换播放源，部分蓝光资源可能加载会慢一些</view>
 				</view>
 
-				<view class="mt-25 flex align-center justify-between">
+				<view class="mt-3 flex align-center justify-between">
 					<view class="font29 f6 u-skeleton-rect">影片简介</view>
 				</view>
 
-				<view class="my-3 font28" v-if="!loading">
-					<u-read-more show-height="200" close-text="展开阅读" color="#ff6022">
-						<rich-text :nodes="replaceContent || '<p>该影片暂时没有简介哦</p>'"></rich-text>
-					</u-read-more>
+				<view class="my-3 font28 u-skeleton-rect">
+					<rich-text :nodes="replaceContent || '<p>该影片暂时没有简介哦</p>'"></rich-text>
 				</view>
-
-				<view class="my-2 flex align-center justify-between">
-					<view class="font29 f6 u-skeleton-rect">为你推荐</view>
-				</view>
-				<template v-if="loading">
-					<!-- 骨架屏模拟数据 -->
-					<view class="flex align-center justify-between flex-wrap">
-						<view class="u-skeleton-fillet vodskeleton mr-1 mb-4"></view>
-						<view class="u-skeleton-fillet vodskeleton mr-1 mb-4"></view>
-						<view class="u-skeleton-fillet vodskeleton mb-4"></view>
-						<view class="u-skeleton-fillet vodskeleton mr-1 mb-4"></view>
-						<view class="u-skeleton-fillet vodskeleton mr-1 mb-4"></view>
-						<view class="u-skeleton-fillet vodskeleton mb-4"></view>
-					</view>
-					<!-- end -->
-				</template>
-				<template v-else>
-					<view class="flex align-center justify-between flex-wrap voditem">
-						<block v-for="(item,index) in moreList" :key="index">
-							<vod-item :item="item"></vod-item>
-						</block>
-					</view>
-				</template>
 			</view>
 		</view>
 		<u-skeleton :loading="loading" :animation="true" bgColor="#FFF"></u-skeleton>
@@ -255,6 +217,7 @@
 </template>
 
 <script>
+	let isError = false;
 	export default {
 		data() {
 			return {
@@ -287,14 +250,7 @@
 				rateIndex: 2, // 播放倍速 index
 				rateMenu: false, // 倍速菜单
 				episodeListMenu: false, // 剧集菜单
-				fromMenu: false, // 播放源菜单
-				moreList: [],
-				isRadLoad: false, // 是否加载完成
-				isShowRad: false, // 是否 ad show过了
-				redAd: null,
-				isError: false,
-				showVideoAd: false,
-				timer: null
+				fromMenu: false // 播放源菜单
 			}
 		},
 		async onLoad(e) {
@@ -302,16 +258,9 @@
 			this.detail = res.data;
 			await this.initCache();
 			await this.initPlay();
-			this.initRedAd();
 			let sysInfo = uni.getSystemInfoSync();
 			this.popupH = sysInfo.windowHeight - sysInfo.statusBarHeight - uni.upx2px(560) + 'px';
 			this.loading = false;
-		},
-		onReady() {
-			setTimeout(async () => {
-				let more = await this.$api.getVodHot(1, 6);
-				this.moreList = more.data.list;
-			}, 300);
 		},
 		onShow() {
 			if (!this.handle) return;
@@ -321,25 +270,12 @@
 			this.handle.pause();
 		},
 		onUnload() {
-			clearTimeout(this.timer);
 			this.cachePlay();
-		},
-		watch: {
-			playFromIndex(val, oldVal) {
-				this.showVideoAd = false;
-			}
 		},
 		computed: {
 			replaceContent() {
 				try {
 					return this.detail.vod_content.replace(/<[^>]+>/g, "");
-				} catch (e) {
-					//TODO handle the exception
-				}
-			},
-			strategy() {
-				try {
-					return this.$H.getExt(this.playUrl) == 'm3u8' ? 3 : 0;
 				} catch (e) {
 					//TODO handle the exception
 				}
@@ -366,6 +302,11 @@
 				}
 			}
 		},
+		watch: {
+			episode(n, o) {
+				if (n.length !== o.length) this.episodeCurrent = 0;
+			},
+		},
 		methods: {
 			onShareAppMessage() {
 				return {
@@ -374,56 +315,10 @@
 					imageUrl: this.detail.vod_pic, //图片链接，必须是网络连接，后面拼接时间戳防止本地缓存
 				}
 			},
-			addGroup() {
-				uni.previewImage({
-					current: 'https://sp.2oc.cc/static/group.jpg', // 当前显示图片的http链接
-					urls: ['https://sp.2oc.cc/static/group.jpg'] // 需要预览的图片http链接列表
-				});
-			},
 			copyIePlay(index) {
 				const parse_url = this.fromData.parse_url + encodeURI(this.playUrl);
 				uni.setClipboardData({
 					data: parse_url
-				});
-			},
-			initRedAd() {
-				this.redAd = uni.createRewardedVideoAd({
-					adUnitId: this.$H.getConfig('rewarded_ad')
-				});
-				this.redAd.onLoad(e => {
-					this.isRadLoad = true;
-				});
-				this.redAd.onError(e => {
-					this.isRadLoad = false;
-					this.handle.play();
-				});
-				this.redAd.onClose(res => {
-					if (res && res.isEnded) {
-						this.handle.play(); // 播放开始
-						this.$H.msg('切换高速线路成功');
-					} else {
-						this.$H.msg('您未完整观看视频，无法获得高速播放奖励');
-					}
-				});
-			},
-			showRad() {
-				if (!this.isRadLoad) return;
-				this.handle.pause(); // 暂停播放
-				uni.showModal({
-					title: '温馨提示',
-					content: '播放视频后可获得高速播放奖励，是否领取？',
-					cancelText: '不了',
-					confirmText: '好的',
-					success: (res) => {
-						if (res.confirm) {
-							this.exitFullScreen();
-							setTimeout(() => {
-								this.redAd.show();
-							}, 50);
-						} else {
-							this.handle.play();
-						}
-					}
 				});
 			},
 			exitFullScreen() {
@@ -431,21 +326,10 @@
 			},
 			async initPlay() {
 				this.handle = uni.createVideoContext(`play`, this);
-				if (!this.detail.vod_play_from.length) {
-					uni.showModal({
-						showCancel: false,
-						title: '提示信息',
-						content: '该影片资源缺失暂时无法观看，我们正在处理中',
-						confirmText: '我知道了',
-						success: res => {
-							this.$H.back();
-						}
-					})
-				}
 				this.episodeList = this.detail.vod_play_url;
 				this.playFrom = this.detail.vod_play_from;
 				this.episode = this.episodeList[this.playFromIndex];
-				await this.parseUrl();
+				this.loadPlayUrl();
 			},
 			cachePlay() {
 				if (!this.handle) {
@@ -500,13 +384,6 @@
 			timeupdate(e) {
 				this.duration = e.detail.duration;
 				this.current = e.detail.currentTime;
-				if (this.isShowRad == false) {
-					this.isShowRad = true;
-					clearTimeout(this.timer);
-					this.timer = setTimeout(() => {
-						this.showRad();
-					}, 30000);
-				}
 			},
 			showControls(e) {
 				this.controls = e.detail.show;
@@ -535,44 +412,16 @@
 				}
 				this.changeEpisode(this.episodeCurrent + 1);
 			},
-			async changeEpisode(index) {
+			changeEpisode(index) {
 				if (this.episodeCurrent == index) return;
 				this.controls = false;
 				this.episodeCurrent = index;
-				await this.parseUrl(true);
+				this.current = 0;
+				this.loadPlayUrl();
 				setTimeout(() => {
 					this.changeToEpi();
 					this.controls = true;
 				}, 10);
-			},
-			async parseUrl(rest = false) {
-				let url = this.episode[this.episodeCurrent].src;
-				if (this.fromData.get_url && url) {
-					uni.showLoading({
-						mask: true,
-						title: '解析中'
-					});
-					let res = await this.$api.parseUrl(url, this.fromData.get_url);
-					uni.hideLoading();
-					if (!res || !res.data.url) {
-						this.playUrl = null;
-						this.episodeCurrent = 0;
-						uni.showModal({
-							showCancel: false,
-							title: '提示信息',
-							content: '该播放源解析资源失败，请切换播放源如无其他播放源可搜索同名其他资源播放，如果都不可播放请联系客服处理'
-						});
-						this.exitFullScreen();
-						this.showVideoAd = true;
-						return;
-					}
-					this.playUrl = res.data.url;
-				} else {
-					this.playUrl = url;
-				}
-				if (rest) {
-					this.current = 0;
-				}
 			},
 			openEpisodeListMenu() {
 				this.episodeListMenu = !this.episodeListMenu;
@@ -600,15 +449,25 @@
 				this.fromMenu = false;
 				this.controls = false;
 				await this.initPlay();
-				this.current = 0;
-				this.episodeCurrent = 0;
 				setTimeout(() => {
 					this.controls = true;
 				}, 10);
 			},
+			loadPlayUrl() {
+				try {
+					let url = this.episode[this.episodeCurrent].src;
+					if (this.fromData.get_url && url) {
+						this.playUrl = this.$H.getConfig(this.fromData.get_url) + url;
+						return;
+					}
+					this.playUrl = url;
+				} catch (e) {
+					//TODO handle the exception
+				}
+			},
 			error(e) {
-				if (this.isError) return;
-				this.isError = true;
+				if (isError) return;
+				isError = true;
 				uni.showModal({
 					showCancel: false,
 					title: '温馨提示',

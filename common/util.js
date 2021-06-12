@@ -197,7 +197,7 @@ export default {
 	},
 
 	toDetail(id) {
-		if (!this.getConfig('check')) {
+		if (!this.getConfig('check') && this.getTodayCache()) {
 			uni.navigateTo({
 				url: '/pages/detail/detail?id=' + id
 			});
@@ -208,11 +208,27 @@ export default {
 		}
 	},
 
+	setTodayCache() {
+		const timeStamp = new Date(new Date().setHours(0, 0, 0, 0)) / 1000; // 当天凌晨时间戳
+		uni.setStorageSync('ad_today', timeStamp);
+	},
+
+	getTodayCache() {
+		const timeStamp = new Date(new Date().setHours(0, 0, 0, 0)) / 1000; // 当天凌晨时间戳
+		let cache = uni.getStorageSync('ad_today');
+		if (!cache) return false;
+		if (cache < timeStamp) {
+			uni.removeStorageSync('ad_today');
+			return false;
+		}
+		return true;
+	},
+
 	getConfig(name) {
-		try{
+		try {
 			let config = uni.getStorageSync('config');
 			return config[name];
-		}catch(e){
+		} catch (e) {
 			return '';
 		}
 	},
@@ -222,7 +238,7 @@ export default {
 		const ext = filePath.substr(index + 1);
 		return ext;
 	},
-	
+
 	formatNumber(num) {
 		num = num.toString()
 		return num[1] ? num : '0' + num

@@ -5,7 +5,7 @@
 				<view class="vod-pic-position">
 					<image :src="item.vod_pic" class="vod-pic" mode="aspectFill" lazy-load>
 					</image>
-					<view class="vod-remarks-position">{{$H.ellipsis(item.vod_remarks,10)}}</view>
+					<!-- <view class="vod-remarks-position">{{$H.ellipsis(item.vod_remarks,10)}}</view> -->
 				</view>
 				<view class="flex flex-column justify-between ml-15" style="height: 150rpx;">
 					<view class="text-ellipsis2 hei font28">{{item.title}}

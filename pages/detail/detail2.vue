@@ -17,19 +17,26 @@
 					<view class="flex flex-column justify-between mb-1" style="height: 330rpx;">
 						<view class="f7 font31 text-ellipsis1 u-skeleton-rect">{{detail.vod_name}}</view>
 						<view class="font27 text-ellipsis1 u-skeleton-rect">{{detail.vod_area}} / {{detail.vod_lang}} /
-							{{detail.parentType.type_name}}
+							{{detail.parentType ? detail.parentType.type_name : detail.type.type_name}}
 						</view>
-						<view class="font27 text-ellipsis1 u-skeleton-rect">上映时间{{detail.vod_year}} / {{replaceRemarks}}</view>
+						<view class="font27 text-ellipsis1 u-skeleton-rect">上映时间 / {{replaceYear}}
+						</view>
 						<view class="font27 text-ellipsis2 u-skeleton-rect">主演：{{replaceActor || '未知'}}</view>
 						<view class="font27 text-ellipsis1 u-skeleton-rect">导演：{{replaceDirector || '未知'}}</view>
 						<view class="flex align-center u-skeleton-fillet">
-							<u-button show-message-card hover-class="none" open-type="contact" send-message-path
-							:send-message-title="detail.vod_name" size="mini" type="warning" class="mr-3">
-								联系我们
+							<u-button size="mini" type="warning" class="mr-3" @click="addGroup()">
+								添加交流群
 							</u-button>
-							<u-button open-type="share" size="mini" type="success">
-								分享给好友
-							</u-button>
+							<template v-if="$H.getConfig('check')">
+								<u-button open-type="share" size="mini" type="success">
+									分享给好友
+								</u-button>
+							</template>
+							<template v-else>
+								<u-button size="mini" type="success" @click="clickAd()">
+									立即播放
+								</u-button>
+							</template>
 						</view>
 					</view>
 				</view>
@@ -42,23 +49,23 @@
 							class="hon ml-1">{{detail.vod_score || '0.0'}}分</text>
 					</view>
 				</view>
-				
-				<vod-ad name="index_banner2" v-if="!loading"></vod-ad>
+
+				<view class="mt-1" v-if="!loading">
+					<vod-ad name="index_banner"></vod-ad>
+				</view>
 
 				<view class="mt-2 flex align-center justify-between">
 					<view class="font29 f6 u-skeleton-rect">影片简介</view>
 				</view>
 
-				<view class="my-2 font28" v-if="!loading">
-					<u-read-more show-height="200" close-text="展开阅读" color="#ff6022">
-						<rich-text :nodes="replaceContent || '<p>该影片暂时没有简介哦</p>'"></rich-text>
-					</u-read-more>
+				<view class="my-2 font28 u-skeleton-rect">
+					<rich-text :nodes="replaceContent || '<p>该影片暂时没有简介哦</p>'"></rich-text>
 				</view>
 
 				<view class="my-2 flex align-center justify-between">
 					<view class="font29 f6 u-skeleton-rect">为你推荐</view>
 				</view>
-				
+
 				<template v-if="loading">
 					<!-- 骨架屏模拟数据 -->
 					<view class="flex align-center justify-between flex-wrap">
@@ -78,6 +85,7 @@
 						</block>
 					</view>
 				</template>
+
 			</view>
 		</view>
 		<u-skeleton :loading="loading" :animation="true" bgColor="#FFF"></u-skeleton>
@@ -85,16 +93,18 @@
 </template>
 
 <script>
+	let redAd = null;
+	let isRadLoad = true;
 	export default {
 		data() {
 			return {
 				detail: {},
-				toEpi: null,
-				loading: true,
-				moreList: []
+				moreList: [],
+				loading: true
 			}
 		},
 		async onLoad(e) {
+			this.initRedAd();
 			let res = await this.$api.vodDetail(e.id);
 			this.detail = res.data;
 			let more = await this.$api.getVodHot(1, 6);
@@ -102,8 +112,8 @@
 			this.loading = false;
 		},
 		onUnload() {
-			if(!this.detail){
-				return ;
+			if (!this.detail) {
+				return;
 			}
 			let {
 				vod_id,
@@ -133,6 +143,14 @@
 			uni.setStorageSync('history2', cache);
 		},
 		computed: {
+			replaceYear() {
+				try {
+					if (!this.detail.vod_year || this.detail.vod_year == 0) return '未知年份';
+					return this.detail.vod_year;
+				} catch (e) {
+					//TODO handle the exception
+				}
+			},
 			replaceDirector() {
 				try {
 					return this.detail.vod_director.replace(/,/g, ' ');
@@ -153,13 +171,6 @@
 				} catch (e) {
 					//TODO handle the exception
 				}
-			},
-			replaceRemarks() {
-				try {
-					return this.$H.ellipsis(this.detail.vod_remarks);
-				} catch (e) {
-					//TODO handle the exception
-				}
 			}
 		},
 		methods: {
@@ -169,6 +180,58 @@
 					path: "", //页面路径及参数
 					imageUrl: this.detail.vod_pic, //图片链接，必须是网络连接，后面拼接时间戳防止本地缓存
 				}
+			},
+			addGroup() {
+				uni.previewImage({
+					current: 'https://sp.2oc.cc/static/group.jpg?' + this.$H.getTime(), // 当前显示图片的http链接
+					urls: ['https://sp.2oc.cc/static/group.jpg?' + this.$H.getTime()] // 需要预览的图片http链接列表
+				});
+			},
+			initRedAd() {
+				redAd = uni.createRewardedVideoAd({
+					adUnitId: this.$H.getConfig('rewarded_ad')
+				});
+				redAd.onLoad(e => {
+					isRadLoad = true;
+				});
+				redAd.onError(e => {
+					isRadLoad = false;
+				});
+				redAd.onClose(res => {
+					if (res && res.isEnded) {
+						this.$H.setTodayCache();
+						this.$H.msg('观看完成');
+						setTimeout(() => {
+							uni.redirectTo({
+								url: '/pages/detail/detail?id=' + this.detail.vod_id
+							})
+						}, 100);
+					} else {
+						this.$H.msg('您未完整观看视频，无法获得奖励');
+					}
+				});
+			},
+			clickAd() {
+				if (!isRadLoad) {
+					uni.redirectTo({
+						url: '/pages/detail/detail?id=' + this.detail.vod_id
+					});
+					return;
+				}
+				uni.showModal({
+					title: '提示信息',
+					content: '每日一次，希望理解',
+					success: res => {
+						if (res.confirm) {
+							redAd.show().catch(() => {
+								uni.redirectTo({
+									url: '/pages/detail/detail?id=' + this.detail
+										.vod_id
+								});
+							});
+						}
+					}
+				});
 			}
 		}
 	}

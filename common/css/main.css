@@ -656,6 +656,8 @@
 	background-color: #f7f7f9;
 }
 
+
+
 .bg-hon {
 	background-color: #ef5952;
 }
@@ -684,6 +686,14 @@
 
 .white {
 	color: #fff;
+}
+
+.bg-mian{
+	background-color: #ff6022;
+}
+
+.mian-color{
+	color: #ff6022;
 }
 
 .bg-bai {
@@ -828,3 +838,4 @@
 	height: 320rpx;
 	border-radius: 5rpx;
 }
+

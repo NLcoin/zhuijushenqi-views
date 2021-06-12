@@ -52,9 +52,10 @@
 				let data = [];
 				if (check) {
 					data = uni.getStorageSync('history2');
+					return data;
 				}
 				data = uni.getStorageSync('history');
-				if(!data) return [];
+				if (!data) return [];
 				return data.sort((a, b) => {
 					return b.uptime - a.uptime;
 				});
