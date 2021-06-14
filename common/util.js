@@ -69,12 +69,78 @@ export default {
 		return Math.round(new Date() / 1000);
 	},
 
+	getRandomColor() {
+		const rgb = []
+		for (let i = 0; i < 3; ++i) {
+			let color = Math.floor(Math.random() * 256).toString(16)
+			color = color.length == 1 ? '0' + color : color
+			rgb.push(color)
+		}
+		return '#' + rgb.join('')
+	},
+
 	/**
 	 * 时间转换时间戳
 	 * @param {Object} time
 	 */
 	parseTime(time) {
 		return Math.round(new Date(time) / 1000);
+	},
+
+	parseChatTime(v1, v2) {
+		if (v2 < 1) {
+			return false;
+		}
+		if ((v1 - v2) < 300) { // 小于300秒不显示
+			return false;
+		} else if (v1 - v2 < 86400) { // 是否为当天
+			return this.formatTime(v2);
+		} else {
+			return this.formatFullTime(v2);
+		}
+	},
+
+	formatTime(timestamp) {
+		if (String(timestamp).length === 10) {
+			timestamp *= 1000
+		}
+		let date = new Date(timestamp)
+		let hour = date.getHours()
+		let minute = date.getMinutes()
+		if (hour >= 0 && hour < 6) {
+			return '凌晨 ' + [hour, minute].map(this.formatNumber).join(':')
+		}
+		if (hour >= 6 && hour < 12) {
+			return '早上 ' + [hour, minute].map(this.formatNumber).join(':')
+		}
+		if (hour === 12) {
+			return '中午 ' + [hour, minute].map(this.formatNumber).join(':')
+		}
+		if (hour > 12 && hour < 18) {
+			return '下午 ' + [hour, minute].map(this.formatNumber).join(':')
+		}
+		if (hour >= 18 < hour < 24) {
+			return '晚上 ' + [hour, minute].map(this.formatNumber).join(':')
+		}
+	},
+
+	formatFullTime(timestamp, n = 1) {
+		if (String(timestamp).length === 10) {
+			timestamp *= 1000
+		}
+		let date = new Date(timestamp)
+		let year = date.getFullYear()
+		let month = date.getMonth() + 1
+		let day = date.getDate()
+
+		let hour = date.getHours()
+		let minute = date.getMinutes()
+		let second = date.getSeconds()
+
+		if (n === 1) return [year, month, day].map(this.formatNumber).join('-') + ' ' + [hour, minute, second].map(this
+			.formatNumber).join(':')
+		if (n === 2) return [month, day].map(this.formatNumber).join('-') + ' ' + [hour, minute].map(this.formatNumber)
+			.join(':')
 	},
 
 	/**

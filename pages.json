@@ -35,6 +35,7 @@
 			"path": "pages/detail/detail",
 			"style": {
 				"navigationStyle": "custom",
+				"disableScroll": true,
 				"enablePullDownRefresh": false
 			}
 

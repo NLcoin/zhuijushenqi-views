@@ -51,7 +51,7 @@
 								<template v-else>
 									<view class="flex align-center justify-between flex-wrap voditem">
 										<block v-for="(item,index) in recommend.today.list" :key="index">
-											<vod-item :item="item"></vod-item>
+											<vod-item :item="item" iconText="class"></vod-item>
 										</block>
 									</view>
 								</template>
@@ -138,7 +138,7 @@
 							</view>
 							<view class="flex align-center justify-between flex-wrap voditem">
 								<block v-for="(item,index) in recommend.more.list" :key="index">
-									<vod-item :item="item"></vod-item>
+									<vod-item :item="item" ></vod-item>
 								</block>
 							</view>
 							<view class="pt-3" style="padding-bottom: 130rpx;">

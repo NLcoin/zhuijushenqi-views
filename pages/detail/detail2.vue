@@ -23,17 +23,17 @@
 						</view>
 						<view class="font27 text-ellipsis2 u-skeleton-rect">主演：{{replaceActor || '未知'}}</view>
 						<view class="font27 text-ellipsis1 u-skeleton-rect">导演：{{replaceDirector || '未知'}}</view>
-						<view class="flex align-center u-skeleton-fillet">
-							<u-button size="mini" type="warning" class="mr-3" @click="addGroup()">
+						<view class="flex align-center">
+							<u-button type="warning" class="mr-3 u-skeleton-fillet" @click="addGroup()">
 								添加交流群
 							</u-button>
 							<template v-if="$H.getConfig('check')">
-								<u-button open-type="share" size="mini" type="success">
+								<u-button open-type="share" type="success" class="u-skeleton-fillet">
 									分享给好友
 								</u-button>
 							</template>
 							<template v-else>
-								<u-button size="mini" type="success" @click="clickAd()">
+								<u-button type="success" @click="clickAd()" class="u-skeleton-fillet">
 									立即播放
 								</u-button>
 							</template>
@@ -219,8 +219,8 @@
 					return;
 				}
 				uni.showModal({
-					title: '提示信息',
-					content: '每日一次，希望理解',
+					title: '温馨提示',
+					content: '该广告每天只会出现一次，希望理解',
 					success: res => {
 						if (res.confirm) {
 							redAd.show().catch(() => {

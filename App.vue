@@ -53,6 +53,7 @@
 							success: res => {
 								if (res.confirm) {
 									updateManager.applyUpdate();
+									uni.removeStorageSync('history');
 								}
 							}
 						})

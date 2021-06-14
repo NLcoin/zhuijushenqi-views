@@ -13,15 +13,15 @@
 		</u-navbar>
 		<view class="u-skeleton">
 			<template v-if="loading">
-				<view class="u-skeleton-rect" style="width: 750rpx;height: 420rpx;"></view>
+				<view class="u-skeleton-rect" style="width: 750rpx;height: 225px;"></view>
 			</template>
 			<template v-else>
 				<video :src="playUrl" id="play" :title="$H.ellipsis(title,16)" controls show-casting-button
-					style="width: 750rpx;height: 420rpx;" @fullscreenchange="fullscreenchange" :autoplay="autoplay"
+					style="width: 750rpx;" @fullscreenchange="fullscreenchange" :autoplay="autoplay"
 					@controlstoggle="showControls" :object-fit="objectFit" show-mute-btn enable-play-gesture
 					show-screen-lock-button @timeupdate="timeupdate" :poster="detail.vod_pic" @ended="nextEpisode()"
 					direction="90" :duration="duration" :initial-time="current" :unit-id="$H.getConfig('play_start_ad')"
-					@error="error()" @loadedmetadata="loaded">
+					@error="error()" danmu-btn enable-danmu :danmu-list="danmuList" play-strategy="3">
 					<template v-if="isFullscreen && controls">
 						<view style="position: absolute;top: 29px;right:110px;">
 							<view class="top-icon" @click.stop="openRateMenu()">倍速</view>
@@ -103,377 +103,423 @@
 					</template>
 				</video>
 			</template>
-			<view class="px-2 vodinfo">
-				<view class="flex align-center justify-between mt-1">
-					<view class="font33 f7 u-skeleton-rect">
-						{{$H.ellipsis(detail.vod_name || '影片名称')}}
-					</view>
-					<view style="margin-right: -20rpx;" class="u-skeleton-rect">
-						<u-button :hair-line="false" open-type="share" hover-class="none"
-							:custom-style="{border:'none',fontSize:'27rpx'}" size="mini">
-							分享给好友
-						</u-button>
-					</view>
+			<view class="flex align-center justify-between pb-15 u-skeleton-rect" style="width: 750rpx;height: 80rpx;">
+				<view style="width: 230rpx;margin-left: -10rpx;">
+					<u-tabs :list="tabs" :is-scroll="false" :current="tabCurrent" @change="tabChange"
+						active-color="#ff6022" item-width="40">
+					</u-tabs>
 				</view>
-
-				<view class="my-1 flex align-center justify-between">
-					<view class="font25 gray u-skeleton-rect text-ellipsis1" style="width: 400rpx;">
-						{{detail.parentType ? detail.parentType.type_name : detail.type.type_name}} ·
-						最新 · {{detail.vod_hits}}次播放
-					</view>
-					<view class="u-skeleton-rect">
-						<u-rate v-model="detail.vod_score / 2" disabled></u-rate><text
-							class="hon ml-1">{{detail.vod_score || '0.0'}}分</text>
-					</view>
-				</view>
-
-				<view class="mt-2 flex align-center justify-between u-skeleton-rect">
-					<view class="font29 f6">播放列表</view>
-					<view class="flex align-center" @click="openEpisodeListMenu()">
-						<view class="gray font26 mr-1">
-							{{episodeListMenu ? '收起' : '展开'}}
-						</view>
-						<u-icon :name="episodeListMenu ? 'arrow-up' : 'arrow-down'" color="gray"></u-icon>
-					</view>
-				</view>
-				<template v-if="loading">
-					<view class="mt-2 u-skeleton-rect w100" style="height: 90rpx;"></view>
-				</template>
-				<template v-else>
-					<view class="mt-2" style="margin-left: -10rpx;">
-						<u-tabs-zdy ref="epitabs" :list="episode" :current="episodeCurrent" @change="changeEpisode"
-							name="episode" :show-bar="false" :active-item-style="{backgroundColor:'#f7f9fb'}"
-							active-color="#ff6022" itemBgColor="#f7f9fb">
-						</u-tabs-zdy>
-					</view>
-				</template>
-
-				<template v-if="!isFullscreen && episodeListMenu">
-					<uni-popup type="bottom" ref="epiList" :maskShow="true" @clickMask="openEpisodeListMenu()">
-						<view :style="{height:popupH}" class="w100 bg-bai">
-							<view class="flex align-center justify-between border-bottom-hui" style="height: 80rpx;"
-								@click="openEpisodeListMenu()">
-								<text style="font-size: 30rpx;line-height: 80rpx;"
-									class="ml-2 f6">全部剧集({{episode.length}})</text>
-								<u-icon name="arrow-down" size="30" color="gray" class="mr-2"></u-icon>
-							</view>
-							<scroll-view scroll-y="true" :scroll-with-animation="true" :show-scrollbar="true"
-								:scroll-into-view="toEpi" style="height: 100%;background-color: #fff;">
-								<view :id="'epi'+ (index+1)" v-for="(item,index) in episode" :key="index"
-									class="flex align-center justify-between border-bottom-hui mx-25"
-									style="height: 80rpx;line-height: 80rpx;" @click.stop="changeEpisode(index)">
-									<view :class="episodeCurrent == index ? 'hon' :''" class="f6">
-										{{$H.ellipsis(item.episode,16) || $H.formatNumber(index+1)}}
-									</view>
-									<view class="gray font25" v-if="episodeCurrent == index">正在播放</view>
-								</view>
-								<view class="bg-bai" style="height: 80rpx;"></view>
-							</scroll-view>
-						</view>
-					</uni-popup>
-				</template>
-
-				<view class="mt-2 flex align-center justify-between">
-					<view class="font29 f6 u-skeleton-rect">播放来源</view>
-					<view style="margin-right: -33rpx;">
-						<u-button :hair-line="false" show-message-card hover-class="none"
-							:send-message-img="detail.vod_pic" open-type="contact" send-message-path
-							:send-message-title="title" :custom-style="{border:'none',fontSize:'28rpx'}" size="mini"
-							class="u-skeleton-rect">
-							<text class="font27 gray">播放遇到问题？</text>
-						</u-button>
-					</view>
-				</view>
-				<template v-if="loading">
-					<view class="mt-2 u-skeleton-rect w100" style="height: 90rpx;"></view>
-				</template>
-				<template v-else>
-					<view class="mt-2" style="margin-left: -10rpx;">
-						<u-tabs-zdy :list="playFrom" :current="playFromIndex" @change="changeFrom" :show-bar="false"
-							:active-item-style="{backgroundColor:'#f7f9fb'}" active-color="#ff6022"
-							itemBgColor="#f7f9fb" name="name">
-						</u-tabs-zdy>
-					</view>
-				</template>
-
-				<view class="my-2 flex justify-between flex-column" style="height: 380rpx;">
-					<view class="font29 f6 u-skeleton-rect">用户须知</view>
-					<view class="u-skeleton-rect">1、视频中的跑马灯，水印等广告请不要相信，资源收集时自带，本小程序无法控制。播放源：腾讯视频，优酷视频等是官方资源，播放快无广告推荐使用，但稳定性一般，高峰期可能会出现无法播放</view>
-					<view class="u-skeleton-rect">2、资源每30分钟更新一次，不同的播放源可播放的集数和清晰度不同，大家可自行选择</view>
-					<view class="u-skeleton-rect">3、遇到无法播放，加载慢，等可切换播放源，部分蓝光资源可能加载会慢一些</view>
-				</view>
-
-				<view class="mt-3 flex align-center justify-between">
-					<view class="font29 f6 u-skeleton-rect">影片简介</view>
-				</view>
-
-				<view class="my-3 font28 u-skeleton-rect">
-					<rich-text :nodes="replaceContent || '<p>该影片暂时没有简介哦</p>'"></rich-text>
+				<view class="tr" style="line-height: 80rpx;">
+					<u-button :hair-line="false" open-type="share" hover-class="none"
+						:custom-style="{border:'none',fontSize:'27rpx'}" size="mini">
+						分享给好友
+					</u-button>
 				</view>
 			</view>
+
+			<template v-if="!isFullscreen && episodeListMenu">
+				<uni-popup type="bottom" ref="epiList" :maskShow="true" @clickMask="openEpisodeListMenu()">
+					<view :style="{height:popupH}" class="w100 bg-bai">
+						<view class="flex align-center justify-between border-bottom-hui" style="height: 80rpx;"
+							@click="openEpisodeListMenu()">
+							<text style="font-size: 30rpx;line-height: 80rpx;"
+								class="ml-2 f6">全部剧集({{episode.length}})</text>
+							<u-icon name="arrow-down" size="30" color="gray" class="mr-2"></u-icon>
+						</view>
+						<scroll-view scroll-y="true" :scroll-with-animation="true" :show-scrollbar="true"
+							:scroll-into-view="toEpi" style="height: 100%;background-color: #fff;">
+							<view :id="'epi'+ (index+1)" v-for="(item,index) in episode" :key="index"
+								class="flex align-center justify-between border-bottom-hui mx-25"
+								style="height: 80rpx;line-height: 80rpx;" @click.stop="changeEpisode(index)">
+								<view :class="episodeCurrent == index ? 'hon' :''" class="f6">
+									{{$H.ellipsis(item.episode,16) || $H.formatNumber(index+1)}}
+								</view>
+								<view class="gray font25" v-if="episodeCurrent == index">正在播放</view>
+							</view>
+							<view class="bg-bai" style="height: 80rpx;"></view>
+						</scroll-view>
+					</view>
+				</uni-popup>
+			</template>
+			<swiper :current="tabCurrent" @change="changeSwiper" :style="{height:swiperH}">
+				<swiper-item>
+					<scroll-view scroll-y="true" :style="{height:scrollH}">
+						<view class="px-2 vodinfo">
+							<view class="flex align-center justify-between mt-1">
+								<view class="font33 f7 u-skeleton-rect">
+									{{$H.ellipsis(detail.vod_name || '影片名称')}}
+								</view>
+							</view>
+
+							<view class="my-1 flex align-center justify-between">
+								<view class="font25 gray u-skeleton-rect text-ellipsis1" style="width: 400rpx;">
+									{{detail.parentType ? detail.parentType.type_name : detail.type.type_name}} ·
+									{{detail.vod_remarks}} · {{detail.vod_hits}}次播放
+								</view>
+								<view class="u-skeleton-rect">
+									<u-rate v-model="detail.vod_score / 2" disabled></u-rate><text
+										class="hon ml-1">{{detail.vod_score || '0.0'}}分</text>
+								</view>
+							</view>
+
+							<view class="mt-2 flex align-center justify-between u-skeleton-rect">
+								<view class="font29 f6">播放列表</view>
+								<view class="flex align-center" @click="openEpisodeListMenu()">
+									<view class="gray font26 mr-1">
+										{{episodeListMenu ? '收起' : '展开'}}
+									</view>
+									<u-icon :name="episodeListMenu ? 'arrow-up' : 'arrow-down'" color="gray"></u-icon>
+								</view>
+							</view>
+							<template v-if="loading">
+								<view class="mt-2 u-skeleton-rect w100" style="height: 90rpx;"></view>
+							</template>
+							<template v-else>
+								<view class="mt-2" style="margin-left: -10rpx;">
+									<u-tabs-zdy ref="epitabs" :list="episode" :current="episodeCurrent"
+										@change="changeEpisode" name="episode" :show-bar="false"
+										:active-item-style="{backgroundColor:'#f7f9fb'}" active-color="#ff6022"
+										itemBgColor="#f7f9fb">
+									</u-tabs-zdy>
+								</view>
+							</template>
+							<view class="mt-2 flex align-center justify-between">
+								<view class="font29 f6 u-skeleton-rect">播放来源</view>
+								<view style="margin-right: -33rpx;">
+									<u-button :hair-line="false" show-message-card hover-class="none"
+										:send-message-img="detail.vod_pic" open-type="contact" send-message-path
+										:send-message-title="title" :custom-style="{border:'none',fontSize:'28rpx'}"
+										size="mini" class="u-skeleton-rect">
+										<text class="font27 gray">播放遇到问题？</text>
+									</u-button>
+								</view>
+							</view>
+							<template v-if="loading">
+								<view class="mt-2 u-skeleton-rect w100" style="height: 90rpx;"></view>
+							</template>
+							<template v-else>
+								<view class="mt-2" style="margin-left: -10rpx;">
+									<u-tabs-zdy :list="playFrom" :current="playFromIndex" @change="changeFrom"
+										:show-bar="false" :active-item-style="{backgroundColor:'#f7f9fb'}"
+										active-color="#ff6022" itemBgColor="#f7f9fb" name="name">
+									</u-tabs-zdy>
+								</view>
+							</template>
+
+							<view class="my-2 flex justify-between flex-column" style="height: 380rpx;">
+								<view class="font29 f6 u-skeleton-rect">使用帮助</view>
+								<view class="u-skeleton-rect">
+									1、视频中的跑马灯，水印等广告请不要相信，资源收集时自带，本小程序无法控制。播放源：腾讯视频，优酷视频等是官方资源，播放快无广告推荐使用，但稳定性一般，高峰期可能会出现无法播放
+								</view>
+								<view class="u-skeleton-rect hong">2、不同的播放源可播放的集数和清晰度不同，一些播放源是第二天更新，一些是当天，大家可自行查看选择
+								</view>
+								<view class="u-skeleton-rect hong">3、遇到无法播放，加载慢，等可切换播放源，部分蓝光资源可能加载会慢一些</view>
+							</view>
+
+							<view class="mt-3 flex align-center justify-between">
+								<view class="font29 f6 u-skeleton-rect">影片简介</view>
+							</view>
+
+							<view class="my-3 font28 u-skeleton-rect">
+								<rich-text :nodes="replaceContent || '<p>该影片暂时没有简介哦</p>'" v-if="!loading"></rich-text>
+							</view>
+						</view>
+					</scroll-view>
+				</swiper-item>
+				<swiper-item>
+					<scroll-view :scroll-into-view="chatToIndex" scroll-y="true" style="background-color: #f8f8f8;"
+						:style="{height:scrollH2}" scroll-with-animation>
+						<view class="flex align-center justify-center" style="margin-top: 230rpx;" v-if="!isAddRoom">
+							<u-button type="success" @click="addRoom()">
+								加入讨论(当前{{roomNum}}人)
+							</u-button>
+						</view>
+						<template v-if="isAddRoom">
+							<block v-for="(item,index) in msgList" :key="index">
+								<template v-if="item.data.type == 'msg'">
+									<view class="py-2 flex align-center justify-center gray font27"
+										v-if="$H.parseChatTime(item.time,index > 0 ? msgList[index-1].time : 0)">
+										{{$H.parseChatTime(item.time,index > 0 ? msgList[index-1].time : 0)}}
+									</view>
+									<view class="flex align-start px-2 my-2" :id="'chat'+index"
+										:style="userInfo.avatarUrl == item.from_pic ? 'flex-direction:row-reverse' : ''">
+										<u-avatar :src="item.from_pic" size="mini"></u-avatar>
+										<view class="p-2 mx-2"
+											:style="item.data.content.length <= 3 ? 'text-align: center;' : 'text-align: left;'"
+											:class="userInfo.avatarUrl == item.from_pic ? 'bg-lv' : 'bg-bai'"
+											style="border-radius: 10rpx;min-width: 100rpx;max-width: 400rpx;">
+											{{item.data.content}}
+										</view>
+									</view>
+								</template>
+								<template v-else>
+									<view class="flex align-center justify-center my-2 gray" :id="'chat'+index">
+										{{item.data.content}}
+									</view>
+								</template>
+							</block>
+							<view class="py-2"></view>
+						</template>
+					</scroll-view>
+					<view style="height: 100rpx;" class="border-top-hui bg-bai flex align-center fixed-bottom"
+						v-if="isAddRoom">
+						<view style="width: 640rpx;border-radius: 10rpx;" class="p-2 bg-hui ml-2">
+							<input v-model="roomMsg" type="text" placeholder="请文明发言,内容会同步发送到弹幕" :adjust-position="false"
+								@confirm="sendRoomMsg()" />
+						</view>
+						<view class="font30 ml-2" @touchend.prevent="sendRoomMsg()">
+							发送
+						</view>
+					</view>
+				</swiper-item>
+			</swiper>
 		</view>
 		<u-skeleton :loading="loading" :animation="true" bgColor="#FFF"></u-skeleton>
 	</view>
 </template>
 
 <script>
-	let isError = false;
+	let socketOpen = false;
+	let client_id = null;
+	import playMixin from '@/pages/detail/mixin/playMixin.js';
 	export default {
+		mixins: [playMixin],
 		data() {
 			return {
-				detail: {}, // 视频详情数据
-				handle: null, // 操作句柄
-				cache: null, // 缓存数据
-				isFullscreen: false, // 是否全屏
-				autoplay: true, // 是否自动播放
-				duration: 0, // 视频总时长
-				current: 0, // 当前播放进度
-				controls: false, // 是否打开控制层
-				objectFit: 'contain', // 视频填充模式
-				episodeCurrent: 0, // 当前播放集数
-				playUrl: null, // 当前播放地址
-				toEpi: null,
 				loading: true,
-				episode: [], // 当前播放剧集列表
-				episodeList: [], // 剧集列表
-				playFrom: [], // 播放源
-				playFromIndex: 0, // 当前播放源
-				supportRate: [ // 支持的倍速
-					0.5,
-					0.8,
-					1.0,
-					1.25,
-					1.5,
-					2.0
-				],
-				popupH: 0,
-				rateIndex: 2, // 播放倍速 index
-				rateMenu: false, // 倍速菜单
-				episodeListMenu: false, // 剧集菜单
-				fromMenu: false // 播放源菜单
+				tabs: [{
+					name: '详情'
+				}, {
+					name: '讨论'
+				}],
+				swiperH: 220,
+				scrollH: 200,
+				scrollH2: 200,
+				tabCurrent: 0,
+				userInfo: {},
+				isAddRoom: false,
+				roomMsg: '',
+				msgList: [],
+				roomNum: 0,
+				danmuList: [],
+				chatToIndex: ''
 			}
 		},
 		async onLoad(e) {
 			let res = await this.$api.vodDetail(e.id);
 			this.detail = res.data;
+			if (e.hasOwnProperty('fid')) {
+				this.playFromIndex = e.fid;
+			}
+			await this.loadDanmuList();
+			await this.loadOnlineNum();
+			await this.loadRoomLog();
 			await this.initCache();
 			await this.initPlay();
-			let sysInfo = uni.getSystemInfoSync();
-			this.popupH = sysInfo.windowHeight - sysInfo.statusBarHeight - uni.upx2px(560) + 'px';
 			this.loading = false;
+			let sysInfo = uni.getSystemInfoSync();
+			this.popupH = sysInfo.windowHeight - uni.upx2px(630) + 'px';
+			this.swiperH = sysInfo.windowHeight - uni.upx2px(630) + 'px';
+			let rectInfo = await this.$u.getRect('.vodinfo');
+			this.scrollH = rectInfo.height + 'px';
+			this.scrollH2 = sysInfo.windowHeight - uni.upx2px(815) + 'px';
 		},
 		onShow() {
+			this.connWss();
 			if (!this.handle) return;
 			this.handle.play();
 		},
-		onHide() {
+		async onHide() {
 			this.handle.pause();
+			if (this.isAddRoom) {
+				await this.$api.addRoom({
+					roomId: this.detail.vod_id,
+					client_id,
+					data: {
+						type: 'left',
+						content: this.userInfo.nickName +
+							' 暂时离开了'
+					},
+					from_nick: this.userInfo.nickName,
+					from_pic: this.userInfo.avatarUrl
+				});
+			}
 		},
 		onUnload() {
-			this.cachePlay();
-		},
-		computed: {
-			replaceContent() {
-				try {
-					return this.detail.vod_content.replace(/<[^>]+>/g, "");
-				} catch (e) {
-					//TODO handle the exception
-				}
-			},
-			title() {
-				try {
-					return this.detail.vod_name + ' ' + this.episode[this.episodeCurrent].episode;
-				} catch (e) {
-					//TODO handle the exception
-				}
-			},
-			fromName() {
-				try {
-					return this.playFrom[this.playFromIndex].name;
-				} catch (e) {
-					//TODO handle the exception
-				}
-			},
-			fromData() {
-				try {
-					return this.playFrom[this.playFromIndex];
-				} catch (e) {
-					//TODO handle the exception
-				}
+			if (this.isAddRoom) {
+				this.$api.exitRoom({
+					roomId: this.detail.vod_id,
+					client_id,
+					data: {
+						type: 'exit',
+						content: this.userInfo.nickName +
+							' 退出了'
+					},
+					from_nick: this.userInfo.nickName,
+					from_pic: this.userInfo.avatarUrl
+				});
 			}
+			this.cachePlay();
 		},
 		watch: {
 			episode(n, o) {
-				if (n.length !== o.length) this.episodeCurrent = 0;
-			},
+				if (n.length !== o.length && o.length) this.episodeCurrent = 0;
+			}
 		},
 		methods: {
 			onShareAppMessage() {
 				return {
 					title: this.title,
-					path: "", //页面路径及参数
+					path: '/pages/detail/detail?id=' + id + '&fid=' + this.playFromIndex, //页面路径及参数
 					imageUrl: this.detail.vod_pic, //图片链接，必须是网络连接，后面拼接时间戳防止本地缓存
 				}
 			},
-			copyIePlay(index) {
-				const parse_url = this.fromData.parse_url + encodeURI(this.playUrl);
-				uni.setClipboardData({
-					data: parse_url
+			async loadRoomLog() {
+				const res = await this.$api.getRoomLog(this.detail.vod_id);
+				this.msgList = res.data;
+			},
+			async loadDanmuList() {
+				const res = await this.$api.getRoomDm(this.detail.vod_id);
+				this.danmuList = res.data;
+			},
+			async connWss() {
+				uni.connectSocket({
+					url: 'wss://ws.2oc.cc'
+				});
+				uni.onSocketOpen(res => {
+					socketOpen = true;
+				});
+				uni.onSocketMessage(res => {
+					const data = JSON.parse(res.data);
+					let {
+						type
+					} = data.data;
+					if (type == 'conn') {
+						client_id = data.client_id;
+					} else if (type == 'exit') {
+						this.roomNum -= 1;
+						this.msgList.push(data);
+					} else if (type == 'add') {
+						this.roomNum += 1;
+						this.msgList.push(data);
+					} else if (type == 'msg') {
+						this.msgList.push(data);
+						this.sendDm(data.data.content);
+					} else if (type == 'left') {
+						this.msgList.push(data);
+					}
+					this.chatToBottom();
+				});
+				uni.onSocketError((res) => {
+					socketOpen = false;
+					this.connWss();
+				});
+				uni.onSocketClose((res) => {
+					socketOpen = false;
+				});
+
+				if (this.isAddRoom) {
+					await this.$api.addRoom({
+						roomId: this.detail.vod_id,
+						client_id,
+						data: {
+							type: 'add',
+							content: this.userInfo.nickName +
+								' 回来了'
+						},
+						from_nick: this.userInfo.nickName,
+						from_pic: this.userInfo.avatarUrl
+					});
+				}
+			},
+			async loadOnlineNum() {
+				const roomNum = await this.$api.getRoomNum(this.detail.vod_id);
+				this.roomNum = roomNum.data.count;
+			},
+			tabChange(index) {
+				this.tabCurrent = index;
+			},
+			chatToBottom() {
+				const lastIndex = this.msgList.length - 1;
+				if (lastIndex < 0) return;
+				this.chatToIndex = 'chat' + lastIndex;
+			},
+			async addRoom() {
+				if (!uni.getUserProfile) {
+					this.$H.msg('微信版本不支持，无法加入');
+					return;
+				}
+				if (!socketOpen || !client_id) {
+					console.log(client_id);
+					this.$H.msg(client_id);
+					return;
+				}
+				uni.getUserProfile({
+					desc: "获取你的昵称、头像、地区及性别",
+					success: async (res) => {
+						this.userInfo = res.userInfo;
+						let addRes = await this.$api.addRoom({
+							roomId: this.detail.vod_id,
+							client_id,
+							data: {
+								type: 'add',
+								content: this.userInfo.nickName +
+									' 加入了讨论'
+							},
+							from_nick: this.userInfo.nickName,
+							from_pic: this.userInfo.avatarUrl
+						});
+						if (!addRes.errorCode) {
+							this.isAddRoom = true;
+							this.loadOnlineNum();
+						} else {
+							this.$H.msg('链接服务器失败，请关闭页面重试');
+						}
+					},
+					fail: e => {
+						uni.showModal({
+							content: '获取微信基础信息失败，加入房间失败',
+							showCancel: false,
+							confirmText: '我知道了',
+						});
+					}
 				});
 			},
-			exitFullScreen() {
-				if (this.isFullscreen && this.handle) this.handle.exitFullScreen();
+			async sendRoomMsg() {
+				if (!this.roomMsg.length) {
+					this.$H.msg('说点什么吧');
+					return;
+				}
+				const data = {
+					roomId: this.detail.vod_id,
+					client_id,
+					data: {
+						type: 'msg',
+						content: this.roomMsg,
+						current: parseInt(this.current)
+					},
+					from_nick: this.userInfo.nickName,
+					from_pic: this.userInfo.avatarUrl,
+				};
+				this.$u.throttle(async () => {
+					await this.$api.sendRoomMessage(data);
+				}, 100);
+				this.roomMsg = '';
 			},
-			async initPlay() {
-				this.handle = uni.createVideoContext(`play`, this);
-				this.episodeList = this.detail.vod_play_url;
-				this.playFrom = this.detail.vod_play_from;
-				this.episode = this.episodeList[this.playFromIndex];
-				this.loadPlayUrl();
-			},
-			cachePlay() {
+			sendDm(msg) {
 				if (!this.handle) {
 					return;
 				}
-				let {
-					vod_id,
-					vod_pic,
-					vod_remarks
-				} = this.detail;
-				let cache = uni.getStorageSync('history') || [];
-				let cacheId = cache.findIndex(v => v.vod_id == vod_id);
-				let saveData = {
-					vod_id,
-					vod_pic,
-					vod_remarks,
-					uptime: this.$H.getTime(),
-					duration: Math.floor(this.duration),
-					current: Math.floor(this.current),
-					episodeCurrent: this.episodeCurrent,
-					playFrom: this.playFromIndex,
-					title: this.title,
-					fromName: this.fromName
-				};
-				if (cacheId == '-1') {
-					cache.unshift(saveData);
-					if (cache.length >= 20) cache.pop();
-				} else {
-					cache[cacheId] = saveData;
-				}
-				uni.setStorageSync('history', cache);
-			},
-			async initCache() {
-				let {
-					vod_id
-				} = this.detail;
-				let cache = uni.getStorageSync('history') || [];
-				let cacheId = cache.findIndex(v => v.vod_id == vod_id);
-				if (cacheId == '-1') return;
-				this.cache = cache[cacheId];
-				if (this.cache) {
-					this.playFromIndex = this.cache.playFrom;
-					this.episodeCurrent = this.cache.episodeCurrent;
-					this.duration = this.cache.duration;
-					this.current = this.cache.current;
-					this.$H.msg('正在加载上次播放记录');
-				}
-			},
-			fullscreenchange(e) {
-				this.isFullscreen = e.detail.fullscreen;
-			},
-			timeupdate(e) {
-				this.duration = e.detail.duration;
-				this.current = e.detail.currentTime;
-			},
-			showControls(e) {
-				this.controls = e.detail.show;
-			},
-			openRateMenu() {
-				this.rateMenu = !this.rateMenu;
-				this.fromMenu = false;
-			},
-			changeRate(index) {
-				this.rateIndex = index;
-				this.rateMenu = false;
-				this.handle.playbackRate(this.supportRate[index]);
-			},
-			changeObjectFit(val) {
-				this.objectFit = val;
-			},
-			lastEpisode() {
-				if (this.episodeCurrent < 1) {
-					return this.$H.msg('没有上一集了');
-				}
-				this.changeEpisode(this.episodeCurrent - 1);
-			},
-			nextEpisode() {
-				if (this.episodeCurrent == this.episode.length - 1) {
-					return this.$H.msg('没有下一集了');
-				}
-				this.changeEpisode(this.episodeCurrent + 1);
-			},
-			changeEpisode(index) {
-				if (this.episodeCurrent == index) return;
-				this.controls = false;
-				this.episodeCurrent = index;
-				this.current = 0;
-				this.loadPlayUrl();
-				setTimeout(() => {
-					this.changeToEpi();
-					this.controls = true;
-				}, 10);
-			},
-			openEpisodeListMenu() {
-				this.episodeListMenu = !this.episodeListMenu;
-				this.toEpi = null;
-				if (this.episodeListMenu) {
-					setTimeout(() => this.$refs['epiList'].open(), 10);
-				} else {
-					this.$refs['epiList'].close();
-				}
-				setTimeout(() => {
-					this.changeToEpi();
-				}, 300);
-			},
-			changeToEpi() {
-				const index = this.episodeCurrent + 1;
-				this.toEpi = 'epi' + index;
-			},
-			openFromMenu() {
-				this.fromMenu = !this.fromMenu;
-				this.rateMenu = false;
-			},
-			async changeFrom(index) {
-				if (this.playFromIndex == index) return;
-				this.playFromIndex = index;
-				this.fromMenu = false;
-				this.controls = false;
-				await this.initPlay();
-				setTimeout(() => {
-					this.controls = true;
-				}, 10);
-			},
-			loadPlayUrl() {
-				try {
-					let url = this.episode[this.episodeCurrent].src;
-					if (this.fromData.get_url && url) {
-						this.playUrl = this.$H.getConfig(this.fromData.get_url) + url;
-						return;
-					}
-					this.playUrl = url;
-				} catch (e) {
-					//TODO handle the exception
-				}
-			},
-			error(e) {
-				if (isError) return;
-				isError = true;
-				uni.showModal({
-					showCancel: false,
-					title: '温馨提示',
-					content: '视频加载慢或长时间无反应，可尝试切换播放源如无其他播放源可搜索同名其他资源播放,部分蓝光资源可能加载时间会稍微长一些，有任何疑问可加群或联系客服解决。',
-					confirmText: '我知道了'
+				this.handle.sendDanmu({
+					text: msg,
+					color: this.$H.getRandomColor()
 				});
+			},
+			changeSwiper(e) {
+				this.tabCurrent = e.detail.current;
+				if (this.tabCurrent == 1) {
+					this.loadOnlineNum();
+				}
 			}
 		}
 	}

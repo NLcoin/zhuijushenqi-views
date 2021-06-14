@@ -583,6 +583,10 @@
 	align-items: center;
 }
 
+.align-start{
+	align-items: flex-start;
+}
+
 .justify-center {
 	justify-content: center;
 }
@@ -672,6 +676,10 @@
 
 .bg-disable {
 	background-color: #cecece;
+}
+
+.bg-lv{
+	background-color: #41d951;
 }
 
 .disabled {
@@ -839,3 +847,9 @@
 	border-radius: 5rpx;
 }
 
+.fixed-bottom{
+	position: fixed;
+	right: 0;
+	left: 0;
+	bottom: 100rpx;
+}

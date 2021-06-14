@@ -53,8 +53,10 @@ http.interceptors.response.use(async (response) => {
 	return response.data;
 }, (response) => {
 	try{
-		uni.showLoading({
-			title:response.data.msg
+		uni.showToast({
+			title: response.data.msg,
+			icon: 'none',
+			duration: 2000
 		});
 		return;
 	}catch(e){

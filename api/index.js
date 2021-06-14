@@ -110,5 +110,29 @@ export default {
 				vod_id: id
 			}
 		});
+	},
+	// 加入房间
+	addRoom(params) {
+		return http.post('/room/add', params);
+	},
+	// 发送房间消息
+	sendRoomMessage(params) {
+		return http.post('/room/send', params);
+	},
+	// 获取房间人数
+	getRoomNum(roomId) {
+		return http.get('/room/online?roomId=' + roomId);
+	},
+	// 退出房间
+	exitRoom(params) {
+		return http.post('/room/exit', params);
+	},
+	// 房间消息记录
+	getRoomLog(roomId) {
+		return http.get('/room/index?roomId=' + roomId);
+	},
+	// 房间消息记录
+	getRoomDm(roomId) {
+		return http.get('/room/dm?roomId=' + roomId);
 	}
 }
