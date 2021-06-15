@@ -1,5 +1,5 @@
 <template>
-	<view style="width: 750rpx;overflow-x: hidden;">
+	<view>
 		<u-navbar title-color="#222" :title="detail.vod_name || '影片名称'" title-bold :border-bottom="false"
 			title-size="30" back-icon-color="#222" back-icon-size="40" :is-back="false">
 			<view class="flex align-center">
@@ -149,6 +149,9 @@
 								<view class="font33 f7 u-skeleton-rect">
 									{{$H.ellipsis(detail.vod_name || '影片名称')}}
 								</view>
+								<view class="font27 u-skeleton-rect" @click.stop="toDownload">
+									<u-icon name="download" class="mr-1"></u-icon>离线缓存
+								</view>
 							</view>
 
 							<view class="my-1 flex align-center justify-between">
@@ -211,9 +214,9 @@
 								<view class="u-skeleton-rect">
 									1、视频中的跑马灯，水印等广告请不要相信，资源收集时自带，本小程序无法控制。播放源：腾讯视频，优酷视频等是官方资源，播放快无广告推荐使用，但稳定性一般，高峰期可能会出现无法播放
 								</view>
-								<view class="u-skeleton-rect hong">2、不同的播放源可播放的集数和清晰度不同，一些播放源是第二天更新，一些是当天，大家可自行查看选择
+								<view class="u-skeleton-rect">2、不同的播放源可播放的集数和清晰度不同，一些播放源是第二天更新，一些是当天，大家可自行查看选择
 								</view>
-								<view class="u-skeleton-rect hong">3、遇到无法播放，加载慢，等可切换播放源，部分蓝光资源可能加载会慢一些</view>
+								<view class="u-skeleton-rect">3、遇到无法播放，加载慢，等可切换播放源，部分蓝光资源可能加载会慢一些</view>
 							</view>
 
 							<view class="mt-3 flex align-center justify-between">
@@ -263,7 +266,7 @@
 					</scroll-view>
 					<view style="height: 100rpx;" class="border-top-hui bg-bai flex align-center fixed-bottom"
 						v-if="isAddRoom">
-						<view style="width: 640rpx;border-radius: 10rpx;" class="p-2 bg-hui ml-2">
+						<view style="width: 630rpx;border-radius: 10rpx;" class="p-2 bg-hui ml-2">
 							<input v-model="roomMsg" type="text" placeholder="请文明发言,内容会同步发送到弹幕" :adjust-position="false"
 								@confirm="sendRoomMsg()" />
 						</view>
@@ -281,6 +284,9 @@
 <script>
 	let socketOpen = false;
 	let client_id = null;
+	let redAd = null;
+	let isRadLoad = true;
+	let isAdWatch = false;
 	import playMixin from '@/pages/detail/mixin/playMixin.js';
 	export default {
 		mixins: [playMixin],
@@ -292,9 +298,9 @@
 				}, {
 					name: '讨论'
 				}],
-				swiperH: 220,
-				scrollH: 200,
-				scrollH2: 200,
+				swiperH: 1520 + 'px',
+				scrollH: 1520 + 'px',
+				scrollH2: 200 + 'px',
 				tabCurrent: 0,
 				userInfo: {},
 				isAddRoom: false,
@@ -316,6 +322,7 @@
 			await this.loadRoomLog();
 			await this.initCache();
 			await this.initPlay();
+			this.initRedAd();
 			this.loading = false;
 			let sysInfo = uni.getSystemInfoSync();
 			this.popupH = sysInfo.windowHeight - uni.upx2px(630) + 'px';
@@ -332,7 +339,7 @@
 		async onHide() {
 			this.handle.pause();
 			if (this.isAddRoom) {
-				await this.$api.addRoom({
+				await this.$api.sendRoomMessage({
 					roomId: this.detail.vod_id,
 					client_id,
 					data: {
@@ -374,12 +381,38 @@
 					imageUrl: this.detail.vod_pic, //图片链接，必须是网络连接，后面拼接时间戳防止本地缓存
 				}
 			},
+			initRedAd() {
+				redAd = uni.createRewardedVideoAd({
+					adUnitId: this.$H.getConfig('rewarded_ad')
+				});
+				redAd.onLoad(e => {
+					isRadLoad = true;
+				});
+				redAd.onError(e => {
+					isRadLoad = false;
+				});
+				redAd.onClose(res => {
+					if (res && res.isEnded) {
+						this.$H.msg('观看完成');
+						isAdWatch = true;
+						setTimeout(() => {
+							uni.navigateTo({
+								url: '/pages/detail/cache/cache?vod_id=' + this.detail.vod_id +
+									'&watching=' + this
+									.episodeCurrent
+							});
+						}, 100);
+					} else {
+						this.$H.msg('您未完整观看视频，无法获得奖励');
+					}
+				});
+			},
 			async loadRoomLog() {
 				const res = await this.$api.getRoomLog(this.detail.vod_id);
 				this.msgList = res.data;
 			},
 			async loadDanmuList() {
-				const res = await this.$api.getRoomDm(this.detail.vod_id);
+				const res = await this.$api.getRoomDm(this.detail.vod_id, this.episodeCurrent);
 				this.danmuList = res.data;
 			},
 			async connWss() {
@@ -391,6 +424,10 @@
 				});
 				uni.onSocketMessage(res => {
 					const data = JSON.parse(res.data);
+					if (data.type == 'ping') {
+						console.log('连接正常');
+						return;
+					}
 					let {
 						type
 					} = data.data;
@@ -408,11 +445,12 @@
 					} else if (type == 'left') {
 						this.msgList.push(data);
 					}
-					this.chatToBottom();
+					if (type != 'conn') {
+						this.chatToBottom();
+					}
 				});
 				uni.onSocketError((res) => {
 					socketOpen = false;
-					this.connWss();
 				});
 				uni.onSocketClose((res) => {
 					socketOpen = false;
@@ -436,6 +474,30 @@
 				const roomNum = await this.$api.getRoomNum(this.detail.vod_id);
 				this.roomNum = roomNum.data.count;
 			},
+			toDownload() {
+				if (!isRadLoad || isAdWatch) {
+					uni.navigateTo({
+						url: '/pages/detail/cache/cache?vod_id=' + this.detail.vod_id + '&watching=' + this
+							.episodeCurrent
+					});
+					return;
+				}
+				uni.showModal({
+					title: '温馨提示',
+					content: '使用该功能需要观看一则视频，是否观看？',
+					success: res => {
+						if (res.confirm) {
+							redAd.show().catch(() => {
+								uni.navigateTo({
+									url: '/pages/detail/cache/cache?vod_id=' + this.detail
+										.vod_id + '&watching=' + this
+										.episodeCurrent
+								});
+							});
+						}
+					}
+				});
+			},
 			tabChange(index) {
 				this.tabCurrent = index;
 			},
@@ -450,8 +512,7 @@
 					return;
 				}
 				if (!socketOpen || !client_id) {
-					console.log(client_id);
-					this.$H.msg(client_id);
+					this.$H.msg('链接服务器失败，请关闭页面或重启微信重试');
 					return;
 				}
 				uni.getUserProfile({
@@ -496,13 +557,14 @@
 					data: {
 						type: 'msg',
 						content: this.roomMsg,
+						episodeCurrent: this.episodeCurrent,
 						current: parseInt(this.current)
 					},
 					from_nick: this.userInfo.nickName,
 					from_pic: this.userInfo.avatarUrl,
 				};
 				this.$u.throttle(async () => {
-					await this.$api.sendRoomMessage(data);
+					this.$api.sendRoomMessage(data);
 				}, 100);
 				this.roomMsg = '';
 			},

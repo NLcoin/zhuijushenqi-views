@@ -68,14 +68,14 @@ export default {
 			if (this.isFullscreen && this.handle) this.handle.exitFullScreen();
 		},
 		async initPlay() {
-			this.handle = uni.createVideoContext(`play`, this);
+			if (!this.handle) this.handle = uni.createVideoContext(`play`, this);
 			this.episodeList = this.detail.vod_play_url;
 			this.playFrom = this.detail.vod_play_from;
 			this.episode = this.episodeList[this.playFromIndex];
 			this.loadPlayUrl();
 		},
 		cachePlay() {
-			if (!this.handle) {
+			if (!this.handle && !this.detail.hasOwnProperty('vod_id')) {
 				return;
 			}
 			let {
@@ -191,7 +191,11 @@ export default {
 			this.playFromIndex = index;
 			this.fromMenu = false;
 			this.controls = false;
+			this.episode = [];
 			await this.initPlay();
+			this.$nextTick(() => {
+				this.$refs['epitabs'].init();
+			});
 			setTimeout(() => {
 				this.controls = true;
 			}, 10);

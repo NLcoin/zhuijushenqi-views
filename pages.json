@@ -47,7 +47,16 @@
 			}
 
 		}
-	],
+	    ,{
+            "path" : "pages/detail/cache/cache",
+            "style" :                                                                                    
+            {
+                "navigationStyle": "custom",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"tabBar": {
 		"color": "#888888",
 		"selectedColor": "#222",

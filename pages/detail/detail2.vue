@@ -24,16 +24,16 @@
 						<view class="font27 text-ellipsis2 u-skeleton-rect">主演：{{replaceActor || '未知'}}</view>
 						<view class="font27 text-ellipsis1 u-skeleton-rect">导演：{{replaceDirector || '未知'}}</view>
 						<view class="flex align-center">
-							<u-button type="warning" class="mr-3 u-skeleton-fillet" @click="addGroup()">
-								添加交流群
-							</u-button>
 							<template v-if="$H.getConfig('check')">
-								<u-button open-type="share" type="success" class="u-skeleton-fillet">
+								<u-button class="u-skeleton-fillet mr-2" size="mini" type="warning" @click="addGroup()">
+									添加交流群
+								</u-button>
+								<u-button open-type="share" type="success" size="mini" class="u-skeleton-fillet">
 									分享给好友
 								</u-button>
 							</template>
 							<template v-else>
-								<u-button type="success" @click="clickAd()" class="u-skeleton-fillet">
+								<u-button type="success" size="medium" @click.stop="clickAd()" class="u-skeleton-fillet">
 									立即播放
 								</u-button>
 							</template>
@@ -59,7 +59,9 @@
 				</view>
 
 				<view class="my-2 font28 u-skeleton-rect">
-					<rich-text :nodes="replaceContent || '<p>该影片暂时没有简介哦</p>'"></rich-text>
+					<u-read-more close-text="展开" color="#ff6022">
+						<rich-text :nodes="replaceContent || '<p>该影片暂时没有简介哦</p>'"></rich-text>
+					</u-read-more>
 				</view>
 
 				<view class="my-2 flex align-center justify-between">
@@ -181,12 +183,6 @@
 					imageUrl: this.detail.vod_pic, //图片链接，必须是网络连接，后面拼接时间戳防止本地缓存
 				}
 			},
-			addGroup() {
-				uni.previewImage({
-					current: 'https://sp.2oc.cc/static/group.jpg?' + this.$H.getTime(), // 当前显示图片的http链接
-					urls: ['https://sp.2oc.cc/static/group.jpg?' + this.$H.getTime()] // 需要预览的图片http链接列表
-				});
-			},
 			initRedAd() {
 				redAd = uni.createRewardedVideoAd({
 					adUnitId: this.$H.getConfig('rewarded_ad')
@@ -209,6 +205,13 @@
 					} else {
 						this.$H.msg('您未完整观看视频，无法获得奖励');
 					}
+				});
+			},
+			addGroup() {
+				let time = this.$H.getTime();
+				uni.previewImage({
+					current: 'https://sp.2oc.cc/static/group.jpg?' + time,
+					urls: ['https://sp.2oc.cc/static/group.jpg?' + time]
 				});
 			},
 			clickAd() {

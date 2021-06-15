@@ -131,8 +131,12 @@ export default {
 	getRoomLog(roomId) {
 		return http.get('/room/index?roomId=' + roomId);
 	},
-	// 房间消息记录
-	getRoomDm(roomId) {
-		return http.get('/room/dm?roomId=' + roomId);
+	// 房间弹幕列表
+	getRoomDm(roomId, episodeCurrent) {
+		return http.get('/room/dm?roomId=' + roomId + '&episodeCurrent=' + episodeCurrent);
+	},
+	// 短链接生成
+	suoUrl(url) {
+		return http.get('/suo?url=' + url);
 	}
 }
