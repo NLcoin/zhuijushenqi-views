@@ -477,7 +477,7 @@
 				}
 			},
 			kbhChange(e) {
-				this.keybH = e.detail.height - 25;
+				this.keybH = e.detail.height - 30;
 			},
 			async loadOnlineNum() {
 				const roomNum = await this.$api.getRoomNum(this.detail.vod_id);
