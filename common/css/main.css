@@ -846,10 +846,3 @@
 	height: 320rpx;
 	border-radius: 5rpx;
 }
-
-.fixed-bottom{
-	position: fixed;
-	right: 0;
-	left: 0;
-	bottom: 100rpx;
-}

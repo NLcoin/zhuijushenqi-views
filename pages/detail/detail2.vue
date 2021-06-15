@@ -223,7 +223,7 @@
 				}
 				uni.showModal({
 					title: '温馨提示',
-					content: '该广告每天只会出现一次，希望理解',
+					content: '每日一次，希望理解',
 					success: res => {
 						if (res.confirm) {
 							redAd.show().catch(() => {

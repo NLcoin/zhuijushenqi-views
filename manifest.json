@@ -1,5 +1,5 @@
 {
-    "name" : "全网热门影视推荐",
+    "name" : "超前点播追剧神器",
     "appid" : "__UNI__F8A77B5",
     "description" : "",
     "versionName" : "1.0.0",
@@ -50,7 +50,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "wxda7f2167eb3c97d4",
+        "appid" : "wxaa2234acfdc414dd",
         "setting" : {
             "urlCheck" : false,
             "minified" : true

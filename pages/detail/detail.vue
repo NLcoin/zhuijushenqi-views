@@ -265,10 +265,10 @@
 						</template>
 					</scroll-view>
 					<view style="height: 100rpx;" class="border-top-hui bg-bai flex align-center fixed-bottom"
-						v-if="isAddRoom">
+						v-if="isAddRoom" :style="{bottom:inputH}">
 						<view style="width: 630rpx;border-radius: 10rpx;" class="p-2 bg-hui ml-2">
 							<input v-model="roomMsg" type="text" placeholder="请文明发言,内容会同步发送到弹幕" :adjust-position="false"
-								@confirm="sendRoomMsg()" />
+								@confirm="sendRoomMsg()" @keyboardheightchange="kbhChange" />
 						</view>
 						<view class="font30 ml-2" @touchend.prevent="sendRoomMsg()">
 							发送
@@ -308,7 +308,8 @@
 				msgList: [],
 				roomNum: 0,
 				danmuList: [],
-				chatToIndex: ''
+				chatToIndex: '',
+				keybH:0,
 			}
 		},
 		async onLoad(e) {
@@ -371,6 +372,11 @@
 		watch: {
 			episode(n, o) {
 				if (n.length !== o.length && o.length) this.episodeCurrent = 0;
+			}
+		},
+		computed: {
+			inputH() {
+				return (uni.upx2px(100) + this.keybH) + 'px';
 			}
 		},
 		methods: {
@@ -469,6 +475,9 @@
 						from_pic: this.userInfo.avatarUrl
 					});
 				}
+			},
+			kbhChange(e) {
+				this.keybH = e.detail.height - 25;
 			},
 			async loadOnlineNum() {
 				const roomNum = await this.$api.getRoomNum(this.detail.vod_id);
@@ -621,5 +630,11 @@
 	.rate-btn-active {
 		color: #ef5952;
 		border-bottom: #ef5952 solid 5rpx;
+	}
+
+	.fixed-bottom {
+		position: fixed;
+		right: 0;
+		left: 0;
 	}
 </style>
