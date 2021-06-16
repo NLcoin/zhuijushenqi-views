@@ -53,6 +53,13 @@
 			await this.loadMore();
 		},
 		methods: {
+			onShareAppMessage() {
+				return {
+					title: '热门影视专题',
+					path: '', //页面路径及参数
+					imageUrl: '', //图片链接，必须是网络连接，后面拼接时间戳防止本地缓存
+				}
+			},
 			async getSlider() {
 				let res = await this.$api.topicSlider();
 				this.slider = res.data.list;

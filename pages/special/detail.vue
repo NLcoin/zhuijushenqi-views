@@ -37,7 +37,15 @@
 			this.detail = res.data;
 			uni.hideLoading();
 		},
-		methods: {}
+		methods: {
+			onShareAppMessage() {
+				return {
+					title: this.detail.topic_name,
+					path: '', //页面路径及参数
+					imageUrl: this.detail.topic_pic, //图片链接，必须是网络连接，后面拼接时间戳防止本地缓存
+				}
+			},
+		}
 	}
 </script>
 

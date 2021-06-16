@@ -246,14 +246,14 @@
 									<view class="flex align-start px-2 my-2" :id="'chat'+index"
 										:style="userInfo.avatarUrl == item.from_pic ? 'flex-direction:row-reverse' : ''">
 										<u-avatar :src="item.from_pic" size="mini"></u-avatar>
-										<view class="flex flex-column align-center">
+										<view class="flex flex-column">
 											<view class="p-2 mx-2"
 												:style="item.data.content.length <= 3 ? 'text-align: center;' : 'text-align: left;'"
 												:class="userInfo.avatarUrl == item.from_pic ? 'bg-lv' : 'bg-bai'"
 												style="border-radius: 10rpx;min-width: 100rpx;max-width: 400rpx;">
 												{{item.data.content}}
 											</view>
-											<view class="font27 gray"
+											<view class="font27 gray tc"
 												style="text-decoration: underline;max-width: 400rpx;"
 												@click="toMsgCurrent(item.data.current,item.data.episodeCurrent)">
 												{{episode[item.data.episodeCurrent].episode}}
@@ -276,7 +276,7 @@
 						<view style="width: 630rpx;border-radius: 10rpx;" class="p-2 bg-hui ml-2">
 							<input v-model="roomMsg" type="text" placeholder="请文明发言,内容会同步发送到弹幕" :adjust-position="false"
 								@confirm="sendRoomMsg()" confirm-type="send" @keyboardheightchange="kbhChange"
-								@blur="inputBlur()" />
+								@blur="inputBlur()" style="transform: translateZ(0);" />
 						</view>
 						<view class="font30 ml-2" @touchend.prevent="sendRoomMsg()">
 							发送
