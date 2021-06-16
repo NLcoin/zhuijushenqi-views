@@ -23,6 +23,9 @@ Vue.prototype.$C = $C;
 import $H from '@/common/util.js';
 Vue.prototype.$H = $H;
 
+import navBar from "@/components/zhouWei-navBar";
+Vue.component('nav-bar', navBar)
+
 let mpShare = require('uview-ui/libs/mixin/mpShare.js');
 Vue.mixin(mpShare);
 

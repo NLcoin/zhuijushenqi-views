@@ -103,7 +103,7 @@
 					</template>
 				</video>
 			</template>
-			<view class="flex align-center justify-between pb-15 u-skeleton-rect" style="width: 750rpx;height: 80rpx;">
+			<view class="flex align-center justify-between pb-15" style="width: 750rpx;height: 80rpx;" v-if="!loading">
 				<view style="width: 230rpx;margin-left: -10rpx;">
 					<u-tabs :list="tabs" :is-scroll="false" :current="tabCurrent" @change="tabChange"
 						active-color="#ff6022" item-width="40">
@@ -149,7 +149,7 @@
 								<view class="font33 f7 u-skeleton-rect">
 									{{$H.ellipsis(detail.vod_name || '影片名称')}}
 								</view>
-								<view class="font27 u-skeleton-rect" @click.stop="toDownload">
+								<view class="font27 u-skeleton-rect gray" @click.stop="toDownload">
 									<u-icon name="download" class="mr-1"></u-icon>离线缓存
 								</view>
 							</view>
@@ -157,11 +157,10 @@
 							<view class="my-1 flex align-center justify-between">
 								<view class="font25 gray u-skeleton-rect text-ellipsis1" style="width: 400rpx;">
 									{{detail.parentType ? detail.parentType.type_name : detail.type.type_name}} ·
-									{{detail.vod_remarks}} · {{detail.vod_hits}}次播放
+									同步更新 · {{detail.vod_hits}}次播放
 								</view>
-								<view class="u-skeleton-rect">
-									<u-rate v-model="detail.vod_score / 2" disabled></u-rate><text
-										class="hon ml-1">{{detail.vod_score || '0.0'}}分</text>
+								<view class="u-skeleton-rect font25">
+									{{$u.timeFormat(detail.vod_time, 'yyyy-mm-dd hh:MM:ss')}}
 								</view>
 							</view>
 
@@ -247,11 +246,19 @@
 									<view class="flex align-start px-2 my-2" :id="'chat'+index"
 										:style="userInfo.avatarUrl == item.from_pic ? 'flex-direction:row-reverse' : ''">
 										<u-avatar :src="item.from_pic" size="mini"></u-avatar>
-										<view class="p-2 mx-2"
-											:style="item.data.content.length <= 3 ? 'text-align: center;' : 'text-align: left;'"
-											:class="userInfo.avatarUrl == item.from_pic ? 'bg-lv' : 'bg-bai'"
-											style="border-radius: 10rpx;min-width: 100rpx;max-width: 400rpx;">
-											{{item.data.content}}
+										<view class="flex flex-column align-center">
+											<view class="p-2 mx-2"
+												:style="item.data.content.length <= 3 ? 'text-align: center;' : 'text-align: left;'"
+												:class="userInfo.avatarUrl == item.from_pic ? 'bg-lv' : 'bg-bai'"
+												style="border-radius: 10rpx;min-width: 100rpx;max-width: 400rpx;">
+												{{item.data.content}}
+											</view>
+											<view class="font27 gray"
+												style="text-decoration: underline;max-width: 400rpx;"
+												@click="toMsgCurrent(item.data.current,item.data.episodeCurrent)">
+												{{episode[item.data.episodeCurrent].episode}}
+												{{$H.s_to_hs(item.data.current)}}
+											</view>
 										</view>
 									</view>
 								</template>
@@ -264,11 +271,12 @@
 							<view class="py-2"></view>
 						</template>
 					</scroll-view>
-					<view style="height: 100rpx;" class="border-top-hui bg-bai flex align-center fixed-bottom"
+					<view style="height: 100rpx;" class="border-top-hui bg-bai flex align-center abs-bottom"
 						v-if="isAddRoom" :style="{bottom:inputH}">
 						<view style="width: 630rpx;border-radius: 10rpx;" class="p-2 bg-hui ml-2">
 							<input v-model="roomMsg" type="text" placeholder="请文明发言,内容会同步发送到弹幕" :adjust-position="false"
-								@confirm="sendRoomMsg()" @keyboardheightchange="kbhChange" />
+								@confirm="sendRoomMsg()" confirm-type="send" @keyboardheightchange="kbhChange"
+								@blur="inputBlur()" />
 						</view>
 						<view class="font30 ml-2" @touchend.prevent="sendRoomMsg()">
 							发送
@@ -296,7 +304,8 @@
 				tabs: [{
 					name: '详情'
 				}, {
-					name: '讨论'
+					name: '讨论',
+					count: 0
 				}],
 				swiperH: 1520 + 'px',
 				scrollH: 1520 + 'px',
@@ -309,7 +318,7 @@
 				roomNum: 0,
 				danmuList: [],
 				chatToIndex: '',
-				keybH:0,
+				keybH: 0,
 			}
 		},
 		async onLoad(e) {
@@ -318,11 +327,11 @@
 			if (e.hasOwnProperty('fid')) {
 				this.playFromIndex = e.fid;
 			}
-			await this.loadDanmuList();
 			await this.loadOnlineNum();
 			await this.loadRoomLog();
 			await this.initCache();
 			await this.initPlay();
+			await this.loadDanmuList();
 			this.initRedAd();
 			this.loading = false;
 			let sysInfo = uni.getSystemInfoSync();
@@ -376,14 +385,22 @@
 		},
 		computed: {
 			inputH() {
-				return (uni.upx2px(100) + this.keybH) + 'px';
+				return (100 + this.keybH) + 'rpx';
+			}
+		},
+		watch: {
+			episodeCurrent(n, o) {
+				this.loadDanmuList();
+			},
+			msgList(n, o) {
+				this.chatToBottom();
 			}
 		},
 		methods: {
 			onShareAppMessage() {
 				return {
 					title: this.title,
-					path: '/pages/detail/detail?id=' + id + '&fid=' + this.playFromIndex, //页面路径及参数
+					path: '', //页面路径及参数
 					imageUrl: this.detail.vod_pic, //图片链接，必须是网络连接，后面拼接时间戳防止本地缓存
 				}
 			},
@@ -416,6 +433,7 @@
 			async loadRoomLog() {
 				const res = await this.$api.getRoomLog(this.detail.vod_id);
 				this.msgList = res.data;
+				this.tabs[1].count = this.msgList.length;
 			},
 			async loadDanmuList() {
 				const res = await this.$api.getRoomDm(this.detail.vod_id, this.episodeCurrent);
@@ -448,11 +466,9 @@
 					} else if (type == 'msg') {
 						this.msgList.push(data);
 						this.sendDm(data.data.content);
+						this.tabs[1].count += 1;
 					} else if (type == 'left') {
 						this.msgList.push(data);
-					}
-					if (type != 'conn') {
-						this.chatToBottom();
 					}
 				});
 				uni.onSocketError((res) => {
@@ -477,7 +493,10 @@
 				}
 			},
 			kbhChange(e) {
-				this.keybH = e.detail.height - 30;
+				this.keybH = (e.detail.height * 750) / uni.getSystemInfoSync().windowWidth;;
+			},
+			inputBlur() {
+				this.keybH = 0;
 			},
 			async loadOnlineNum() {
 				const roomNum = await this.$api.getRoomNum(this.detail.vod_id);
@@ -542,6 +561,7 @@
 						if (!addRes.errorCode) {
 							this.isAddRoom = true;
 							this.loadOnlineNum();
+							this.chatToBottom();
 						} else {
 							this.$H.msg('链接服务器失败，请关闭页面重试');
 						}
@@ -583,7 +603,7 @@
 				}
 				this.handle.sendDanmu({
 					text: msg,
-					color: this.$H.getRandomColor()
+					color: '#ffffff'
 				});
 			},
 			changeSwiper(e) {
@@ -632,9 +652,10 @@
 		border-bottom: #ef5952 solid 5rpx;
 	}
 
-	.fixed-bottom {
-		position: fixed;
+	.abs-bottom {
+		position: absolute;
 		right: 0;
 		left: 0;
+		transition: 0.3s;
 	}
 </style>

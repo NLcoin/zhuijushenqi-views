@@ -2,7 +2,7 @@
 	<view>
 		<view class="flex align-center" @click="$H.toDetail(item.vod_id)">
 			<view style="min-width: 225rpx;">
-				<u-lazy-load :image="item.vod_pic" img-mode="aspectFill" height="310" border-radius="5"
+				<u-lazy-load :image="item.vod_pic" img-mode="aspectFill" height="310" border-radius="10"
 					:is-effect="false">
 				</u-lazy-load>
 			</view>
@@ -14,6 +14,9 @@
 				</view>
 				<view class="text-ellipsis1 font28" v-html="replaceCon(item.vod_director)"></view>
 				<view class="text-ellipsis1 font28" v-html="replaceCon(item.vod_actor)"></view>
+				<view class="font28 text-ellipsis1">
+					最近更新：<text class="hong">{{$u.timeFormat(item.vod_time, 'yyyy-mm-dd hh:MM:ss')}}</text>
+				</view>
 				<view class="tc" style="width: 210rpx;height: 65rpx;background-color: #ff6022;border-radius: 8rpx;">
 					<text style="color: #FFFFFF;line-height: 65rpx;">查看详情</text>
 				</view>

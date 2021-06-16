@@ -21,11 +21,8 @@
 				<swiper-item>
 					<scroll-view scroll-y="true" style="height: 100%;" @scrolltolower="loadReMore()">
 						<view class="mx-2">
-							<view class="mb-3 u-skeleton-rect">
-								<u-swiper :list="recommend.sliderList" img-mode="aspectFill" :title="true"
-									bg-color="#fff" height="410" border-radius="0" :effect3d="false"
-									@click="clickRecommendSwiper">
-								</u-swiper>
+							<view class="mb-2 u-skeleton-rect" style="margin: 0 -20rpx;">
+								<vod-slider :list="recommend.sliderList" @click="clickRecommendSwiper"></vod-slider>
 							</view>
 							<view class="mt-4 mb-3 u-skeleton-rect">
 								<u-section title="今日更新" font-size="29" :show-line="false"
@@ -138,7 +135,7 @@
 							</view>
 							<view class="flex align-center justify-between flex-wrap voditem">
 								<block v-for="(item,index) in recommend.more.list" :key="index">
-									<vod-item :item="item" ></vod-item>
+									<vod-item :item="item"></vod-item>
 								</block>
 							</view>
 							<view class="pt-3" style="padding-bottom: 130rpx;">
@@ -150,10 +147,8 @@
 				<swiper-item>
 					<scroll-view scroll-y="true" style="height: 100%;" @scrolltolower="loadOtMore('dy')">
 						<view class="mx-2" v-if="load.dy">
-							<view class="mb-3 u-skeleton-rect">
-								<u-swiper :list="sliderList.dy" img-mode="aspectFill" :title="true" bg-color="#fff"
-									height="410" border-radius="0" :effect3d="false" @click="clickSwiper">
-								</u-swiper>
+							<view class="mb-3 u-skeleton-rect" style="margin: 0 -20rpx;">
+								<vod-slider :list="sliderList.dy" @click="clickSwiper"></vod-slider>
 							</view>
 							<view class="mt-4 mb-3 u-skeleton-rect">
 								<u-section title="今日更新" font-size="29" :show-line="false"
@@ -199,10 +194,8 @@
 				<swiper-item>
 					<scroll-view scroll-y="true" style="height: 100%;" @scrolltolower="loadOtMore('dsj')">
 						<view class="mx-2" v-if="load.dsj">
-							<view class="mb-3 u-skeleton-rect">
-								<u-swiper :list="sliderList.dsj" img-mode="aspectFill" :title="true" bg-color="#fff"
-									height="410" border-radius="0" :effect3d="false" @click="clickSwiper">
-								</u-swiper>
+							<view class="mb-3 u-skeleton-rect" style="margin: 0 -20rpx;">
+								<vod-slider :list="sliderList.dsj" @click="clickSwiper"></vod-slider>
 							</view>
 							<view class="mt-4 mb-3 u-skeleton-rect">
 								<u-section title="今日更新" font-size="29" :show-line="false"
@@ -248,10 +241,8 @@
 				<swiper-item>
 					<scroll-view scroll-y="true" style="height: 100%;" @scrolltolower="loadOtMore('zy')">
 						<view class="mx-2" v-if="load.zy">
-							<view class="mb-3 u-skeleton-rect">
-								<u-swiper :list="sliderList.zy" img-mode="aspectFill" :title="true" bg-color="#fff"
-									height="410" border-radius="0" :effect3d="false" @click="clickSwiper">
-								</u-swiper>
+							<view class="mb-3 u-skeleton-rect" style="margin: 0 -20rpx;">
+								<vod-slider :list="sliderList.zy" @click="clickSwiper"></vod-slider>
 							</view>
 							<view class="mt-4 mb-3 u-skeleton-rect">
 								<u-section title="今日更新" font-size="29" :show-line="false"
@@ -297,10 +288,8 @@
 				<swiper-item>
 					<scroll-view scroll-y="true" style="height: 100%;" @scrolltolower="loadOtMore('dm')">
 						<view class="mx-2" v-if="load.dm">
-							<view class="mb-3 u-skeleton-rect">
-								<u-swiper :list="sliderList.dm" img-mode="aspectFill" :title="true" bg-color="#fff"
-									height="410" border-radius="0" :effect3d="false" @click="clickSwiper">
-								</u-swiper>
+							<view class="mb-3 u-skeleton-rect" style="margin: 0 -20rpx;">
+								<vod-slider :list="sliderList.dm" @click="clickSwiper"></vod-slider>
 							</view>
 							<view class="mt-4 mb-3 u-skeleton-rect">
 								<u-section title="今日更新" font-size="29" :show-line="false"

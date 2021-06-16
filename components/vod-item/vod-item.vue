@@ -1,11 +1,10 @@
 <template>
 	<view>
 		<view class="mb-2 mian" :class="listClass" @click="$H.toDetail(item.vod_id)">
-			<u-lazy-load :image="item.vod_pic" img-mode="aspectFill" height="310" border-radius="5" :is-effect="false">
+			<u-lazy-load :image="item.vod_pic" img-mode="aspectFill" height="310" border-radius="10" :is-effect="false">
 			</u-lazy-load>
-			<view v-if="iconText" class="top_icon">{{icon(item,iconText)}}</view>
+			<view class="top_icon">{{item.vod_score}}</view>
 			<view class="vod_remark">{{item.vod_remarks.length > 8 ? '' :item.vod_remarks}}</view>
-			<view class="vod_score" v-if="isScore">{{item.vod_score}}</view>
 			<view class="tc text-ellipsis1 font26 mt-1">
 				{{item.vod_name}}
 			</view>
@@ -48,21 +47,13 @@
 		position: absolute;
 		text-shadow: 0 0 10rpx rgb(0 0 0 / 70%);
 		bottom: 50rpx;
-		left: 10rpx;
-		color: #fff;
-	}
-
-	.vod_score {
-		font-size: 24rpx;
-		position: absolute;
-		bottom: 50rpx;
 		right: 10rpx;
-		color: #ff6022;
+		color: #fff;
 	}
 
 	.top_icon {
 		background-color: #ff6022;
-		border-top-left-radius: 5rpx;
+		border-top-left-radius: 10rpx;
 		position: absolute;
 		top: 0;
 		left: 0rpx;

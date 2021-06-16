@@ -33,7 +33,8 @@
 								</u-button>
 							</template>
 							<template v-else>
-								<u-button type="success" size="medium" @click.stop="clickAd()" class="u-skeleton-fillet">
+								<u-button type="success" size="medium" @click.stop="clickAd()"
+									class="u-skeleton-fillet">
 									立即播放
 								</u-button>
 							</template>
@@ -210,8 +211,8 @@
 			addGroup() {
 				let time = this.$H.getTime();
 				uni.previewImage({
-					current: 'https://sp.2oc.cc/static/group.jpg?' + time,
-					urls: ['https://sp.2oc.cc/static/group.jpg?' + time]
+					current: this.$H.getConfig('group_img') + '?' + time,
+					urls: [this.$H.getConfig('group_img') + '?' + time]
 				});
 			},
 			clickAd() {

@@ -138,5 +138,22 @@ export default {
 	// 短链接生成
 	suoUrl(url) {
 		return http.get('/suo?url=' + url);
-	}
+	},
+	// 话题列表
+	topicList(page, pageSize) {
+		return http.get('/topic/new', {
+			params: {
+				page,
+				pageSize
+			}
+		});
+	},
+	// 话题轮播
+	topicSlider() {
+		return http.get('/topic/slider');
+	},
+	// 话题详情
+	topicDetail(topic_id) {
+		return http.get('/topic/detail/' + topic_id);
+	},
 }

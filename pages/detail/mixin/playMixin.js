@@ -128,6 +128,14 @@ export default {
 			this.duration = e.detail.duration;
 			this.current = e.detail.currentTime;
 		},
+		toMsgCurrent(current, episodeCurrent) {
+			if (!this.handle) return;
+			if(this.episodeCurrent != episodeCurrent){
+				this.episodeCurrent = episodeCurr
+			}
+			this.handle.seek(parseInt(current));
+			this.$H.msg('已跳转至该消息播放位置');
+		},
 		showControls(e) {
 			this.controls = e.detail.show;
 		},
