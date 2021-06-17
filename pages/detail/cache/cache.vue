@@ -104,18 +104,11 @@
 				this.downFrom = obj;
 			},
 			async clickItem(index) {
-				uni.showLoading({
-					title: '正在获取',
-					mask: true
-				});
 				let url = this.episode[index].src;
 				let fromData = this.detail.vod_play_from[this.fromIndex];
-				if (fromData.get_url && url) {
+				if (fromData.get_url) {
 					url = this.$H.getConfig(fromData.get_url) + url;
 				}
-				let suo = await this.$api.suoUrl(encodeURI(url));
-				url = suo.url;
-				uni.hideLoading();
 				this.episode[index].copy = true;
 				uni.setClipboardData({
 					data: url

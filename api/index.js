@@ -135,10 +135,6 @@ export default {
 	getRoomDm(roomId, episodeCurrent) {
 		return http.get('/room/dm?roomId=' + roomId + '&episodeCurrent=' + episodeCurrent);
 	},
-	// 短链接生成
-	suoUrl(url) {
-		return http.get('/suo?url=' + url);
-	},
 	// 话题列表
 	topicList(page, pageSize) {
 		return http.get('/topic/new', {

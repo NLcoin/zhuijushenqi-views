@@ -101,6 +101,28 @@
 							</scroll-view>
 						</u-popup>
 					</template>
+
+					<template v-if="isFullscreen && controls">
+						<view style="position: absolute;right:7%;top:46%;" @click="dmInputIcon()">
+							<u-icon name="edit-pen" color="#ffffff" size="41"
+								style="text-shadow: 0 0 10rpx rgb(0 0 0 / 70%);">
+							</u-icon>
+						</view>
+					</template>
+
+					<template v-if="isFullscreen && isDmInput">
+						<view style="height: 85rpx;position: fixed;transition: 0.5s;z-index: 1030;right: 0;left: 0;"
+							class="bg-bai flex align-center w100" :style="{bottom:dmInputH}">
+							<view style="width: 92%;" class="bg-hui ml-2 p-2">
+								<input v-model="roomMsg" type="text" placeholder="请文明发言" :adjust-position="false"
+									@confirm="sendRoomMsg()" confirm-type="send" @keyboardheightchange="dmInputChange"
+									@blur="dmInputBlur()" auto-focus />
+							</view>
+							<view class="font30 ml-3" @touchend.prevent="sendRoomMsg()">
+								发送
+							</view>
+						</view>
+					</template>
 				</video>
 			</template>
 			<view class="flex align-center justify-between pb-15" style="width: 750rpx;height: 80rpx;" v-if="!loading">
@@ -154,12 +176,12 @@
 								</view>
 							</view>
 
-							<view class="my-1 flex align-center justify-between">
+							<view class="my-2 flex align-center justify-between">
 								<view class="font25 gray u-skeleton-rect text-ellipsis1" style="width: 400rpx;">
 									{{detail.parentType ? detail.parentType.type_name : detail.type.type_name}} ·
 									同步更新 · {{detail.vod_hits}}次播放
 								</view>
-								<view class="u-skeleton-rect font25">
+								<view class="u-skeleton-rect font25 gray">
 									{{$u.timeFormat(detail.vod_time, 'yyyy-mm-dd hh:MM:ss')}}
 								</view>
 							</view>
@@ -187,12 +209,11 @@
 							</template>
 							<view class="mt-2 flex align-center justify-between">
 								<view class="font29 f6 u-skeleton-rect">播放来源</view>
-								<view style="margin-right: -33rpx;">
-									<u-button :hair-line="false" show-message-card hover-class="none"
-										:send-message-img="detail.vod_pic" open-type="contact" send-message-path
-										:send-message-title="title" :custom-style="{border:'none',fontSize:'28rpx'}"
-										size="mini" class="u-skeleton-rect">
-										<text class="font27 gray">播放遇到问题？</text>
+								<view style="margin-right: -23rpx;">
+									<u-button :hair-line="false" @click="$H.previewImage('kf_img')"
+										:custom-style="{border:'none',fontSize:'28rpx'}" size="mini"
+										class="u-skeleton-rect">
+										<text class="font27 gray">联系客服</text>
 									</u-button>
 								</view>
 							</view>
@@ -208,15 +229,13 @@
 								</view>
 							</template>
 
-							<view class="my-2 flex justify-between flex-column" style="height: 380rpx;">
-								<view class="font29 f6 u-skeleton-rect">使用帮助</view>
-								<view class="u-skeleton-rect">
-									1、视频中的跑马灯，水印等广告请不要相信，资源收集时自带，本小程序无法控制。播放源：腾讯视频，优酷视频等是官方资源，播放快无广告推荐使用，但稳定性一般，高峰期可能会出现无法播放
-								</view>
-								<view class="u-skeleton-rect">2、不同的播放源可播放的集数和清晰度不同，一些播放源是第二天更新，一些是当天，大家可自行查看选择
-								</view>
-								<view class="u-skeleton-rect">3、遇到无法播放，加载慢，等可切换播放源，部分蓝光资源可能加载会慢一些</view>
-							</view>
+							<view class="mt-2 mb-1 font29 f6 u-skeleton-rect">使用帮助</view>
+							<u-collapse :head-style="{fontSize:'28rpx'}">
+								<u-collapse-item :title="item.head" v-for="(item, index) in $H.getConfig('help_list')"
+									:key="index" :open="item.open" :disabled="item.disabled" class="u-skeleton-rect">
+									{{item.body}}
+								</u-collapse-item>
+							</u-collapse>
 
 							<view class="mt-3 flex align-center justify-between">
 								<view class="font29 f6 u-skeleton-rect">影片简介</view>
@@ -273,12 +292,12 @@
 					</scroll-view>
 					<view style="height: 100rpx;" class="border-top-hui bg-bai flex align-center abs-bottom"
 						v-if="isAddRoom" :style="{bottom:inputH}">
-						<view style="width: 630rpx;border-radius: 10rpx;" class="p-2 bg-hui ml-2">
+						<view style="width: 610rpx;border-radius: 10rpx;" class="p-2 bg-hui ml-2">
 							<input v-model="roomMsg" type="text" placeholder="请文明发言,内容会同步发送到弹幕" :adjust-position="false"
 								@confirm="sendRoomMsg()" confirm-type="send" @keyboardheightchange="kbhChange"
 								@blur="inputBlur()" style="transform: translateZ(0);" />
 						</view>
-						<view class="font30 ml-2" @touchend.prevent="sendRoomMsg()">
+						<view class="font30 ml-3" @touchend.prevent="sendRoomMsg()">
 							发送
 						</view>
 					</view>
@@ -319,6 +338,9 @@
 				danmuList: [],
 				chatToIndex: '',
 				keybH: 0,
+				dmKeybH: 0,
+				dmInputW: 0,
+				isDmInput: false
 			}
 		},
 		async onLoad(e) {
@@ -328,11 +350,12 @@
 				this.playFromIndex = e.fid;
 			}
 			await this.loadOnlineNum();
-			await this.loadRoomLog();
 			await this.initCache();
 			await this.initPlay();
 			await this.loadDanmuList();
+			await this.loadRoomLog();
 			this.initRedAd();
+			this.connWss();
 			this.loading = false;
 			let sysInfo = uni.getSystemInfoSync();
 			this.popupH = sysInfo.windowHeight - uni.upx2px(630) + 'px';
@@ -342,7 +365,11 @@
 			this.scrollH2 = sysInfo.windowHeight - uni.upx2px(815) + 'px';
 		},
 		onShow() {
-			this.connWss();
+			if (this.isAddRoom) {
+				setTimeout(() => {
+					this.reconnWss();
+				}, 300);
+			}
 			if (!this.handle) return;
 			this.handle.play();
 		},
@@ -386,6 +413,9 @@
 		computed: {
 			inputH() {
 				return (100 + this.keybH) + 'rpx';
+			},
+			dmInputH() {
+				return this.dmKeybH + 'px';
 			}
 		},
 		watch: {
@@ -441,8 +471,42 @@
 			},
 			async connWss() {
 				uni.connectSocket({
-					url: 'wss://ws.2oc.cc'
+					url: 'wss://ws.2oc.cc',
+					success: res => {
+						this.initWssHandle();
+					}
 				});
+			},
+			async reconnWss() {
+				this.connWss();
+				if (this.isAddRoom) {
+					await this.$api.addRoom({
+						roomId: this.detail.vod_id,
+						client_id,
+						data: {
+							type: 'add',
+							content: this.userInfo.nickName +
+								' 回来了'
+						},
+						from_nick: this.userInfo.nickName,
+						from_pic: this.userInfo.avatarUrl
+					});
+					await this.loadRoomLog();
+				}
+			},
+			async reconBtn() {
+				if (!this.isAddRoom) {
+					this.$H.msg('您还没有加入讨论');
+					return;
+				}
+				uni.showLoading({
+					mask: true,
+					title: '重连中'
+				})
+				await this.reconnWss();
+				uni.hideLoading();
+			},
+			initWssHandle() {
 				uni.onSocketOpen(res => {
 					socketOpen = true;
 				});
@@ -471,32 +535,33 @@
 						this.msgList.push(data);
 					}
 				});
-				uni.onSocketError((res) => {
-					socketOpen = false;
-				});
+				uni.onSocketError((res) => {});
 				uni.onSocketClose((res) => {
-					socketOpen = false;
+					this.reconnWss();
 				});
-
-				if (this.isAddRoom) {
-					await this.$api.addRoom({
-						roomId: this.detail.vod_id,
-						client_id,
-						data: {
-							type: 'add',
-							content: this.userInfo.nickName +
-								' 回来了'
-						},
-						from_nick: this.userInfo.nickName,
-						from_pic: this.userInfo.avatarUrl
-					});
-				}
 			},
 			kbhChange(e) {
-				this.keybH = (e.detail.height * 750) / uni.getSystemInfoSync().windowWidth;;
+				this.keybH = ((e.detail.height * 750) / uni.getSystemInfoSync().windowWidth) - 50;
 			},
 			inputBlur() {
 				this.keybH = 0;
+			},
+			async dmInputIcon() {
+				if (!this.isAddRoom) {
+					this.addRoom();
+					return;
+				}
+				this.isDmInput = true;
+				this.dmInputW = uni.getSystemInfoSync().windowWidth + 'px';
+			},
+			dmInputChange(e) {
+				this.dmKeybH = e.detail.height;
+			},
+			dmInputBlur() {
+				this.dmKeybH = 0;
+				setTimeout(() => {
+					this.isDmInput = false;
+				}, 300);
 			},
 			async loadOnlineNum() {
 				const roomNum = await this.$api.getRoomNum(this.detail.vod_id);
@@ -560,8 +625,8 @@
 						});
 						if (!addRes.errorCode) {
 							this.isAddRoom = true;
-							this.loadOnlineNum();
-							this.chatToBottom();
+							this.msgList = [];
+							await this.loadRoomLog();
 						} else {
 							this.$H.msg('链接服务器失败，请关闭页面重试');
 						}

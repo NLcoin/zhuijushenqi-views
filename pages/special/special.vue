@@ -20,7 +20,6 @@
 		<view class="py-4">
 			<u-loadmore :status="result.loadStatus" />
 		</view>
-		<u-mask :show="mask" :mask-click-able="false"></u-mask>
 	</view>
 </template>
 
@@ -35,8 +34,7 @@
 					total: 0,
 					list: [],
 					loadStatus: 'loadmore'
-				},
-				mask: true
+				}
 			}
 		},
 		async onLoad() {
@@ -46,7 +44,6 @@
 			})
 			await this.getSlider();
 			await this.loadData();
-			this.mask = false;
 			uni.hideLoading();
 		},
 		async onReachBottom() {

@@ -131,7 +131,7 @@ export default {
 		toMsgCurrent(current, episodeCurrent) {
 			if (!this.handle) return;
 			if(this.episodeCurrent != episodeCurrent){
-				this.episodeCurrent = episodeCurr
+				this.episodeCurrent = episodeCurrent;
 			}
 			this.handle.seek(parseInt(current));
 			this.$H.msg('已跳转至该消息播放位置');

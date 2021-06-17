@@ -51,7 +51,15 @@ export default {
 			duration: duration
 		});
 	},
-
+	
+	previewImage(name) {
+		let time = this.getTime();
+		uni.previewImage({
+			current: this.getConfig(name) + '?' + time,
+			urls: [this.getConfig(name) + '?' + time]
+		});
+	},
+	
 	/**
 	 * 检测内容中是否带有HTTP
 	 */

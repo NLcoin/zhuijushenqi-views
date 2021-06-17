@@ -25,7 +25,7 @@
 						<view class="font27 text-ellipsis1 u-skeleton-rect">导演：{{replaceDirector || '未知'}}</view>
 						<view class="flex align-center">
 							<template v-if="$H.getConfig('check')">
-								<u-button class="u-skeleton-fillet mr-2" size="mini" type="warning" @click="addGroup()">
+								<u-button class="u-skeleton-fillet mr-2" size="mini" type="warning" @click="$H.previewImage('group_img')">
 									添加交流群
 								</u-button>
 								<u-button open-type="share" type="success" size="mini" class="u-skeleton-fillet">
@@ -206,13 +206,6 @@
 					} else {
 						this.$H.msg('您未完整观看视频，无法获得奖励');
 					}
-				});
-			},
-			addGroup() {
-				let time = this.$H.getTime();
-				uni.previewImage({
-					current: this.$H.getConfig('group_img') + '?' + time,
-					urls: [this.$H.getConfig('group_img') + '?' + time]
 				});
 			},
 			clickAd() {
