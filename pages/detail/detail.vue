@@ -111,14 +111,14 @@
 					</template>
 
 					<template v-if="isFullscreen && isDmInput">
-						<view style="height: 85rpx;position: fixed;transition: 0.5s;z-index: 1030;right: 0;left: 0;"
-							class="bg-bai flex align-center w100" :style="{bottom:dmInputH}">
-							<view style="width: 92%;" class="bg-hui ml-2 p-2">
+						<view style="position: absolute;right: 0;left: 0;"
+						class="flex align-center" :style="{bottom:dmInputH,width:dmInputW+'px'}">
+							<view style="height: 85rpx;z-index: 1030;" class="bg-hui ml-2 p-2" :style="{width:dmInputW-90+'px'}">
 								<input v-model="roomMsg" type="text" placeholder="请文明发言" :adjust-position="false"
 									@confirm="sendRoomMsg()" confirm-type="send" @keyboardheightchange="dmInputChange"
-									@blur="dmInputBlur()" auto-focus />
+									@blur="dmInputBlur()" focus auto-blur />
 							</view>
-							<view class="font30 ml-3" @touchend.prevent="sendRoomMsg()">
+							<view class="font30 ml-5" @touchend.prevent="sendRoomMsg()">
 								发送
 							</view>
 						</view>
@@ -541,7 +541,7 @@
 				});
 			},
 			kbhChange(e) {
-				this.keybH = ((e.detail.height * 750) / uni.getSystemInfoSync().windowWidth) - 50;
+				this.keybH = ((e.detail.height * 750) / uni.getSystemInfoSync().windowWidth) - 20;
 			},
 			inputBlur() {
 				this.keybH = 0;
@@ -552,16 +552,14 @@
 					return;
 				}
 				this.isDmInput = true;
-				this.dmInputW = uni.getSystemInfoSync().windowWidth + 'px';
+				this.dmInputW = uni.getSystemInfoSync().windowWidth;
 			},
 			dmInputChange(e) {
 				this.dmKeybH = e.detail.height;
 			},
 			dmInputBlur() {
 				this.dmKeybH = 0;
-				setTimeout(() => {
-					this.isDmInput = false;
-				}, 300);
+				this.isDmInput = false;
 			},
 			async loadOnlineNum() {
 				const roomNum = await this.$api.getRoomNum(this.detail.vod_id);
