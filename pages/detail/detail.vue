@@ -16,10 +16,10 @@
 				<view class="u-skeleton-rect" style="width: 750rpx;height: 225px;"></view>
 			</template>
 			<template v-else>
-				<video :src="playUrl" id="play" :title="$H.ellipsis(title,16)" controls show-casting-button
+				<video :src="playUrl" id="play" :title="$H.ellipsis(title,14)" controls show-casting-button
 					style="width: 750rpx;" @fullscreenchange="fullscreenchange" :autoplay="autoplay"
 					@controlstoggle="showControls" :object-fit="objectFit" show-mute-btn enable-play-gesture
-					show-screen-lock-button @timeupdate="timeupdate" :poster="detail.vod_pic" @ended="nextEpisode()"
+					show-screen-lock-button @timeupdate="timeupdate" :poster="$H.getConfig('play_poster')" @ended="nextEpisode()"
 					direction="90" :duration="duration" :initial-time="current" :unit-id="$H.getConfig('play_start_ad')"
 					@error="error()" danmu-btn enable-danmu :danmu-list="danmuList" play-strategy="3">
 					<template v-if="isFullscreen && controls">
@@ -109,20 +109,21 @@
 							</u-icon>
 						</view>
 					</template>
-
+					
 					<template v-if="isFullscreen && isDmInput">
-						<view style="position: absolute;right: 0;left: 0;"
-						class="flex align-center" :style="{bottom:dmInputH,width:dmInputW+'px'}">
-							<view style="height: 85rpx;z-index: 1030;" class="bg-hui ml-2 p-2" :style="{width:dmInputW-90+'px'}">
+						<view style="position: absolute;right: 0;left: 0;z-index: 99;height: 85rpx;" class="flex align-center bg-bai"
+							:style="{bottom:dmInputH,width:dmInputW+'px'}">
+							<view class="bg-hui ml-2 p-2" :style="{width:dmInputW-90+'px'}">
 								<input v-model="roomMsg" type="text" placeholder="请文明发言" :adjust-position="false"
 									@confirm="sendRoomMsg()" confirm-type="send" @keyboardheightchange="dmInputChange"
 									@blur="dmInputBlur()" focus auto-blur />
 							</view>
-							<view class="font30 ml-5" @touchend.prevent="sendRoomMsg()">
+							<view class="font30 ml-4" @touchend.prevent="sendRoomMsg()">
 								发送
 							</view>
 						</view>
 					</template>
+					
 				</video>
 			</template>
 			<view class="flex align-center justify-between pb-15" style="width: 750rpx;height: 80rpx;" v-if="!loading">
@@ -172,7 +173,7 @@
 									{{$H.ellipsis(detail.vod_name || '影片名称')}}
 								</view>
 								<view class="font27 u-skeleton-rect gray" @click.stop="toDownload">
-									<u-icon name="download" class="mr-1"></u-icon>离线缓存
+									<u-icon name="download" class="mr-1"></u-icon>浏览器播放
 								</view>
 							</view>
 
@@ -290,7 +291,7 @@
 							<view class="py-2"></view>
 						</template>
 					</scroll-view>
-					<view style="height: 100rpx;" class="border-top-hui bg-bai flex align-center abs-bottom"
+					<view style="height: 100rpx;margin-bottom: env(safe-area-inset-bottom);" class="border-top-hui bg-bai flex align-center abs-bottom"
 						v-if="isAddRoom" :style="{bottom:inputH}">
 						<view style="width: 610rpx;border-radius: 10rpx;" class="p-2 bg-hui ml-2">
 							<input v-model="roomMsg" type="text" placeholder="请文明发言,内容会同步发送到弹幕" :adjust-position="false"
@@ -362,7 +363,7 @@
 			this.swiperH = sysInfo.windowHeight - uni.upx2px(630) + 'px';
 			let rectInfo = await this.$u.getRect('.vodinfo');
 			this.scrollH = rectInfo.height + 'px';
-			this.scrollH2 = sysInfo.windowHeight - uni.upx2px(815) + 'px';
+			this.scrollH2 = sysInfo.windowHeight - uni.upx2px(790) + 'px';
 		},
 		onShow() {
 			if (this.isAddRoom) {
@@ -412,7 +413,7 @@
 		},
 		computed: {
 			inputH() {
-				return (100 + this.keybH) + 'rpx';
+				return this.keybH + 'px';
 			},
 			dmInputH() {
 				return this.dmKeybH + 'px';
@@ -541,7 +542,7 @@
 				});
 			},
 			kbhChange(e) {
-				this.keybH = ((e.detail.height * 750) / uni.getSystemInfoSync().windowWidth) - 20;
+				this.keybH = e.detail.height;
 			},
 			inputBlur() {
 				this.keybH = 0;
@@ -578,6 +579,7 @@
 					content: '使用该功能需要观看一则视频，是否观看？',
 					success: res => {
 						if (res.confirm) {
+							this.handle.pause();
 							redAd.show().catch(() => {
 								uni.navigateTo({
 									url: '/pages/detail/cache/cache?vod_id=' + this.detail
@@ -607,7 +609,7 @@
 					return;
 				}
 				uni.getUserProfile({
-					desc: "获取你的昵称、头像、地区及性别",
+					desc: "首次使用需要获取你的昵称、头像、地区及性别",
 					success: async (res) => {
 						this.userInfo = res.userInfo;
 						let addRes = await this.$api.addRoom({

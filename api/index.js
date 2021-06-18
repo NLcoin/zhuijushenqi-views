@@ -5,7 +5,7 @@ import {
 export default {
 	// 获取配置信息
 	getConfig() {
-		return http.get('/config');
+		return http.get('/config2');
 	},
 	// 解析播放地址
 	parseUrl(url, type) {

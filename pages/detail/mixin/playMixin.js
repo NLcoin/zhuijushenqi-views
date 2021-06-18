@@ -199,17 +199,15 @@ export default {
 			this.playFromIndex = index;
 			this.fromMenu = false;
 			this.controls = false;
-			this.episode = [];
-			await this.initPlay();
-			this.$nextTick(() => {
-				this.$refs['epitabs'].init();
-			});
+			this.episode = this.episodeList[this.playFromIndex];
+			this.loadPlayUrl();
 			setTimeout(() => {
 				this.controls = true;
 			}, 10);
 		},
 		loadPlayUrl() {
 			try {
+				this.playUrl = '';
 				let url = this.episode[this.episodeCurrent].src;
 				if (this.fromData.get_url && url) {
 					this.playUrl = this.$H.getConfig(this.fromData.get_url) + url;

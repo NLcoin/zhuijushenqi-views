@@ -1,10 +1,10 @@
 <template>
 	<view>
-		<u-navbar title-color="#222" title="缓存影片" title-bold :border-bottom="false" title-size="30"
+		<u-navbar title-color="#222" title="播放地址" title-bold :border-bottom="false" title-size="30"
 			back-icon-color="#222" back-icon-size="38" back-icon-name="arrow-left">
 		</u-navbar>
 		<view class="flex align-center justify-center top" :style="{'top': top+'px'}">
-			<text class="mr-1">当前下载源： </text>
+			<text class="mr-1">当前播放源： </text>
 			<view class="flex myp-flex-row align-center" @click="showOptions()">
 				<view class="f6 mr-1" style="color: #ff6022;">
 					{{downFrom[fromIndex] ? downFrom[fromIndex].text : ''}}
@@ -55,13 +55,6 @@
 			this.initData();
 			let sysInfo = uni.getSystemInfoSync();
 			this.top = sysInfo.statusBarHeight + uni.upx2px(70);
-		},
-		onReady() {
-			uni.showModal({
-				showCancel: false,
-				content: '点击剧集可复制播放链接，打开浏览器粘贴地址访问会播放并显示下载按钮，部分浏览器会播放但没有下载按钮，可以下载“夸克,UC”等浏览器进行下载。不同的下载源可下载的集数，大小等会有不同，请先尝试在线播放后再选择合适的下载源',
-				confirmText: '我知道了'
-			})
 		},
 		methods: {
 			initData() {

@@ -56,7 +56,7 @@
 		border-top-left-radius: 10rpx;
 		position: absolute;
 		top: 0;
-		left: 0rpx;
+		left: 0;
 		color: #fff;
 		font-size: 22rpx;
 		padding: 0rpx 10rpx;

@@ -25,8 +25,8 @@
 						<view class="font27 text-ellipsis1 u-skeleton-rect">导演：{{replaceDirector || '未知'}}</view>
 						<view class="flex align-center">
 							<template v-if="$H.getConfig('check')">
-								<u-button class="u-skeleton-fillet mr-2" size="mini" type="warning" @click="$H.previewImage('group_img')">
-									添加交流群
+								<u-button class="u-skeleton-fillet mr-2" size="mini" type="warning" @click="$H.previewImage('kf_img')">
+									联系我们
 								</u-button>
 								<u-button open-type="share" type="success" size="mini" class="u-skeleton-fillet">
 									分享给好友

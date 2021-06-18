@@ -152,7 +152,7 @@
 							</view>
 							<view class="mt-4 mb-3 u-skeleton-rect">
 								<u-section title="今日更新" font-size="29" :show-line="false"
-									@click="toMore('今日更新'+today.dy.total+'部电影','today',current)">
+									@click="toMore('今日更新'+today.dy.total+'部电影','today',tabId)">
 								</u-section>
 							</view>
 							<template v-if="loading">
@@ -199,7 +199,7 @@
 							</view>
 							<view class="mt-4 mb-3 u-skeleton-rect">
 								<u-section title="今日更新" font-size="29" :show-line="false"
-									@click="toMore('今日更新'+today.dsj.total+'部电视剧','today',current)">
+									@click="toMore('今日更新'+today.dsj.total+'部电视剧','today',tabId)">
 								</u-section>
 							</view>
 							<template v-if="loading">
@@ -246,7 +246,7 @@
 							</view>
 							<view class="mt-4 mb-3 u-skeleton-rect">
 								<u-section title="今日更新" font-size="29" :show-line="false"
-									@click="toMore('今日更新'+today.zy.total+'部综艺','today',current)">
+									@click="toMore('今日更新'+today.zy.total+'部综艺','today',tabId)">
 								</u-section>
 							</view>
 							<template v-if="loading">
@@ -293,7 +293,7 @@
 							</view>
 							<view class="mt-4 mb-3 u-skeleton-rect">
 								<u-section title="今日更新" font-size="29" :show-line="false"
-									@click="toMore('今日更新'+today.dm.total+'部动漫','today',current)">
+									@click="toMore('今日更新'+today.dm.total+'部动漫','today',tabId)">
 								</u-section>
 							</view>
 							<template v-if="loading">
@@ -332,6 +332,53 @@
 						</view>
 					</scroll-view>
 				</swiper-item>
+				<swiper-item>
+					<scroll-view scroll-y="true" style="height: 100%;" @scrolltolower="loadOtMore('ty')">
+						<view class="mx-2" v-if="load.ty">
+							<view class="mb-3 u-skeleton-rect" style="margin: 0 -20rpx;">
+								<vod-slider :list="sliderList.ty" @click="clickSwiper"></vod-slider>
+							</view>
+							<view class="mt-4 mb-3 u-skeleton-rect">
+								<u-section title="今日更新" font-size="29" :show-line="false"
+									@click="toMore('今日更新'+today.ty.total+'部体育','today',tabId)">
+								</u-section>
+							</view>
+							<template v-if="loading">
+								<!-- 骨架屏模拟数据 -->
+								<view class="flex align-center justify-between flex-wrap">
+									<view class="u-skeleton-fillet vodskeleton mr-1 mb-4"></view>
+									<view class="u-skeleton-fillet vodskeleton mr-1 mb-4"></view>
+									<view class="u-skeleton-fillet vodskeleton mb-4"></view>
+									<view class="u-skeleton-fillet vodskeleton mr-1 mb-4"></view>
+									<view class="u-skeleton-fillet vodskeleton mr-1 mb-4"></view>
+									<view class="u-skeleton-fillet vodskeleton mb-4"></view>
+									<view class="u-skeleton-fillet vodskeleton mr-1 mb-4"></view>
+									<view class="u-skeleton-fillet vodskeleton mr-1 mb-4"></view>
+									<view class="u-skeleton-fillet vodskeleton mb-4"></view>
+								</view>
+								<!-- end -->
+							</template>
+							<template v-else>
+								<view class="flex align-center justify-between flex-wrap voditem">
+									<block v-for="(item,index) in today.ty.list" :key="index">
+										<vod-item :item="item"></vod-item>
+									</block>
+								</view>
+							</template>
+							<view class="mt-4 mb-3 u-skeleton-rect">
+								<u-section title="更多体育" font-size="29" :show-line="false" :right="false"></u-section>
+							</view>
+							<view class="flex align-center justify-between flex-wrap voditem">
+								<block v-for="(item,index) in more.ty.list" :key="index">
+									<vod-item :item="item"></vod-item>
+								</block>
+							</view>
+							<view class="pt-3" style="padding-bottom: 130rpx;">
+								<u-loadmore :status="more.ty.loadStatus" />
+							</view>
+						</view>
+					</scroll-view>
+				</swiper-item>
 			</swiper>
 		</view>
 		<u-skeleton :loading="loading" bg-color="#fff" :animation="true"></u-skeleton>
@@ -360,6 +407,9 @@
 				}, {
 					id: 4,
 					name: '动漫'
+				}, {
+					id: 27,
+					name: '体育'
 				}],
 				current: 0,
 				swiperH: 200,
@@ -369,12 +419,14 @@
 					dsj: false,
 					zy: false,
 					dm: false,
+					ty: false,
 				},
 				sliderList: {
 					dy: [],
 					dsj: [],
 					zy: [],
 					dm: [],
+					ty: [],
 				},
 				today: {
 					dy: {
@@ -390,6 +442,10 @@
 						list: []
 					},
 					dm: {
+						total: 0,
+						list: []
+					},
+					ty: {
 						total: 0,
 						list: []
 					}
@@ -418,6 +474,12 @@
 						pageSize: 9,
 						loadStatus: 'loading',
 						list: []
+					},
+					ty: {
+						page: 1,
+						pageSize: 9,
+						loadStatus: 'loading',
+						list: []
 					}
 				},
 				loading: true,
@@ -442,8 +504,11 @@
 		},
 		computed: {
 			currentKey() {
-				const key = ['dy', 'dsj', 'zy', 'dm'];
+				const key = ['dy', 'dsj', 'zy', 'dm', 'ty'];
 				return key[this.current - 1];
+			},
+			tabId() {
+				return this.tabs[this.current].id;
 			}
 		},
 		methods: {
@@ -498,11 +563,11 @@
 				await this.loadOtData(index);
 			},
 			async loadOtSlider(key) {
-				let res = await this.$api.getVodSlider(this.current);
+				let res = await this.$api.getVodSlider(this.tabId);
 				this.sliderList[key] = res.data.list;
 			},
 			async loadOtToday(key) {
-				let res = await this.$api.getVodToday(1, 9, this.current);
+				let res = await this.$api.getVodToday(1, 9, this.tabId);
 				this.today[key] = res.data;
 			},
 			async loadOtMore(key) {
@@ -512,7 +577,7 @@
 				await this.loadOtData(key);
 			},
 			async loadOtData(key) {
-				let res = await this.$api.getVodHot(this.more[key].page, this.more[key].pageSize, this.current);
+				let res = await this.$api.getVodHot(this.more[key].page, this.more[key].pageSize, this.tabId);
 				if (res.data.page == 1) {
 					this.more[key].list = res.data.list;
 				} else {
