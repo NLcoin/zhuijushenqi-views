@@ -1,4 +1,3 @@
-let isError = false;
 export default {
 	data() {
 		return {
@@ -14,7 +13,6 @@ export default {
 			episodeCurrent: 0, // 当前播放集数
 			playUrl: null, // 当前播放地址
 			toEpi: null,
-			episode: [], // 当前播放剧集列表
 			episodeList: [], // 剧集列表
 			playFrom: [], // 播放源
 			playFromIndex: 0, // 当前播放源
@@ -61,6 +59,22 @@ export default {
 			} catch (e) {
 				//TODO handle the exception
 			}
+		},
+		episode() {
+			try {
+				return this.episodeList[this.playFromIndex];
+			} catch (e) {
+				//TODO handle the exception
+			}
+		}
+	},
+	watch: {
+		episode(n, o) {
+			if (!o) return;
+			if (n.length != o.length) {
+				this.episodeCurrent = 0;
+				this.current = 0;
+			}
 		}
 	},
 	methods: {
@@ -71,11 +85,10 @@ export default {
 			if (!this.handle) this.handle = uni.createVideoContext(`play`, this);
 			this.episodeList = this.detail.vod_play_url;
 			this.playFrom = this.detail.vod_play_from;
-			this.episode = this.episodeList[this.playFromIndex];
 			this.loadPlayUrl();
 		},
 		cachePlay() {
-			if (!this.handle && !this.detail.hasOwnProperty('vod_id')) {
+			if (!this.handle && !this.detail.hasOwnProperty('vod_id') && !this.loading) {
 				return;
 			}
 			let {
@@ -130,7 +143,7 @@ export default {
 		},
 		toMsgCurrent(current, episodeCurrent) {
 			if (!this.handle) return;
-			if(this.episodeCurrent != episodeCurrent){
+			if (this.episodeCurrent != episodeCurrent) {
 				this.episodeCurrent = episodeCurrent;
 			}
 			this.handle.seek(parseInt(current));
@@ -178,7 +191,9 @@ export default {
 			this.episodeListMenu = !this.episodeListMenu;
 			this.toEpi = null;
 			if (this.episodeListMenu) {
-				setTimeout(() => this.$refs['epiList'].open(), 10);
+				setTimeout(() => {
+					this.$refs['epiList'].open();
+				}, 10);
 			} else {
 				this.$refs['epiList'].close();
 			}
@@ -187,6 +202,7 @@ export default {
 			}, 300);
 		},
 		changeToEpi() {
+			if (this.episodeCurrent == 0) return;
 			const index = this.episodeCurrent + 1;
 			this.toEpi = 'epi' + index;
 		},
@@ -199,7 +215,6 @@ export default {
 			this.playFromIndex = index;
 			this.fromMenu = false;
 			this.controls = false;
-			this.episode = this.episodeList[this.playFromIndex];
 			this.loadPlayUrl();
 			setTimeout(() => {
 				this.controls = true;
@@ -217,15 +232,6 @@ export default {
 			} catch (e) {
 				//TODO handle the exception
 			}
-		},
-		error(e) {
-			if (isError) return;
-			isError = true;
-			uni.showModal({
-				showCancel: false,
-				content: '视频加载慢或长时间无反应，可尝试切换播放源如无其他播放源可搜索同名其他资源播放,部分蓝光资源可能加载时间会稍微长一些，有任何疑问可加群或联系客服解决。',
-				confirmText: '我知道了'
-			});
 		}
 	}
 }

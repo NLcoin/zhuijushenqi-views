@@ -5,7 +5,7 @@ import {
 export default {
 	// 获取配置信息
 	getConfig() {
-		return http.get('/config2');
+		return http.get('/config');
 	},
 	// 解析播放地址
 	parseUrl(url, type) {
@@ -81,13 +81,9 @@ export default {
 		});
 	},
 	// 搜索影片
-	searchVod(keyword, page = 1, pageSize = 10) {
+	searchVod(params) {
 		return http.get('/vod/search/index', {
-			params: {
-				keyword,
-				page,
-				pageSize
-			}
+			params
 		});
 	},
 	// 搜索提示

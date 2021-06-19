@@ -3,7 +3,7 @@
 		<u-navbar :is-back="false" title-color="#222" title-bold :border-bottom="false" title-size="30">
 			<view class="ml-3 f7 font33">搜索影片</view>
 		</u-navbar>
-		<view class="p-2 bg-bai w100" style="z-index: 999999;position: sticky;" :style="{top:searchTop+'px'}">
+		<view class="p-2 bg-bai w100" style="z-index: 999;position: sticky;" :style="{top:searchTop+'px'}">
 			<u-search placeholder="输入影片名 演员或导演搜索" v-model="keyword" @search="submit()" @change="change()"
 				@custom="submit()" @focus="focusChange()" @blur="blurChange()"></u-search>
 		</view>
@@ -49,7 +49,18 @@
 				</template>
 			</template>
 			<template v-else>
-				<view class="mt-1">
+				<view class="flex align-center justify-between bg-bai w100" :style="{top:searchTop+45+'px'}"
+					style="position: sticky;height: 90rpx;z-index: 99;margin-top: -20rpx;">
+					<view class="font27 gray">
+						共搜索到 {{result.total}} 部相关影片
+					</view>
+					<view class="flex align-center gray" @click="clickSelect()">
+						<u-icon name="grid" size="35" class="mr-1"></u-icon>
+						<view class="font27">筛选</view>
+					</view>
+				</view>
+				<search-select ref="select" @change="selectChange"></search-select>
+				<view>
 					<vod-item2 v-for="(item,index) in result.list" :key="index" :item="item"></vod-item2>
 				</view>
 				<view v-if="!result.list.length" class="flex align-center justify-center my-5">
@@ -79,11 +90,21 @@
 				isSubmit: false,
 				focus: false,
 				searchTop: 0,
+				popupShow: false,
 				result: {
 					page: 1,
 					pageSize: 10,
+					total: 0,
 					loadStatus: 'loading',
 					list: []
+				},
+				searchData: {
+					keyword: '',
+					page: 1,
+					pageSize: 10,
+					class: 0,
+					area: 0,
+					lang: 0
 				},
 				completeList: []
 			}
@@ -115,6 +136,21 @@
 					imageUrl: "", //图片链接，必须是网络连接，后面拼接时间戳防止本地缓存
 				}
 			},
+			clickSelect() {
+				this.$refs['select'].show = true;
+			},
+			async selectChange(e) {
+				this.searchData.class = e.class;
+				this.searchData.area = e.area;
+				this.searchData.lang = e.lang;
+				this.result.page = 1;
+				uni.showLoading({
+					mask:true,
+					title: '正在搜索'
+				});
+				await this.loadData();
+				uni.hideLoading();
+			},
 			async hotSearchWordsList() {
 				let res = await this.$api.searchHotWords();
 				this.hotWords = res.data.list;
@@ -130,8 +166,10 @@
 				await this.loadData();
 			},
 			async loadData() {
-				let res = await this.$api.searchVod(encodeURIComponent(this.keyword), this.result.page, this.result
-					.pageSize);
+				this.searchData.keyword = encodeURIComponent(this.keyword);
+				this.searchData.page = this.result.page;
+				this.searchData.pageSize = this.result.pageSize;
+				let res = await this.$api.searchVod(this.searchData);
 				this.isSubmit = true;
 				for (let i = 0; i < res.data.list.length; i++) {
 					let oReg = new RegExp(this.keyword, "g");
@@ -169,6 +207,7 @@
 					return;
 				}
 				uni.showLoading({
+					mask:true,
 					title: '正在搜索'
 				});
 				this.saveSearchLog();
@@ -190,7 +229,14 @@
 					};
 					return;
 				}
+				this.resetData();
 				this.searchComplete(val);
+			},
+			resetData() {
+				this.$refs['select'].reset();
+				this.searchData.class = 0;
+				this.searchData.area = 0;
+				this.searchData.lang = 0;
 			},
 			clickWord(val) {
 				this.keyword = val;

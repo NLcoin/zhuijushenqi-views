@@ -60,7 +60,7 @@ http.interceptors.response.use(async (response) => {
 		});
 		return;
 	}catch(e){
-		return response;
+		return Promise.reject(response);
 	}
 })
 
