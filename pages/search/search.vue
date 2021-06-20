@@ -59,7 +59,7 @@
 						<view class="font27">筛选</view>
 					</view>
 				</view>
-				<search-select ref="select" @change="selectChange"></search-select>
+				<search-select ref="search-select" @change="selectChange"></search-select>
 				<view>
 					<vod-item2 v-for="(item,index) in result.list" :key="index" :item="item"></vod-item2>
 				</view>
@@ -137,7 +137,7 @@
 				}
 			},
 			clickSelect() {
-				this.$refs['select'].show = true;
+				this.$refs['search-select'].show = true;
 			},
 			async selectChange(e) {
 				this.searchData.class = e.class;
@@ -233,7 +233,6 @@
 				this.searchComplete(val);
 			},
 			resetData() {
-				this.$refs['select'].reset();
 				this.searchData.class = 0;
 				this.searchData.area = 0;
 				this.searchData.lang = 0;

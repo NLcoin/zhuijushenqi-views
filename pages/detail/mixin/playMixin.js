@@ -35,7 +35,7 @@ export default {
 	computed: {
 		replaceContent() {
 			try {
-				return this.detail.vod_content.replace(/<[^>]+>/g, "");
+				return this.detail.vod_content.replace(/<[^>]+>/g, "") || '<p>该影片暂无简介</p>';
 			} catch (e) {
 				//TODO handle the exception
 			}

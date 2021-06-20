@@ -72,6 +72,16 @@
 				}
 			};
 		},
+		watch:{
+			show(n,o){
+				if(n) return;
+				this.fromData = {
+					class: 0,
+					area: 0,
+					lang: 0
+				};
+			}
+		},
 		computed: {
 			tabs() {
 				return this.$H.getConfig('tabs');
@@ -84,13 +94,6 @@
 			}
 		},
 		methods: {
-			reset() {
-				this.fromData = {
-					class: 0,
-					area: 0,
-					lang: 0
-				};
-			},
 			changeClass(val) {
 				if (this.fromData.class == val) return;
 				this.fromData.class = val;

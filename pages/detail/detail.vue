@@ -123,7 +123,7 @@
 				</video>
 			</template>
 			<view class="flex align-center justify-between pb-15" style="width: 750rpx;height: 80rpx;" v-if="!loading">
-				<view style="width: 230rpx;margin-left: -10rpx;">
+				<view style="width: 200rpx;">
 					<u-tabs :list="tabs" :is-scroll="false" :current="tabCurrent" @change="tabChange"
 						active-color="#ff6022">
 					</u-tabs>
@@ -201,7 +201,7 @@
 					<view class="my-2 flex align-center justify-between">
 						<view class="font25 gray u-skeleton-rect text-ellipsis1" style="width: 400rpx;">
 							{{detail.parentType ? detail.parentType.type_name : detail.type.type_name}} ·
-							同步更新 · {{detail.vod_hits}}次播放
+							{{detail.vod_remarks}} · {{detail.vod_hits}}次播放
 						</view>
 						<view class="u-skeleton-rect font25 gray">
 							{{$u.timeFormat(detail.vod_time, 'yyyy-mm-dd hh:MM:ss')}}
@@ -209,7 +209,7 @@
 					</view>
 
 					<view class="mt-2 flex align-center justify-between u-skeleton-rect">
-						<view class="font29 f6">播放列表</view>
+						<view class="font29 f6">播放列表({{episode.length}})</view>
 						<view class="flex align-center" @click="openEpisodeListMenu()">
 							<view class="gray font26 mr-1">
 								{{episodeListMenu ? '收起' : '展开'}}
@@ -261,8 +261,9 @@
 						<view class="font29 f6 u-skeleton-rect">影片简介</view>
 					</view>
 
-					<view class="my-3 font28 u-skeleton-rect">
-						<rich-text :nodes="replaceContent || '<p>该影片暂时没有简介哦</p>'" v-if="!loading"></rich-text>
+					<view class="mt-2 font28 u-skeleton-rect" v-if="!loading">
+						<rich-text :nodes="replaceContent" class="u-skeleton-rect">
+						</rich-text>
 					</view>
 
 				</view>
@@ -287,7 +288,7 @@
 				}, {
 					name: '设置'
 				}],
-				scrollH: 1820 + 'px',
+				scrollH: '5000px',
 				tabCurrent: 0,
 				setShow: false,
 				skipStart: 0,
@@ -300,15 +301,11 @@
 			await this.initCache();
 			await this.initPlay();
 			this.initRedAd();
-			this.loading = false;
 			let sysInfo = uni.getSystemInfoSync();
 			this.popupH = sysInfo.windowHeight - uni.upx2px(630) + 'px';
-		},
-		onReady() {
-			setTimeout(async () => {
-				let rectInfo = await this.$u.getRect('.vodinfo');
-				this.scrollH = rectInfo.height + 'px';
-			}, 50);
+			this.loading = false;
+			let rect = await this.$u.getRect('.vodinfo');
+			this.scrollH = rect.height + 'px';
 		},
 		onShow() {
 			if (!this.handle) return;
