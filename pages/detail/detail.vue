@@ -21,14 +21,13 @@
 					@controlstoggle="showControls" :object-fit="objectFit" show-mute-btn enable-play-gesture
 					show-screen-lock-button @timeupdate="timeupdate" :poster="$H.getConfig('play_poster')"
 					@ended="nextEpisode()" direction="90" :duration="duration" :initial-time="current"
-					:unit-id="$H.getConfig('play_start_ad')" play-strategy="3">
+					:unit-id="$H.getConfig('play_start_ad')">
 					<template v-if="isFullscreen && controls">
 						<view style="position: absolute;top: 29px;right:110px;">
 							<view class="top-icon" @click.stop="openRateMenu()">倍速</view>
 						</view>
 						<view style="position: absolute;top: 29px;right:155px;">
-							<view class="top-icon" :class="objectFit == 'cover' ? 'top-icon-active': ''"
-								@click.stop="changeObjectFit(objectFit == 'contain' ? 'cover': 'contain')">撑满全屏</view>
+							<view class="top-icon" @click.stop="openObjectFitMenu()">撑满全屏</view>
 						</view>
 						<view style="position: absolute;top: 29px;right: 227px;" @click.stop="openFromMenu()">
 							<view class="top-icon">切换播放源</view>
@@ -55,6 +54,26 @@
 									:class="rateIndex == index ? 'rate-btn-active' : ''"
 									@click.stop="changeRate(index)">
 									{{item.toFixed(1)}}X
+								</view>
+							</view>
+						</view>
+					</template>
+
+					<template v-if="objectFitMenu && isFullscreen">
+						<view style="position: absolute;left:15%;top:30%;" class="flex flex-column">
+							<view class="font35 mb-3 white">模式选择</view>
+							<view class="flex align-center mt-3">
+								<view class="rate-btn" :class="objectFit == 'contain' ? 'rate-btn-active' : ''"
+									@click.stop="changeObjectFit('contain')">
+									自适应
+								</view>
+								<view class="rate-btn" :class="objectFit == 'fill' ? 'rate-btn-active' : ''"
+									@click.stop="changeObjectFit('fill')">
+									填充
+								</view>
+								<view class="rate-btn" :class="objectFit == 'cover' ? 'rate-btn-active' : ''"
+									@click.stop="changeObjectFit('cover')">
+									覆盖
 								</view>
 							</view>
 						</view>
@@ -104,7 +123,7 @@
 				</video>
 			</template>
 			<view class="flex align-center justify-between pb-15" style="width: 750rpx;height: 80rpx;" v-if="!loading">
-				<view style="width: 130rpx;margin-left: -15rpx;">
+				<view style="width: 230rpx;margin-left: -10rpx;">
 					<u-tabs :list="tabs" :is-scroll="false" :current="tabCurrent" @change="tabChange"
 						active-color="#ff6022">
 					</u-tabs>
@@ -116,6 +135,33 @@
 					</u-button>
 				</view>
 			</view>
+			<u-popup v-model="setShow" mode="bottom" height="400rpx">
+				<view class="flex flex-column p-3">
+					<view class="flex align-center justify-between mb-3">
+
+						<view class="f8 font32" style="width: 200rpx;">
+							自动跳过片首
+						</view>
+						<view class="flex align-center">
+							<u-input type="number" v-model="skipStart" placeholder="请输入跳过的秒数" maxlength="3"
+								:clearable="false" />
+							<view class="f8 font32 ml-1">秒</view>
+						</view>
+					</view>
+
+					<view class="flex align-center justify-between mb-3">
+
+						<view class="f8 font32" style="width: 200rpx;">
+							自动跳过片尾
+						</view>
+						<view class="flex align-center">
+							<u-input type="number" v-model="skipEnd" placeholder="请输入跳过的秒数" :clearable="false"
+								maxlength="3" />
+							<view class="f8 font32 ml-1">秒</view>
+						</view>
+					</view>
+				</view>
+			</u-popup>
 
 			<template v-if="!isFullscreen && episodeListMenu">
 				<uni-popup type="bottom" ref="epiList" :maskShow="true" @clickMask="openEpisodeListMenu()">
@@ -227,8 +273,6 @@
 </template>
 
 <script>
-	let socketOpen = false;
-	let client_id = null;
 	let redAd = null;
 	let isRadLoad = true;
 	let isAdWatch = false;
@@ -240,9 +284,14 @@
 				loading: true,
 				tabs: [{
 					name: '详情'
+				}, {
+					name: '设置'
 				}],
 				scrollH: 1820 + 'px',
 				tabCurrent: 0,
+				setShow: false,
+				skipStart: 0,
+				skipEnd: 0
 			}
 		},
 		async onLoad(e) {
@@ -255,9 +304,11 @@
 			let sysInfo = uni.getSystemInfoSync();
 			this.popupH = sysInfo.windowHeight - uni.upx2px(630) + 'px';
 		},
-		async onReady() {
-			let rectInfo = await this.$u.getRect('.vodinfo');
-			this.scrollH = rectInfo.height + 'px';
+		onReady() {
+			setTimeout(async () => {
+				let rectInfo = await this.$u.getRect('.vodinfo');
+				this.scrollH = rectInfo.height + 'px';
+			}, 50);
 		},
 		onShow() {
 			if (!this.handle) return;
@@ -269,6 +320,42 @@
 		onUnload() {
 			this.cachePlay();
 		},
+		watch: {
+			current(n, o) {
+				if (this.setShow) {
+					this.handle.pause();
+				}
+				let nowCurrent = this.duration - n;
+				if (n < this.skipStart && this.skipStart > 0 && o <= 0) { // 跳过片首
+					if (this.skipStart > (this.duration - this.skipEnd)) {
+						this.skipStart = 0;
+						return this.$H.msg('跳过片首时长错误');
+					}
+					this.handle.seek(parseInt(this.skipStart));
+					this.$H.msg('已为您自动跳过片首');
+				}
+				if (this.skipEnd > (this.duration - this.skipStart)) {
+					this.skipEnd = 0;
+					return this.$H.msg('跳过片尾时长错误');
+				}
+				if (nowCurrent <= this.skipEnd && this.skipEnd > 0) {
+					if (this.episodeCurrent == this.episode.length - 1) {
+						this.skipStart = 0;
+						this.skipEnd = 0;
+						return this.$H.msg('没有下一集了');
+					}
+					this.$H.msg('已为您自动跳过片尾');
+					this.changeEpisode(this.episodeCurrent + 1);
+				}
+			},
+			setShow(n, o) {
+				if (n) {
+					this.handle.pause();
+				} else {
+					this.handle.play();
+				}
+			}
+		},
 		methods: {
 			onShareAppMessage() {
 				return {
@@ -276,6 +363,13 @@
 					path: '', //页面路径及参数
 					imageUrl: this.detail.vod_pic, //图片链接，必须是网络连接，后面拼接时间戳防止本地缓存
 				}
+			},
+			openSet() {
+				this.setShow = true;
+			},
+			timeupdate(e) {
+				this.duration = e.detail.duration;
+				this.current = e.detail.currentTime;
 			},
 			initRedAd() {
 				redAd = uni.createRewardedVideoAd({
@@ -329,6 +423,9 @@
 				});
 			},
 			tabChange(index) {
+				if (index == 1) {
+					return this.openSet();
+				}
 				this.tabCurrent = index;
 			}
 		}

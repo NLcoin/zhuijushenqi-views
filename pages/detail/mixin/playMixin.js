@@ -29,6 +29,7 @@ export default {
 			rateMenu: false, // 倍速菜单
 			episodeListMenu: false, // 剧集菜单
 			fromMenu: false, // 播放源菜单
+			objectFitMenu:false, // 全屏模式菜单
 		}
 	},
 	computed: {
@@ -74,6 +75,7 @@ export default {
 			if (n.length != o.length) {
 				this.episodeCurrent = 0;
 				this.current = 0;
+				this.loadPlayUrl();
 			}
 		}
 	},
@@ -137,23 +139,15 @@ export default {
 		fullscreenchange(e) {
 			this.isFullscreen = e.detail.fullscreen;
 		},
-		timeupdate(e) {
-			this.duration = e.detail.duration;
-			this.current = e.detail.currentTime;
-		},
-		toMsgCurrent(current, episodeCurrent) {
-			if (!this.handle) return;
-			if (this.episodeCurrent != episodeCurrent) {
-				this.episodeCurrent = episodeCurrent;
-			}
-			this.handle.seek(parseInt(current));
-			this.$H.msg('已跳转至该消息播放位置');
-		},
 		showControls(e) {
 			this.controls = e.detail.show;
 		},
 		openRateMenu() {
 			this.rateMenu = !this.rateMenu;
+			this.fromMenu = false;
+		},
+		openObjectFitMenu() {
+			this.objectFitMenu = !this.objectFitMenu;
 			this.fromMenu = false;
 		},
 		changeRate(index) {
@@ -163,6 +157,7 @@ export default {
 		},
 		changeObjectFit(val) {
 			this.objectFit = val;
+			this.objectFitMenu = false;
 		},
 		lastEpisode() {
 			if (this.episodeCurrent < 1) {
